@@ -4,14 +4,13 @@
  */
 package dataPack;
 
+import java.time.LocalDateTime;
+
 /**
  *
  * @author ASUS
  */
-enum StatusIncident {
-    
- inProcess,
- resolved,
- pending,
-    
-}
+  @FunctionalInterface
+    public interface TimeIntervalCriteria<T> {
+        boolean isWithinInterval(T element, LocalDateTime startTime, LocalDateTime endTime);
+    }
