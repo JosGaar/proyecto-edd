@@ -22,7 +22,21 @@ String  lastNames;
         this.lastNames = lastNames;
     }
 
+   public String fullname() {
 
+        return "\nNombres: " + this.names
+                + "\nApellidos: " + this.lastNames;
+
+    }    
+    
+@Override
+
+public String toString(){
+
+return fullname()+
+       "\nIdentificación: "+this.identification;
+       
+}
 
     
 }

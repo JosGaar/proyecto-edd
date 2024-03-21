@@ -4,6 +4,11 @@
  */
 package dataPack;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+
 /**
  *
  * @author ASUS
@@ -75,7 +80,7 @@ public class LinkedList<T> {
         return true; // Indicar que se eliminó el elemento correctamente
     }
 
-    //Con este metodo lograre obtener el elemento para poder usar el deleteElement
+    //Con este metodo  se podra filtrar para el delete,add y update
     public T getElement(Criteria<T> criteria) {
         if (firstElement == null || criteria == null) {
             return null;
@@ -110,5 +115,45 @@ public class LinkedList<T> {
         return false;
 
     }
+    public String getAllElement() {
+
+        StringBuilder descriptionElements = new StringBuilder();
+
+        if (firstElement == null) {
+
+            return "No existe registros";
+        }
+        Node<T> current = firstElement;
+        while (current != null) {
+            descriptionElements.append(current.value);
+            descriptionElements.append("\n");
+            current=current.next;
+        }
+        return descriptionElements.toString();
+
+    }
+ 
+    
+ //Aqui se usa un arrayList para ordenar los datos en base a un comparator despues   
+ public ArrayList<T> getAllElementInInterval(TimeIntervalCriteria<T> intervalCriteria, LocalDateTime startTime, LocalDateTime endTime) {
+        if (firstElement == null || intervalCriteria == null) {
+            return new ArrayList<>(); // Devolver un ArrayList vacío si la lista está vacía o los criterios son nulos
+        }
+
+        ArrayList<T> elementsWithinInterval = new ArrayList<>();
+        Node<T> current = firstElement;
+        while (current != null) {
+            if (intervalCriteria.isWithinInterval(current.value, startTime, endTime)) {
+                elementsWithinInterval.add(current.value);
+            }
+            current = current.next;
+        }
+
+        return elementsWithinInterval;
+    }
+
+ 
+
+
 }
 
