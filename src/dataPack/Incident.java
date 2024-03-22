@@ -11,29 +11,30 @@ import java.time.LocalDateTime;
  * @author ASUS
  */
 public class Incident {
-    
- String incidentCode;
 
-    public void setIncidentCode(String incidentCode) {
+    String incidentCode;
+
+    public void setIncidentCode(String incidentCode)
+    {
         this.incidentCode = incidentCode;
     }
-    
- String description;
- 
- LocalDateTime  dateTimeReport;
- 
- LocalDateTime  dateTimeAttention;
- 
- ParkRanger agentSupport;
- 
- IncidentStatus incidentStatus;
- 
- String annotations;
- 
- Area area;
 
-    public Incident(String incidentCode,String description, LocalDateTime dateTimeReport, LocalDateTime dateTimeAttention, 
-                    ParkRanger agentSupport, IncidentStatus incidentStatus, String annotations, Area area) 
+    String description;
+
+    LocalDateTime dateTimeReport;
+
+    LocalDateTime dateTimeAttention;
+
+    ParkRanger agentSupport;
+
+    IncidentStatus incidentStatus;
+
+    String annotations;
+
+    Area area;
+
+    public Incident(String incidentCode, String description, LocalDateTime dateTimeReport, LocalDateTime dateTimeAttention,
+            ParkRanger agentSupport, IncidentStatus incidentStatus, String annotations, Area area)
     {
         this.description = description;
         this.dateTimeReport = dateTimeReport;
@@ -42,84 +43,96 @@ public class Incident {
         this.incidentStatus = incidentStatus;
         this.annotations = annotations;
         this.area = area;
-        this.incidentCode=incidentCode;
+        this.incidentCode = incidentCode;
     }
-    
-    
 
-    public void setDateTimeReport(LocalDateTime dateTimeReport) {
+    public void setDateTimeReport(LocalDateTime dateTimeReport)
+    {
         this.dateTimeReport = dateTimeReport;
     }
 
-    public String getIncidentCode() {
+    public String getIncidentCode()
+    {
         return incidentCode;
     }
 
-
-    public String getDescription() {
+    public String getDescription()
+    {
         return description;
     }
 
-    public void setDescription(String description) {
+    public void setDescription(String description)
+    {
         this.description = description;
     }
 
-    public LocalDateTime getDateTimeAttention() {
+    public LocalDateTime getDateTimeAttention()
+    {
         return dateTimeAttention;
     }
 
-    public LocalDateTime getDateTimeReport() {
+    public LocalDateTime getDateTimeReport()
+    {
         return dateTimeReport;
     }
 
-    public void setDateTimeAttention(LocalDateTime dateTimeAttention) {
+    public void setDateTimeAttention(LocalDateTime dateTimeAttention)
+    {
         this.dateTimeAttention = dateTimeAttention;
     }
 
-    public ParkRanger getAgentSupport() {
+    public ParkRanger getAgentSupport()
+    {
         return agentSupport;
     }
 
-    public void setAgentSupport(ParkRanger agentSupport) {
+    public void setAgentSupport(ParkRanger agentSupport)
+    {
         this.agentSupport = agentSupport;
     }
 
-    public IncidentStatus getIncidentStatus() {
+    public IncidentStatus getIncidentStatus()
+    {
         return incidentStatus;
     }
 
-    public void setIncidentStatus(IncidentStatus incidentStatus) {
+    public void setIncidentStatus(IncidentStatus incidentStatus)
+    {
         this.incidentStatus = incidentStatus;
     }
 
-    public String getAnnotations() {
+    public String getAnnotations()
+    {
         return annotations;
     }
 
-    public void setAnnotations(String annotations) {
+    public void setAnnotations(String annotations)
+    {
         this.annotations = annotations;
     }
 
-    public Area getArea() {
+    public Area getArea()
+    {
         return area;
     }
 
-    public void setArea(Area area) {
+    public void setArea(Area area)
+    {
         this.area = area;
     }
- 
-    @Override
-     public String toString(){
-     
-         return   "\nCódigo de incidencia: "+this.incidentCode
-                 +"\nFecha/Hora de incidente: "+this.dateTimeReport
-                 + "\nFecha/Hora de atención: "+this.dateTimeAttention
-                 + "\nAgente de Soporte: "+this.agentSupport.fullname()
-                 + "\nEstado de Incidencia: "+this.incidentStatus
-                 + "\nAnotaciones: "+this.annotations
-                 + "\nArea:"+this.area.getName();
 
-   }
- 
-    
+    @Override
+    public String toString()
+    {
+
+        return "\nCódigo de incidencia: " + this.incidentCode
+                + "\nFecha/Hora de incidente: " + this.dateTimeReport
+                + "\nFecha/Hora de atención: " + this.dateTimeAttention
+                + "\nAgente de Soporte: " + this.agentSupport.fullname()
+                + "\nEstado de Incidencia: " + this.incidentStatus
+                + "\nAnotaciones: " + this.annotations
+                + "\nArea:" + this.area.getName();
+
+    }
+
 }

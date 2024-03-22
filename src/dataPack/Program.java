@@ -25,8 +25,8 @@ public class Program {
             String message = """
                              1. Gestionar visitantes
                              2. Gestionar guardaparques
-                             3. Gestionar incidentes
-                             4. Gestionar areas
+                             3. Gestionar areas
+                             4. Gestionar incidentes
                              5. Salir
                              Seleccione una opcion: 
                              """;
@@ -40,10 +40,10 @@ public class Program {
                     parkRangersMenu(reserveManage);
                     break;
                 case 3:
-                    menuIncidentes(reserveManage);
+                    areasMenu(reserveManage);
                     break;
                 case 4:
-                    menuAreas(reserveManage);
+                    incidentMenu(reserveManage);
                     break;
                 case 5:
                     System.out.println("\nSaliendo...\n");
@@ -60,6 +60,7 @@ public class Program {
 
     }
 
+    // --------------------------------------------------------------------------------------------------------------------------------
     // Información sobre guardaparques
     public void parkRangersMenu(NatureReserveManager gestorReserva)
     {
@@ -90,6 +91,7 @@ public class Program {
                     modifyRanger(gestorReserva);
                     break;
                 case 4:
+                    // No se puede eliminar un guardabosques si esta atendiendo una incidencia
                     break;
                 case 5:
                     System.out.println("Regresando...\n");
@@ -271,7 +273,7 @@ public class Program {
     public RangerStatus changeRangerStatus(RangerStatus originalStatus)
     {
         String message;
-        RangerStatus newStatus;
+        RangerStatus newStatus = null;
         int option;
         do {
             message = "¿Desea cambiar el estado del guardabosque?\nSi (1) / No (2): ";
@@ -285,7 +287,7 @@ public class Program {
                     newStatus = originalStatus;
                     break;
                 default:
-                    throw new AssertionError();
+                    System.err.println("Error: opcion no conocida.\n");
             }
 
         } while (option != 1 && option != 2);
@@ -293,13 +295,255 @@ public class Program {
         return newStatus;
     }
 
-    public void menuIncidentes(NatureReserveManager gestorReserva)
+    public void areasMenu(NatureReserveManager gestorReserva)
     {
+        int option;
+
+        do {
+            System.out.println();
+            String message = """
+                             === Incidentes ===
+                             1. Crear area
+                             2. Mostrar areas
+                             3. Actualizar area
+                             4. Eliminar area
+                             5. Regresar
+                             Seleccione una opcion: 
+                             """;
+            option = errorControl.validateNumericInputInt(sc, message);
+
+            switch (option) {
+                case 1:
+                    createArea(gestorReserva);
+                    break;
+                case 2:
+                    mostrarAreas(gestorReserva);
+                    break;
+                case 3:
+                    modifyArea(gestorReserva);
+                    break;
+                case 4:
+                    break;
+                case 5:
+                    System.out.println("Regresando...\n");
+                    break;
+                default:
+                    System.err.println("Error, opcion no disponible.\n");
+            }
+
+        } while (option != 5);
+    }
+
+    public void createArea(NatureReserveManager gestorReserva)
+    {
+
+        String codeArea, name, description;
+        StateArea stateArea;
+
+        System.out.println();
+        codeArea = errorControl.validateStrings(sc, "Ingrese el codigo del area: ");
+
+        Criteria<Area> criteriaByCodeArea = area -> area.getCodeArea().equals(codeArea);
+        Area auxArea = gestorReserva.areas.getElement(criteriaByCodeArea);
+
+        if (auxArea == null) {
+            name = errorControl.validateStrings(sc, "Ingrese el nombre del area: ");
+            description = errorControl.validateStrings(sc, "Ingrese la descripcion del area: ");
+            stateArea = selectStatusArea();
+            Area area = new RecreationalArea(codeArea, name, description, stateArea);
+            gestorReserva.addArea(area);
+        } else {
+            System.err.println("El codigo del area a registrar ya se encuentra en uso.\n");
+        }
+    }
+
+    public StateArea selectStatusArea()
+    {
+        String message;
+        StateArea area = null;
+        int option;
+        do {
+            message = "Accesibilidad del area: accesible (1), innacesible (2): ";
+            option = errorControl.validateNumericInputInt(sc, message);
+
+            switch (option) {
+                case 1:
+                    area = StateArea.accessible;
+                    break;
+                case 2:
+                    area = StateArea.inaccessible;
+                    break;
+                default:
+                    System.err.println("Error: opcion no conocida.\n");
+            }
+
+        } while (option != 1 && option != 2);
+
+        return area;
+    }
+
+    public void mostrarAreas(NatureReserveManager gestorReserva)
+    {
+
+        Criteria<Area> criteriaForParkRangersBusy = area -> area.getStateArea() == (StateArea.accessible);
+        Criteria<Area> criteriaForParkRangersFree = area -> area.getStateArea() == (StateArea.inaccessible);
+
+        // ...
+        List<Area> accesibleArea = gestorReserva.areas.getElements(criteriaForParkRangersBusy);
+        List<Area> inaccessibleArea = gestorReserva.areas.getElements(criteriaForParkRangersFree);
+
+        if (!accesibleArea.isEmpty()) {
+            System.out.println("Areas accesibles: \n");
+            for (Area area : accesibleArea) {
+                System.out.println("Identificacion: " + area.codeArea + ", nombre: "
+                        + area.name + ", descripcion: " + area.description + "\n");
+            }
+        } else {
+            System.out.println("No hay areas accesibles.");
+        }
+
+        if (!inaccessibleArea.isEmpty()) {
+            System.out.println("Areas innacesibles: \n");
+            for (Area area : inaccessibleArea) {
+                System.out.println("Identificacion: " + area.codeArea + ", nombre: "
+                        + area.name + ", descripcion: " + area.description + "\n");
+            }
+        } else {
+            System.out.println("\nNo hay areas inaccesible.");
+        }
 
     }
 
-    public void menuAreas(NatureReserveManager gestorReserva)
+    public void modifyArea(NatureReserveManager gestorReserva)
     {
+        String codeArea, newName, newDescription;
+        StateArea newState;
+
+        System.out.println();
+        codeArea = errorControl.validateStrings(sc, "Ingrese el codigo del area: ");
+
+        Criteria<Area> criteriaForParkRangers = area -> area.getCodeArea().equals(codeArea);
+        Area auxArea = gestorReserva.areas.getElement(criteriaForParkRangers);
+
+        if (auxArea != null) {
+            newName = newNameArea(auxArea.name);
+            newDescription = newDescriptionArea(auxArea.description);
+            newState = newStateArea(auxArea.stateArea);
+            gestorReserva.updateArea(codeArea, newName, newDescription, newState);
+        } else {
+            System.err.println("No se ha encontrado el area con el codigo proporcionada.\n");
+        }
+    }
+
+    public String newNameArea(String originalName)
+    {
+        String message, newName = null;
+        int option;
+        do {
+            message = "¿Desea cambiar el nombre del area?\nSi (1) / No (2): ";
+            option = errorControl.validateNumericInputInt(sc, message);
+
+            switch (option) {
+                case 1:
+                    newName = errorControl.validateStrings(sc, "Ingrese el nombre del area: ");
+                    break;
+                case 2:
+                    newName = originalName;
+                    break;
+                default:
+                    System.err.println("Error, opcion no encontrada.\n");
+            }
+
+        } while (option != 1 && option != 2);
+
+        return newName;
+    }
+
+    public String newDescriptionArea(String originalDescription)
+    {
+        String message, newDescription = null;
+        int option;
+        do {
+            message = "¿Desea cambiar la descripcion del area?\nSi (1) / No (2): ";
+            option = errorControl.validateNumericInputInt(sc, message);
+
+            switch (option) {
+                case 1:
+                    newDescription = errorControl.validateStrings(sc, "Ingrese la descripcion del area: ");
+                    break;
+                case 2:
+                    newDescription = originalDescription;
+                    break;
+                default:
+                    System.err.println("Error, opcion no encontrada.\n");
+            }
+
+        } while (option != 1 && option != 2);
+
+        return newDescription;
+    }
+
+    public StateArea newStateArea(StateArea originalState)
+    {
+        String message;
+        StateArea newState = null;
+        int option;
+        do {
+            message = "¿Desea cambiar el estado del area?\nSi (1) / No (2): ";
+            option = errorControl.validateNumericInputInt(sc, message);
+
+            switch (option) {
+                case 1:
+                    newState = selectStatusArea();
+                    break;
+                case 2:
+                    newState = originalState;
+                    break;
+                default:
+                    System.err.println("Error: opcion no conocida.\n");
+            }
+
+        } while (option != 1 && option != 2);
+
+        return newState;
+    }
+
+    // --------------------------------------------------------------------------------------------------------------------------------
+    // Informacion sobre los incidentes
+    public void incidentMenu(NatureReserveManager gestorReserva)
+    {
+        int option;
+
+        do {
+            System.out.println();
+            String message = """
+                             === Incidentes ===
+                             1. Crear incidente
+                             2. Mostrar incidentes
+                             3. Actualizar incidente
+                             4. Eliminar incidente
+                             5. Regresar
+                             Seleccione una opcion: 
+                             """;
+            option = errorControl.validateNumericInputInt(sc, message);
+
+            switch (option) {
+                case 1:
+                    break;
+                case 2:
+                    break;
+                case 3:
+                    break;
+                case 4:
+                    break;
+                case 5:
+                    System.out.println("Regresando...\n");
+                    break;
+                default:
+                    System.err.println("Error, opcion no disponible.\n");
+            }
+
+        } while (option != 5);
 
     }
 

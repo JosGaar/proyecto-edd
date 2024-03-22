@@ -73,6 +73,25 @@ public class ErrorControl {
 
     }
 
+    public String validateStrings(Scanner input, String message)
+    {
+        String word;
+        while (true) {
+            System.out.print(message);
+            word = input.nextLine();
+
+            Pattern pattern = Pattern.compile("^[a-zA-Z0-9]+$");
+            Matcher matcher = pattern.matcher(word);
+
+            if (matcher.matches()) {
+                return word;
+            } else {
+                System.err.println("Error: por favor ingrese un texto valido.\n");
+            }
+        }
+
+    }
+
     public String validateDate(Scanner input, String message)
     {
         String dateHire;
