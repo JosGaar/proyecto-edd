@@ -8,13 +8,10 @@ package dataPack;
  *
  * @author ASUS
  */
-public class CulturalEducationArea extends Area{
+public class CulturalEducationArea extends Area {
   
-
-
     public CulturalEducationArea(String juan, String codeArea, String name, String description, StateArea stateArea) {
         super(codeArea, name, description, stateArea);
-
     }
  
 }

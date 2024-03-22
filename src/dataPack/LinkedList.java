@@ -17,12 +17,14 @@ public class LinkedList<T> {
 
     Node<T> firstElement;
 
-    public LinkedList() {
+    public LinkedList()
+    {
 
         this.firstElement = null;
     }
 
-    public boolean insertElement(T value) {
+    public boolean insertElement(T value)
+    {
 
         if (value == null) {
 
@@ -40,7 +42,8 @@ public class LinkedList<T> {
 
     }
 
-    public Node<T> lastElement() {
+    public Node<T> lastElement()
+    {
         if (firstElement == null) {
             return null;
         }
@@ -53,7 +56,8 @@ public class LinkedList<T> {
         return current;
     }
 
-    public boolean removeElement(T value) {
+    public boolean removeElement(T value)
+    {
         if (value == null || firstElement == null) {
             return false; // No se puede eliminar si el valor es nulo o la lista está vacía
         }
@@ -81,7 +85,8 @@ public class LinkedList<T> {
     }
 
     //Con este metodo  se podra filtrar para el delete,add y update
-    public T getElement(Criteria<T> criteria) {
+    public T getElement(Criteria<T> criteria)
+    {
         if (firstElement == null || criteria == null) {
             return null;
         }
@@ -97,9 +102,31 @@ public class LinkedList<T> {
         return null;
     }
 
-    public boolean update(T elementoActualizar, Criteria<T> criteria, Consumer<T> updateAction) {
+    // Agregado por Josue -----------
+    public List<T> getElements(Criteria<T> criteria)
+    {
+        List<T> matchingElements = new ArrayList<>();
+
+        if (firstElement == null || criteria == null) {
+            return matchingElements;
+        }
+
+        Node<T> current = firstElement;
+        while (current != null) {
+            if (criteria.match(current.value)) {
+                matchingElements.add(current.value);
+            }
+            current = current.next;
+        }
+
+        return matchingElements;
+    }
+    // -------------------
+
+    public boolean update(T elementoActualizar, Criteria<T> criteria, Consumer<T> updateAction)
+    {
         if (firstElement == null || criteria == null || updateAction == null) {
-            return false; 
+            return false;
 // No se puede actualizar si la lista está vacía o si los parámetros son nulos
         }
 
@@ -115,7 +142,9 @@ public class LinkedList<T> {
         return false;
 
     }
-    public String getAllElement() {
+
+    public String getAllElement()
+    {
 
         StringBuilder descriptionElements = new StringBuilder();
 
@@ -127,15 +156,15 @@ public class LinkedList<T> {
         while (current != null) {
             descriptionElements.append(current.value);
             descriptionElements.append("\n");
-            current=current.next;
+            current = current.next;
         }
         return descriptionElements.toString();
 
     }
- 
-    
- //Aqui se usa un arrayList para ordenar los datos en base a un comparator despues   
- public ArrayList<T> getAllElementInInterval(TimeIntervalCriteria<T> intervalCriteria, LocalDateTime startTime, LocalDateTime endTime) {
+
+    //Aqui se usa un arrayList para ordenar los datos en base a un comparator despues   
+    public ArrayList<T> getAllElementInInterval(TimeIntervalCriteria<T> intervalCriteria, LocalDateTime startTime, LocalDateTime endTime)
+    {
         if (firstElement == null || intervalCriteria == null) {
             return new ArrayList<>(); // Devolver un ArrayList vacío si la lista está vacía o los criterios son nulos
         }
@@ -152,8 +181,4 @@ public class LinkedList<T> {
         return elementsWithinInterval;
     }
 
- 
-
-
 }
-

@@ -22,16 +22,18 @@ public class NatureReserveManager {
 
     LinkedList<Incident> incidents;
 
-    public NatureReserveManager() {
+    public NatureReserveManager()
+    {
 
         this.areas = new LinkedList<>();
         this.parkRangers = new LinkedList<>();
         this.incidents = new LinkedList<>();
     }
 
-    public boolean addParkRanger(ParkRanger newParkRanger) {
+    public boolean addParkRanger(ParkRanger newParkRanger)
+    {
 
-        Criteria< ParkRanger> criteriaByCedula = parkRanger -> parkRanger.getIdentification().equals(newParkRanger.getIdentification());
+        Criteria<ParkRanger> criteriaByCedula = parkRanger -> parkRanger.getIdentification().equals(newParkRanger.getIdentification());
 
         ParkRanger auxParkRanger = parkRangers.getElement(criteriaByCedula);
 
@@ -45,7 +47,8 @@ public class NatureReserveManager {
 
     }
 
-    public boolean removeParkRanger(String identification) {
+    public boolean removeParkRanger(String identification)
+    {
 
         Criteria< ParkRanger> criteriaByIdentification = parkRanger -> parkRanger.getIdentification().equals(identification);
 
@@ -60,7 +63,8 @@ public class NatureReserveManager {
         return false;
     }
 
-    public boolean updateParkRanger(String identification, String names, String lastNames, LocalDate dateOfHire,RangerStatus status) {
+    public boolean updateParkRanger(String identification, String names, String lastNames, LocalDate dateOfHire, RangerStatus status)
+    {
 
         Criteria<ParkRanger> criteriaByIdentification = parkRanger -> parkRanger.getIdentification().equals(identification);
 
@@ -80,7 +84,8 @@ public class NatureReserveManager {
 
     }
 
-    public boolean addArea(Area newArea) {
+    public boolean addArea(Area newArea)
+    {
 
         Criteria<Area> criteriaByCodeArea = area -> area.getCodeArea().equals(newArea.getCodeArea());
 
@@ -97,7 +102,8 @@ public class NatureReserveManager {
 
     }
 
-    public boolean removeArea(String codeArea) {
+    public boolean removeArea(String codeArea)
+    {
 
         Criteria<Area> criteriaByCodeArea = area -> area.getCodeArea().equals(codeArea);
 
@@ -113,7 +119,8 @@ public class NatureReserveManager {
 
     }
 
-    public boolean updateArea(String codeArea, String name, String description, StateArea stateArea) {
+    public boolean updateArea(String codeArea, String name, String description, StateArea stateArea)
+    {
 
         Criteria<Area> criteriaByCodeArea = area -> area.getCodeArea().equals(codeArea);
 
@@ -137,10 +144,11 @@ public class NatureReserveManager {
 
     }
 
-    public boolean addIncident(Incident newIncident) {
-        
-        if (newIncident.agentSupport.getStatus() == RangerStatus.busy){
-        return false;
+    public boolean addIncident(Incident newIncident)
+    {
+
+        if (newIncident.agentSupport.getStatus() == RangerStatus.busy) {
+            return false;
         }
 
         Criteria<Incident> criteriaByCodeIncident = incident -> incident.getIncidentCode().equals(newIncident.getIncidentCode());
@@ -156,7 +164,8 @@ public class NatureReserveManager {
 
     }
 
-    public boolean removeIncident(String codeIncident) {
+    public boolean removeIncident(String codeIncident)
+    {
 
         Criteria<Incident> criteriaByCodeIncident = incident -> incident.getIncidentCode().equals(codeIncident);
 
@@ -170,7 +179,10 @@ public class NatureReserveManager {
 
     }
 
-    public boolean updateIncident(String incidentCode, String description, LocalDateTime dateTimeReport, LocalDateTime dateTimeAttention, ParkRanger agentSupport, IncidentStatus incidentStatus, String annotations, Area area) {
+    public boolean updateIncident(String incidentCode, String description, LocalDateTime dateTimeReport,
+            LocalDateTime dateTimeAttention, ParkRanger agentSupport, IncidentStatus incidentStatus, String annotations,
+            Area area)
+    {
 
         Criteria<Incident> criteriaByCodeIncident = incident -> incident.getIncidentCode().equals(incidentCode);
 
@@ -180,7 +192,7 @@ public class NatureReserveManager {
             return false;
         }
         Consumer<Incident> updateAction = incident -> {
-         
+
             incident.setIncidentCode(incidentCode);
             incident.setAnnotations(annotations);
             incident.setDescription(description);
@@ -197,15 +209,16 @@ public class NatureReserveManager {
     }
 
     //Pendiente por arreglar   /*Arreglado*/
-    public String ordenarIncidentesPorFechaReporte(LocalDateTime startTime, LocalDateTime endTime) {
-        
+    public String ordenarIncidentesPorFechaReporte(LocalDateTime startTime, LocalDateTime endTime)
+    {
+
         ErrorControl errorController = new ErrorControl();
-        
-        if (!errorController.validateDateTimeRange(startTime, endTime)){
-        
-        return "Error: la fecha de inicio  ingresada es igual o sobrepasa la fecha de fin";
+
+        if (!errorController.validateDateTimeRange(startTime, endTime)) {
+
+            return "Error: la fecha de inicio  ingresada es igual o sobrepasa la fecha de fin";
         }
-        
+
         TimeIntervalCriteria<Incident> intervalCriteria = (incident, start, end)
                 -> incident.getDateTimeReport().isAfter(start) && incident.getDateTimeReport().isBefore(end);
 
@@ -214,7 +227,8 @@ public class NatureReserveManager {
         // Ordenar los incidentes por fecha de reporte en orden descendente 
         Collections.sort(auxIncidents, new Comparator<Incident>() {
             @Override
-            public int compare(Incident incident1, Incident incident2) {
+            public int compare(Incident incident1, Incident incident2)
+            {
                 LocalDateTime fechaReporte1 = incident1.getDateTimeReport();
                 LocalDateTime fechaReporte2 = incident2.getDateTimeReport();
                 return fechaReporte2.compareTo(fechaReporte1);

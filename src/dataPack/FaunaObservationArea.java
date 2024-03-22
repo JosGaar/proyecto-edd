@@ -8,6 +8,11 @@ package dataPack;
  *
  * @author ASUS
  */
-public class FaunaObservationArea {
+public class FaunaObservationArea extends Area {
+    
+    public FaunaObservationArea(String codeArea, String name, String description, StateArea stateArea)
+    {
+        super(codeArea, name, description, stateArea);
+    }
     
 }

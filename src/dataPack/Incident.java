@@ -32,7 +32,9 @@ public class Incident {
  
  Area area;
 
-    public Incident(String incidentCode,String description, LocalDateTime dateTimeReport, LocalDateTime dateTimeAttention, ParkRanger agentSupport, IncidentStatus incidentStatus, String annotations, Area area) {
+    public Incident(String incidentCode,String description, LocalDateTime dateTimeReport, LocalDateTime dateTimeAttention, 
+                    ParkRanger agentSupport, IncidentStatus incidentStatus, String annotations, Area area) 
+    {
         this.description = description;
         this.dateTimeReport = dateTimeReport;
         this.dateTimeAttention = dateTimeAttention;
