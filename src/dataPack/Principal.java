@@ -6,6 +6,7 @@ package dataPack;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  *
@@ -111,6 +112,10 @@ public class Principal {
 
        // System.out.println(manager.updateParkRanger("123456789", "Actualizado", "Apellido Actualizado", LocalDate.of(2020, 5, 15)));
         // Crear una instancia de NatureReserveManager
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate fechaLocalDate = LocalDate.parse("2004-01-06", formatter);
+        System.out.println(fechaLocalDate.toString());
+        
         NatureReserveManager manager = new NatureReserveManager();
         LinkedList<Incident> incidentes = new LinkedList<>();
         // Crear instancias de ParkRanger

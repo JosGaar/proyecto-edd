@@ -109,19 +109,24 @@ public class Program {
 
         System.out.println();
         id = errorControl.validateIDNumber(sc, "Ingrese la cedula de identidad: ");
-        contractDate = errorControl.validateDate(sc, "Ingrese la fecha de contrato (en formato yyyy-MM-dd): \n");
-        firstNames = errorControl.validateTwoWords(sc, "Ingrese sus dos nombres: ", "nombres");
-        lastNames = errorControl.validateTwoWords(sc, "Ingrese sus dos apellidos: ", "apellidos");
-        status = parkRangerStatus();
 
-        ParkRanger parkRanger = new ParkRanger(stringToLocalDateConverter(contractDate), id,
-                firstNames, lastNames, status);
+        Criteria<ParkRanger> criteriaForParkRangers = parkRanger -> parkRanger.getIdentification().equals(id);
+        ParkRanger auxParkRanger = gestorReserva.parkRangers.getElement(criteriaForParkRangers);
 
-        if (gestorReserva.addParkRanger(parkRanger)) {
-            System.out.println("¡Se ha generado correctamente el guardaparques!");
+        if (auxParkRanger == null) {
+            contractDate = errorControl.validateDate(sc, "Ingrese la fecha de contrato (en formato yyyy-MM-dd): \n");
+            firstNames = errorControl.validateTwoWords(sc, "Ingrese sus dos nombres: ", "nombres");
+            lastNames = errorControl.validateTwoWords(sc, "Ingrese sus dos apellidos: ", "apellidos");
+            status = parkRangerStatus();
+
+            ParkRanger parkRanger = new ParkRanger(stringToLocalDateConverter(contractDate), id,
+                    firstNames, lastNames, status);
+
+            gestorReserva.addParkRanger(parkRanger);
         } else {
             System.err.println("No se ha podido agregar al guardaparques: cedula ya existente.");
         }
+
     }
 
     public LocalDate stringToLocalDateConverter(String dateString)
@@ -137,11 +142,8 @@ public class Program {
         int opcion;
 
         do {
-
-            String mensaje = """
-                             Seleccione un estado: ocupado (1), desocupado (2): 
-                             """;
-            opcion = errorControl.validateNumericInputInt(sc, mensaje);
+            String message = "Seleccione un estado: ocupado (1), desocupado (2): ";
+            opcion = errorControl.validateNumericInputInt(sc, message);
 
             switch (opcion) {
                 case 1:
@@ -164,6 +166,7 @@ public class Program {
         Criteria<ParkRanger> criteriaForParkRangersBusy = parkRanger -> parkRanger.getStatus() == (RangerStatus.busy);
         Criteria<ParkRanger> criteriaForParkRangersFree = parkRanger -> parkRanger.getStatus() == (RangerStatus.free);
 
+        // ...
         List<ParkRanger> busyRangers = gestorReserva.parkRangers.getElements(criteriaForParkRangersBusy);
         List<ParkRanger> freeRangers = gestorReserva.parkRangers.getElements(criteriaForParkRangersFree);
 
@@ -193,8 +196,8 @@ public class Program {
     // Preguntar si desea cambiar el estado
     public void modifyRanger(NatureReserveManager gestorReserva)
     {
-        String id, firstNames, lastNames, contractDate;
-        RangerStatus status;
+        String id, newFirstNames, newLastNames, newContractDate;
+        RangerStatus newStatus;
 
         System.out.println();
         id = errorControl.validateIDNumber(sc, "Ingrese la cedula de identidad: ");
@@ -203,34 +206,34 @@ public class Program {
         ParkRanger auxParkRanger = gestorReserva.parkRangers.getElement(criteriaForParkRangers);
 
         if (auxParkRanger != null) {
-            firstNames = changeRangerNames(auxParkRanger.names);
-            contractDate = errorControl.validateDate(sc, "Ingrese la fecha de contrato (en formato yyyy-MM-dd): \n");
-            lastNames = errorControl.validateTwoWords(sc, "Ingrese sus dos apellidos: ", "apellidos");
-            status = parkRangerStatus();
+            newFirstNames = changeRangerWords(auxParkRanger.names, "nombres");
+            newLastNames = changeRangerWords(auxParkRanger.lastNames, "apellidos");
+            newContractDate = changeContractDateRanger(auxParkRanger.dateOfHire.toString());
+            newStatus = changeRangerStatus(auxParkRanger.status);
+
+            gestorReserva.updateParkRanger(id, newFirstNames,
+                    newLastNames, stringToLocalDateConverter(newContractDate),
+                    newStatus);
         } else {
             System.err.println("No se ha encontrado al guardabosques con la cedula proporcionada.\n");
         }
     }
 
-    public String changeRangerNames(String originalName)
+    public String changeRangerWords(String originalName, String categoria)
     {
 
-        String message, newName = null;
+        String message, newWord = null;
         int option;
         do {
-
-            message = """
-                      ¿Desea cambiar el nombre?
-                      Si (1) / No (2)
-                      """;
+            message = "¿Desea cambiar los " + categoria + "?\nSi (1) / No (2): ";
             option = errorControl.validateNumericInputInt(sc, message);
 
             switch (option) {
                 case 1:
-                    newName = errorControl.validateTwoWords(sc, "Ingrese sus dos nombres: ", "nombres");
+                    newWord = errorControl.validateTwoWords(sc, "Ingrese sus dos " + categoria + ": ", categoria);
                     break;
                 case 2:
-                    newName = originalName;
+                    newWord = originalName;
                     break;
                 default:
                     System.err.println("Error, opcion no encontrada.\n");
@@ -238,7 +241,56 @@ public class Program {
 
         } while (option != 1 && option != 2);
 
-        return newName;
+        return newWord;
+    }
+
+    public String changeContractDateRanger(String originalDate)
+    {
+        String message, newDate = null;
+        int option;
+        do {
+            message = "¿Desea cambiar la fecha de contrato?\nSi (1) / No (2): ";
+            option = errorControl.validateNumericInputInt(sc, message);
+
+            switch (option) {
+                case 1:
+                    newDate = errorControl.validateDate(sc, "Ingrese la fecha de contrato (en formato yyyy-MM-dd): \n");
+                    break;
+                case 2:
+                    newDate = originalDate;
+                    break;
+                default:
+                    System.err.println("Error, opcion no encontrada.\n");
+            }
+
+        } while (option != 1 && option != 2);
+
+        return newDate;
+    }
+
+    public RangerStatus changeRangerStatus(RangerStatus originalStatus)
+    {
+        String message;
+        RangerStatus newStatus;
+        int option;
+        do {
+            message = "¿Desea cambiar el estado del guardabosque?\nSi (1) / No (2): ";
+            option = errorControl.validateNumericInputInt(sc, message);
+
+            switch (option) {
+                case 1:
+                    newStatus = parkRangerStatus();
+                    break;
+                case 2:
+                    newStatus = originalStatus;
+                    break;
+                default:
+                    throw new AssertionError();
+            }
+
+        } while (option != 1 && option != 2);
+
+        return newStatus;
     }
 
     public void menuIncidentes(NatureReserveManager gestorReserva)
