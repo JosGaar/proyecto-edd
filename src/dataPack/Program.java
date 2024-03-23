@@ -219,11 +219,11 @@ public class Program {
             newFirstNames = changeRangerWords(auxParkRanger.names, "nombres");
             newLastNames = changeRangerWords(auxParkRanger.lastNames, "apellidos");
             newContractDate = changeContractDateRanger(auxParkRanger.dateOfHire.toString());
-            newStatus = changeRangerStatus(auxParkRanger.status);
+            // newStatus = changeRangerStatus(auxParkRanger.status); 
 
             gestorReserva.updateParkRanger(id, newFirstNames,
                     newLastNames, stringToLocalDateConverter(newContractDate),
-                    newStatus);
+                    auxParkRanger.status);
         } else {
             System.err.println("No se ha encontrado al guardabosques con la cedula proporcionada.\n");
         }
