@@ -147,9 +147,9 @@ public class NatureReserveManager {
     public boolean addIncident(Incident newIncident)
     {
 
-        if (newIncident.agentSupport.getStatus() == RangerStatus.busy) {
-            return false;
-        }
+        // if (newIncident.agentSupport.getStatus() == RangerStatus.busy) {
+        //    return false;
+        // }
 
         Criteria<Incident> criteriaByCodeIncident = incident -> incident.getIncidentCode().equals(newIncident.getIncidentCode());
 

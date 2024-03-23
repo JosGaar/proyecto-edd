@@ -4,7 +4,10 @@
  */
 package dataPack;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -80,8 +83,8 @@ public class ErrorControl {
             System.out.print(message);
             word = input.nextLine();
 
-            Pattern pattern = Pattern.compile("^[a-zA-Z0-9]+$");
-            Matcher matcher = pattern.matcher(word);
+            Pattern pattern = Pattern.compile("^[a-zA-Z0-9,](?:[a-zA-Z0-9, ]*[a-zA-Z0-9,])?$");
+            Matcher matcher = pattern.matcher(word.trim());
 
             if (matcher.matches()) {
                 return word;
@@ -92,20 +95,49 @@ public class ErrorControl {
 
     }
 
-    public String validateDate(Scanner input, String message)
+    public LocalDateTime validateLocalDateTime(Scanner input, String message)
     {
-        String dateHire;
+        String date;
         while (true) {
             System.out.print(message);
-            dateHire = input.nextLine();
+            date = input.nextLine();
 
-            Pattern pattern = Pattern.compile("\\d{4}-\\d{2}-\\d{2}");
-            Matcher matcher = pattern.matcher(dateHire);
+            Pattern pattern = Pattern.compile("\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}");
+            Matcher matcher = pattern.matcher(date);
 
             if (matcher.matches()) {
-                return dateHire;
+                try {
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                    LocalDateTime dateTime = LocalDateTime.parse(date, formatter);
+                    return dateTime;
+                } catch (DateTimeParseException e) {
+                    System.err.println("Error: ingrese una fecha y hora válidas en el formato (yyyy-MM-dd HH:mm:ss)\n");
+                }
             } else {
-                System.err.println("Error: ingrese una fecha valida (año, mes, dia)\n");
+                System.err.println("Error: ingrese una fecha y hora válidas en el formato (yyyy-MM-dd HH:mm:ss)\n");
+            }
+        }
+    }
+
+    public String validateLocalDate(Scanner input, String message)
+    {
+        String date;
+        while (true) {
+            System.out.print(message);
+            date = input.nextLine();
+
+            Pattern pattern = Pattern.compile("\\d{4}-\\d{2}-\\d{2}");
+            Matcher matcher = pattern.matcher(date);
+
+            if (matcher.matches()) {
+                try {
+                    LocalDate.parse(date);
+                    return date;
+                } catch (DateTimeParseException e) {
+                    System.err.println("Error: ingrese una fecha válida (año, mes, día)\n");
+                }
+            } else {
+                System.err.println("Error: ingrese una fecha válida (año, mes, día) en formato (yyyy-MM-dd)\n");
             }
 
         }

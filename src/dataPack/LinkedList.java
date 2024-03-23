@@ -22,6 +22,10 @@ public class LinkedList<T> {
 
         this.firstElement = null;
     }
+    
+    public boolean isEmpty() {
+        return this.firstElement == null;
+    }
 
     public boolean insertElement(T value)
     {
