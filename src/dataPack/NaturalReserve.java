@@ -11,25 +11,13 @@ package dataPack;
  */
 public class NaturalReserve {
  
-String name;    
+    public String name;    
+    public String location;
+    public String extension;
     
-String location;
-
-String extension;
-
-
-
     public NaturalReserve(String name, String location, String extension) {
         this.name = name;
         this.location = location;
         this.extension = extension;
     }
-
-
-    
-
-
-
-
-
 }

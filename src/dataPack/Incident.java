@@ -6,53 +6,47 @@ package dataPack;
 
 import java.time.LocalDateTime;
 
-/**
- *
- * @author ASUS
- */
 public class Incident {
     
- String incidentCode;
+    public String incidentCode;
+    public String description;
+    public LocalDateTime dateTimeReport;
+    public LocalDateTime dateTimeAttention;
+    public Person reporter;
+    public ParkRanger agentSupport;
+    public IncidentStatus incidentStatus;
+    public String annotations;
+    public Area area;
 
-    public void setIncidentCode(String incidentCode) {
-        this.incidentCode = incidentCode;
-    }
-    
- String description;
- 
- LocalDateTime  dateTimeReport;
- 
- LocalDateTime  dateTimeAttention;
- 
- ParkRanger agentSupport;
- 
- IncidentStatus incidentStatus;
- 
- String annotations;
- 
- Area area;
-
-    public Incident(String incidentCode,String description, LocalDateTime dateTimeReport, LocalDateTime dateTimeAttention, ParkRanger agentSupport, IncidentStatus incidentStatus, String annotations, Area area) {
+    public Incident(String incidentCode, String description, LocalDateTime dateTimeReport, LocalDateTime dateTimeAttention, Person reporter, ParkRanger agentSupport, IncidentStatus incidentStatus, String annotations, Area area) {
         this.description = description;
         this.dateTimeReport = dateTimeReport;
         this.dateTimeAttention = dateTimeAttention;
+        this.reporter = reporter;
         this.agentSupport = agentSupport;
         this.incidentStatus = incidentStatus;
         this.annotations = annotations;
         this.area = area;
-        this.incidentCode=incidentCode;
+        this.incidentCode = incidentCode;
     }
     
-    
-
-    public void setDateTimeReport(LocalDateTime dateTimeReport) {
+    public Incident(String incidentCode, String description, LocalDateTime dateTimeReport, Person reporter, IncidentStatus incidentStatus, String annotations, Area area) {
+        this.description = description;
         this.dateTimeReport = dateTimeReport;
+        this.reporter = reporter;
+        this.incidentStatus = incidentStatus;
+        this.annotations = annotations;
+        this.area = area;
+        this.incidentCode = incidentCode;
     }
-
+    
     public String getIncidentCode() {
         return incidentCode;
     }
 
+    public void setIncidentCode(String incidentCode) {
+        this.incidentCode = incidentCode;
+    }
 
     public String getDescription() {
         return description;
@@ -62,12 +56,16 @@ public class Incident {
         this.description = description;
     }
 
-    public LocalDateTime getDateTimeAttention() {
-        return dateTimeAttention;
-    }
-
     public LocalDateTime getDateTimeReport() {
         return dateTimeReport;
+    }
+
+    public void setDateTimeReport(LocalDateTime dateTimeReport) {
+        this.dateTimeReport = dateTimeReport;
+    }
+
+    public LocalDateTime getDateTimeAttention() {
+        return dateTimeAttention;
     }
 
     public void setDateTimeAttention(LocalDateTime dateTimeAttention) {
@@ -107,17 +105,14 @@ public class Incident {
     }
  
     @Override
-     public String toString(){
-     
-         return   "\nCÃ³digo de incidencia: "+this.incidentCode
-                 +"\nFecha/Hora de incidente: "+this.dateTimeReport
-                 + "\nFecha/Hora de atenciÃ³n: "+this.dateTimeAttention
-                 + "\nAgente de Soporte: "+this.agentSupport.fullname()
-                 + "\nEstado de Incidencia: "+this.incidentStatus
-                 + "\nAnotaciones: "+this.annotations
-                 + "\nArea:"+this.area.getName();
-
-   }
- 
-    
+    public String toString() {
+        return   "\nCódigo de incidencia: " + this.incidentCode
+                + "\nFecha/Hora de incidente: " + this.dateTimeReport
+                + "\nFecha/Hora de atención: " + ((this.dateTimeAttention != null)?this.dateTimeAttention:"Aún no atendido.")
+                + "\nReportante: " + this.reporter.fullname()
+                + "\nAgente de Soporte: " + ((this.agentSupport != null)?this.agentSupport.fullname():"Aún no atendido.")
+                + "\nEstado de Incidencia: " + this.incidentStatus
+                + "\nAnotaciones: " + this.annotations
+                + "\nÁrea: " + this.area.getName();
+    }
 }

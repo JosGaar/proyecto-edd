@@ -105,77 +105,64 @@ public class Principal {
 //         
 //        listaParkRanger.insertElement(ranger1);
 //        
-//     //   System.out.println(listaParkRanger.getAllElement());
+//     //   System.out.println(listaParkRanger.getAllElements());
 //        // Actualizar el guardaparques con la identificación "123456789"
 //        ;
 
        // System.out.println(manager.updateParkRanger("123456789", "Actualizado", "Apellido Actualizado", LocalDate.of(2020, 5, 15)));
         // Crear una instancia de NatureReserveManager
         NatureReserveManager manager = new NatureReserveManager();
-        LinkedList<Incident> incidentes = new LinkedList<>();
+        
         // Crear instancias de ParkRanger
         ParkRanger parkRanger1 = new ParkRanger(LocalDate.of(2022, 3, 15), "123456", "John", "Doe", RangerStatus.free);
         ParkRanger parkRanger2 = new ParkRanger(LocalDate.of(2021, 8, 20), "789012", "Jane", "Smith", RangerStatus.free);
+        
+        manager.addParkRanger(parkRanger1);
+        manager.addParkRanger(parkRanger2);
+        
+        Visitor visitor1 = new Visitor("123 Main St", "555-1234", VisitStatus.Active, "V1234", "John", "Doe");
+        Visitor visitor2 = new Visitor("456 Elm St", "555-5678", VisitStatus.Inactive, "V5678", "Jane", "Smith");
+        Visitor visitor3 = new Visitor("789 Oak St", "555-9012", VisitStatus.Active, "V9012", "Alice", "Johnson");
+        
+        manager.addVisitor(visitor1);
+        manager.addVisitor(visitor2);
+        manager.addVisitor(visitor3);
+        
         // Crea instancias de Area
         Area area1 = new Area("001", "Observation Area", "An area designated for observing wildlife.", StateArea.accessible);
         Area area2 = new Area("002", "Recreational Area", "An area for recreational activities such as picnicking and hiking.", StateArea.accessible);
-        Area area3 = new Area("003", "Research Area", "An area reserved for scientific research and study.", StateArea.accessible);
+        
+        manager.addArea(area1);
+        manager.addArea(area2);
+        
+        // Se reportan Incidencias
+        Incident incident1 = new Incident("001", "Animal avistado", LocalDateTime.of(2021, 3, 19, 15, 30), LocalDateTime.of(2021, 3, 19, 7, 30), visitor1, parkRanger1, IncidentStatus.resolved, "Ninguna", area1);
+        Incident incident2 = new Incident("002", "Lost item", LocalDateTime.of(2021, 3, 20, 10, 0), LocalDateTime.of(2021, 3, 19, 9, 30), visitor2, null, IncidentStatus.pending, "Keys", area2);
 
-        // Crea instancias de Incident
-        Incident incident1 = new Incident("001", "Animal avistado", LocalDateTime.of(2021, 3, 19, 15, 30), LocalDateTime.of(2022, 3, 15, 11, 0), parkRanger1, IncidentStatus.resolved, "Ninguna", area1);
-        Incident incident2 = new Incident("002", "Basura encontrada", LocalDateTime.of(2022, 3, 16, 14, 45), LocalDateTime.of(2022, 3, 16, 15, 15), parkRanger2, IncidentStatus.pending, "Se requiere limpieza", area2);
-        Incident incident3 = new Incident("003", "Sendero bloqueado", LocalDateTime.of(2021, 3, 17, 11, 0), LocalDateTime.of(2022, 3, 17, 11, 30), parkRanger1, IncidentStatus.inProcess, "Se está trabajando en despejar el sendero", area3);
-        Incident incident4 = new Incident("005", "Sendero bloqueado", LocalDateTime.of(2025, 3, 17, 11, 0), LocalDateTime.of(2022, 3, 17, 11, 30), parkRanger1, IncidentStatus.inProcess, "Se está trabajando en despejar el sendero", area3);
-
-        // Agregar incidentes al gestor     
-        manager.addIncident(incident4);
-
+        // Agregar incidentes al gestor
         manager.addIncident(incident1);
-
         manager.addIncident(incident2);
-
-        manager.addIncident(incident3);
-
+        
         // Definir el intervalo de tiempo para el cual se desean ordenar los incidentes
         LocalDateTime startTime = LocalDateTime.of(2021, 3, 15, 0, 0);
         LocalDateTime endTime = LocalDateTime.of(2025, 3, 17, 23, 59);
 
-        System.out.println(manager.ordenarIncidentesPorFechaReporte(startTime, endTime));
-
-
-
-
-
-
-
-
-
-
-
-
-                                        /*Nota lo que se encuenta comentado se utilizo para fines de prueba*/
-                                        
-                                        
-                                        
-                                        
-                                        
-                                        
-                                        
-                                        
-                                        
-                                        
-                                        
-                                        
-                                        
-                                        
-                                        
-                                        
-                                        
-                                        
-                                        
-                                        
-                                        
-                                        
-
-   }
+        System.out.println(manager.orderIncidentsByReportDate(startTime, endTime));
+        
+        
+        /*Nota lo que se encuenta comentado se utilizo para fines de prueba*/
+        
+        // Creating instances of Visit
+        Visit visit1 = new Visit("V001", visitor1, VisitStatus.Active, LocalDate.of(2021, 3, 19));
+        visit1.setExitDate(LocalDate.of(2021, 3, 19)); // Assuming the visitor exits on the same day
+        visit1.setStatus(VisitStatus.Inactive);
+        Visit visit2 = new Visit("V002", visitor2, VisitStatus.Active, LocalDate.of(2021, 3, 19));
+        
+        manager.addVisit(visit1);
+        manager.addVisit(visit2);
+        
+        LocalDate search = LocalDate.of(2021, 3, 19);
+        
+        System.out.println(manager.generateDailyVisitorReport(search));
+        }
 }

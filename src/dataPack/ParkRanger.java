@@ -30,17 +30,7 @@ public class ParkRanger extends Person{
     public void setStatus(RangerStatus status) {
         this.status = status;
     }
-
- 
-
-    public String getIdentification() {
-        return identification;
-    }
-
-    public void setIdentification(String identification) {
-        this.identification = identification;
-    }
-
+    
     public LocalDate getDateOfHire() {
         return dateOfHire;
     }
@@ -48,31 +38,10 @@ public class ParkRanger extends Person{
     public void setDateOfHire(LocalDate dateOfHire) {
         this.dateOfHire = dateOfHire;
     }
-
-    public String getNames() {
-        return names;
-    }
-
-    public void setNames(String names) {
-        this.names = names;
-    }
-
-    public String getLastNames() {
-        return lastNames;
-    }
-
-    public void setLastNames(String lastNames) {
-        this.lastNames = lastNames;
-    }
- 
+    
     @Override
-    
     public  String toString(){
-    
-    String fatherToString= super.toString();
-    
-    return fatherToString+"\nFecha de contrataciÃ³n:"+this.dateOfHire;
-    
+        String fatherToString= super.toString();
+        return fatherToString+"\nFecha de contratación:"+this.dateOfHire;
     }
-    
 }

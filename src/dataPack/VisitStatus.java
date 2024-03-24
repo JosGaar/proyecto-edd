@@ -8,19 +8,9 @@ package dataPack;
  *
  * @author ASUS
  */
-public class Node<T> {
-
-T  value;    
+enum VisitStatus {
     
-Node<T> next;
-
-    public Node(T value) {
-        this.value = value;
-        this.next = null;
-    }
-
-    public Node(T value, Node next) {
-        this.value = value;
-        this.next = next;
-    }
+   Active, 
+   Inactive
+    
 }

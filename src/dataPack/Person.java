@@ -4,39 +4,60 @@
  */
 package dataPack;
 
+import java.time.LocalDateTime;
+
 /**
  *
  * @author ASUS
  */
 public class Person {
     
-String identification;
-
-String names;
-        
-String  lastNames;
+    protected String identification;
+    protected String names;
+    protected String  lastNames;
 
     public Person(String identification, String names, String lastNames) {
         this.identification = identification;
         this.names = names;
         this.lastNames = lastNames;
     }
+    
+    public Incident reportIncident(String incidentCode, String description, LocalDateTime dateTimeReport, IncidentStatus incidentStatus, String annotations, Area area){
+        return new Incident(incidentCode, description, dateTimeReport, this, incidentStatus, annotations, area);
+    }
 
    public String fullname() {
-
         return "\nNombres: " + this.names
                 + "\nApellidos: " + this.lastNames;
+    }
 
-    }    
-    
-@Override
+    public String getIdentification() {
+        return identification;
+    }
 
-public String toString(){
+    public void setIdentification(String identification) {
+        this.identification = identification;
+    }
 
-return fullname()+
-       "\nIdentificaciÃ³n: "+this.identification;
-       
-}
+    public String getNames() {
+        return names;
+    }
 
-    
+    public void setNames(String names) {
+        this.names = names;
+    }
+
+    public String getLastNames() {
+        return lastNames;
+    }
+
+    public void setLastNames(String lastNames) {
+        this.lastNames = lastNames;
+    }
+   
+    @Override
+    public String toString(){
+    return fullname()+
+           "\nIdentificación: "+this.identification;
+    }
 }

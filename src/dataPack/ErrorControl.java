@@ -58,36 +58,32 @@ public class ErrorControl {
     */
     
     public  int validateDate(Scanner input, String message, int length, int maximum) {
-    int number;
-    while (true) {
-        try {
-             System.out.println("Ingrese el " + message + ":");
-            String userInput = input.nextLine();
+        int number;
+        while (true) {
+            try {
+                System.out.println("Ingrese el " + message + ":");
+                String userInput = input.nextLine();
 
-            if (userInput.length() != length) {                               
-                throw new IllegalArgumentException("Error: La longitud de " + message + " debe ser de " + length + " dígitos."); 
+                if (userInput.length() != length) {                               
+                    throw new IllegalArgumentException("Error: La longitud de " + message + " debe ser de " + length + " dígitos."); 
+                }
+
+                number = Integer.parseInt(userInput);
+
+                if (number <= 0 || number > maximum) {
+                          throw new IllegalArgumentException("Error: " + message+ " debe ser un número mayor que cero y menor o igual que " + maximum + ".");  
+                }
+                return number;
+            } catch (NumberFormatException e) {
+              System.out.println("Error: Por favor ingrese un número válido para " + message + "."); 
+            } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
             }
-
-            number = Integer.parseInt(userInput);
-
-            if (number <= 0 || number > maximum) {
-                      throw new IllegalArgumentException("Error: " + message+ " debe ser un número mayor que cero y menor o igual que " + maximum + ".");  
-            }
-
-         
-            return number;
-        } catch (NumberFormatException e) {
-          System.out.println("Error: Por favor ingrese un número válido para " + message + "."); 
-        } catch (IllegalArgumentException e) {
-            System.out.println(e.getMessage());
         }
     }
-}
     
     public boolean validateDateTimeRange(LocalDateTime startDate, LocalDateTime endDate) {
-     // Verificar si la fecha de inicio es antes o igual que la fecha de fin
-    return !endDate.isBefore(startDate) || startDate.isEqual(endDate);
-}
-    
-    
+        // Verificar si la fecha de inicio es antes o igual que la fecha de fin
+       return !endDate.isBefore(startDate) || startDate.isEqual(endDate);
+   }
 }
