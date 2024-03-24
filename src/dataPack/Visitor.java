@@ -54,4 +54,13 @@ public class Visitor extends Person{
         return fatherToString+"\nDirección registrada:"+this.address
                 +"\nNúmero de Télefono:"+this.phoneNumber;
     }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Visitor){
+            Visitor v = (Visitor) obj;
+            return v.identification.equals(this.identification);
+        }
+        return true;
+    }
 }

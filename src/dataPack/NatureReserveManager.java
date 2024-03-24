@@ -39,7 +39,7 @@ public class NatureReserveManager {
      }
     
     public boolean removeVisitor(String identification) {
-        Criteria<Visitor> criteriaByIdentification = parkRanger -> parkRanger.getIdentification().equals(identification);
+        Criteria<Visitor> criteriaByIdentification = visitor -> visitor.getIdentification().equals(identification);
         Visitor auxVisitor = visitors.getElement(criteriaByIdentification);
         
         if (auxVisitor != null) 
@@ -48,7 +48,7 @@ public class NatureReserveManager {
     }
     
     public boolean updateVisitor(String address, String phoneNumber, VisitStatus status, String identification, String names, String lastNames) {
-        Criteria<Visitor> criteriaByIdentification = parkRanger -> parkRanger.getIdentification().equals(identification);
+        Criteria<Visitor> criteriaByIdentification = visitor -> visitor.getIdentification().equals(identification);
         Visitor auxVisitor = visitors.getElement(criteriaByIdentification);
         
         if (auxVisitor == null) 
@@ -64,11 +64,13 @@ public class NatureReserveManager {
     }
     
     public boolean addVisit(Visit newVisit) {
-        Criteria<Visit> criteriaByCodeVisit = visit -> visit.getCodeVisit().equals(newVisit.getCodeVisit());
-        
-        if (visits.getElement(criteriaByCodeVisit) == null) 
-            return visits.insertElement(newVisit);
-        return false;
+        LinkedList<Visit> activeVisits = getActiveVisits();
+        for(Visit visit : activeVisits){
+            if(visit.getVisitor().equals(newVisit.getVisitor())){
+                return false;
+            }
+        }
+       return visits.insertElement(newVisit);
     }
 
     public boolean removeVisit(String codeVisit) {
@@ -243,17 +245,7 @@ public class NatureReserveManager {
 
         return builder.toString();
     }
-    
-    public LinkedList<Visit> visitsPerDay(LocalDate date){
-        LinkedList<Visit> dailyVisits = new LinkedList<>();
-        for (Visit visit : visits) {
-            if (visit.getEntryDate().equals(date)) {
-                dailyVisits.insertElement(visit);
-            }
-        }
-        return dailyVisits;
-    }
-    
+       
     public String generateDailyVisitorReport(LocalDate date) {
         StringBuilder report = new StringBuilder();
         
@@ -266,14 +258,34 @@ public class NatureReserveManager {
         } else {
             report.append("Informe de visitantes para el ").append(date).append(":\n");
             for (Visit visit : dailyVisits) {
-                report.append("- ").append(visit.getVisitor().getNames()).append(" ").append(visit.getVisitor().getLastNames());
+                report.append("- ").append(visit.getVisitor().fullname());
                 if (visit.getExitDate() == null) {
                     report.append(" (Aún en la reserva)");
                 }
                 report.append("\n");
             }
         }
-        
         return report.toString();
+    }
+    
+    public LinkedList<Visit> visitsPerDay(LocalDate date){
+        LinkedList<Visit> dailyVisits = new LinkedList<>();
+        for (Visit visit : visits) {
+            if (visit.getEntryDate().equals(date)) {
+                dailyVisits.insertElement(visit);
+            }
+        }
+        return dailyVisits;
+    }
+    
+    public LinkedList<Visit> getActiveVisits() {
+        LinkedList<Visit> activeVisits = new LinkedList<>();
+
+        for (Visit visit : visits) {
+            if (visit.getStatus() == VisitStatus.Active) {
+                activeVisits.insertElement(visit);
+            }
+        }
+        return activeVisits;
     }
 }
