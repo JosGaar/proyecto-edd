@@ -244,16 +244,21 @@ public class NatureReserveManager {
         return builder.toString();
     }
     
-    public String generateDailyVisitorReport(LocalDate date) {
-        StringBuilder report = new StringBuilder();
-        
-        // Filtrar las visitas para obtener solo las que coinciden con la fecha dada
+    public LinkedList<Visit> visitsPerDay(LocalDate date){
         LinkedList<Visit> dailyVisits = new LinkedList<>();
         for (Visit visit : visits) {
             if (visit.getEntryDate().equals(date)) {
                 dailyVisits.insertElement(visit);
             }
         }
+        return dailyVisits;
+    }
+    
+    public String generateDailyVisitorReport(LocalDate date) {
+        StringBuilder report = new StringBuilder();
+        
+        // Filtrar las visitas para obtener solo las que coinciden con la fecha dada
+        LinkedList<Visit> dailyVisits = visitsPerDay(date);
         
         // Generar el informe con la información de las visitas filtradas
         if (dailyVisits.isEmpty()) {

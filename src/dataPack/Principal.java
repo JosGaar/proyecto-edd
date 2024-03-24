@@ -137,7 +137,7 @@ public class Principal {
         
         // Se reportan Incidencias
         Incident incident1 = new Incident("001", "Animal avistado", LocalDateTime.of(2021, 3, 19, 15, 30), LocalDateTime.of(2021, 3, 19, 7, 30), visitor1, parkRanger1, IncidentStatus.resolved, "Ninguna", area1);
-        Incident incident2 = new Incident("002", "Lost item", LocalDateTime.of(2021, 3, 20, 10, 0), LocalDateTime.of(2021, 3, 19, 9, 30), visitor2, null, IncidentStatus.pending, "Keys", area2);
+        Incident incident2 = new Incident("002", "Lost item", LocalDateTime.of(2021, 3, 20, 10, 0), LocalDateTime.of(2021, 3, 19, 9, 30), visitor2, parkRanger2, IncidentStatus.pending, "Keys", area2);
 
         // Agregar incidentes al gestor
         manager.addIncident(incident1);
