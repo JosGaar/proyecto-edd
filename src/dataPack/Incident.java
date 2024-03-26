@@ -131,7 +131,7 @@ public class Incident {
                 + "\nAgente de Soporte: " + this.agentSupport.fullname()
                 + "\nEstado de Incidencia: " + this.incidentStatus
                 + "\nAnotaciones: " + this.annotations
-                + "\nArea:" + this.area.getName();
+                + "\nArea: " + this.area.getName();
 
     }
 

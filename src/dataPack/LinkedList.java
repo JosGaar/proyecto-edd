@@ -1,29 +1,21 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package dataPack;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 
-/**
- *
- * @author ASUS
- */
-public class LinkedList<T> {
+public class LinkedList<T> implements Iterable<T> {
 
     Node<T> firstElement;
 
     public LinkedList()
     {
-
         this.firstElement = null;
     }
-    
-    public boolean isEmpty() {
+
+    public boolean isEmpty()
+    {
         return this.firstElement == null;
     }
 
@@ -125,13 +117,30 @@ public class LinkedList<T> {
 
         return matchingElements;
     }
-    // -------------------
+
+    public boolean updateElement(T elementoActualizar, Criteria<T> criteria, Consumer<T> updateAction)
+    {
+        if (isEmpty() || criteria == null || updateAction == null) {
+            return false;
+            // No se puede actualizar si la lista está vacía o si los parámetros son nulos
+        }
+
+        Node<T> current = firstElement;
+        while (current != null) {
+            if (criteria.match(current.value)) {
+                // Si el elemento actual cumple con el criterio, aplicar la acción de actualización
+                updateAction.accept(current.value);
+                return true;
+            }
+            current = current.next;
+        }
+        return false;
+    }
 
     public boolean update(T elementoActualizar, Criteria<T> criteria, Consumer<T> updateAction)
     {
         if (firstElement == null || criteria == null || updateAction == null) {
             return false;
-// No se puede actualizar si la lista está vacía o si los parámetros son nulos
         }
 
         Node<T> current = firstElement;
@@ -183,6 +192,36 @@ public class LinkedList<T> {
         }
 
         return elementsWithinInterval;
+    }
+
+    @Override
+    public Iterator<T> iterator()
+    {
+        return new LinkedListIterator();
+    }
+
+    private class LinkedListIterator implements Iterator<T> {
+
+        private Node<T> current;
+
+        public LinkedListIterator()
+        {
+            this.current = firstElement;
+        }
+
+        @Override
+        public boolean hasNext()
+        {
+            return current != null;
+        }
+
+        @Override
+        public T next()
+        {
+            T data = current.value;
+            current = current.next;
+            return data;
+        }
     }
 
 }

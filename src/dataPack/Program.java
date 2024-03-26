@@ -41,7 +41,7 @@ public class Program {
                     parkRangersMenu(reserveManage);
                     break;
                 case 3:
-                    areasMenu(reserveManage);
+                    areaMenu(reserveManage);
                     break;
                 case 4:
                     incidentMenu(reserveManage);
@@ -57,6 +57,252 @@ public class Program {
     }
 
     public void visitorMenu(NatureReserveManager gestorReserva)
+    {
+        int option;
+
+        do {
+            System.out.println();
+            String message = """
+                             === Guardaparques ===
+                             1. Crear visitante
+                             2. Mostrar visitantes
+                             3. Actualizar visitante
+                             4. Eliminar visitante
+                             5. Regresar
+                             Seleccione una opcion: 
+                             """;
+            option = errorControl.validateNumericInputInt(sc, message);
+
+            switch (option) {
+                case 1:
+                    createVisitor(gestorReserva);
+                    break;
+                case 2:
+                    showVisitor(gestorReserva);
+                    break;
+                case 3:
+                    updateVisitor(gestorReserva);
+                    break;
+                case 4:
+                    deleteVisitor(gestorReserva);
+                    break;
+                case 5:
+                    System.out.println("Regresando...\n");
+                    break;
+                default:
+                    System.err.println("Error, opcion no disponible.\n");
+            }
+
+        } while (option != 5);
+    }
+
+    public void createVisitor(NatureReserveManager gestorReserva)
+    {
+        String identification, address, phoneNumber, names, lastNames;
+        VisitStatus status;
+
+        System.out.println();
+        identification = errorControl.validateIDNumber(sc, "Ingrese la cedula de identidad: ");
+
+        Criteria<Visitor> criteriaForVisitor = visitor -> visitor.getIdentification().equals(identification);
+        Visitor auxVisitor = gestorReserva.visitors.getElement(criteriaForVisitor);
+
+        if (auxVisitor == null) {
+            names = errorControl.validateTwoWords(sc, "Ingrese los dos nombres: ", "nombres");
+            lastNames = errorControl.validateTwoWords(sc, "Ingrese dos apellidos: ", "apellidos");
+            address = errorControl.validateStrings(sc, "Ingrese la direccion: ");
+            phoneNumber = errorControl.validatePhoneNumber(sc, "Ingrese el número de telefono: ");
+            status = statusVisitor();
+
+            Visitor visitor = new Visitor(address, phoneNumber, status, identification, names, lastNames);
+            if (gestorReserva.addVisitor(visitor)) {
+                System.out.println("Visitante agregado exitosamente.");
+            }
+        } else {
+            System.err.println("No se ha podido agregar el visitante: cedula ya existente.");
+        }
+    }
+
+    public VisitStatus statusVisitor()
+    {
+        VisitStatus estado = null;
+        int opcion;
+
+        do {
+            String message = "Seleccione un estado: activo (1), inactivo (2): ";
+            opcion = errorControl.validateNumericInputInt(sc, message);
+
+            switch (opcion) {
+                case 1:
+                    estado = VisitStatus.Active;
+                    break;
+                case 2:
+                    estado = VisitStatus.Inactive;
+                    break;
+                default:
+                    System.err.println("Seleccione un estado valido.\n");
+            }
+
+        } while (opcion != 1 && opcion != 2);
+
+        return estado;
+    }
+
+    public void showVisitor(NatureReserveManager gestorReserva)
+    {
+        System.out.println();
+        Criteria<Visitor> criteriaForVisitorActive = visitor -> visitor.getStatus() == (VisitStatus.Active);
+        Criteria<Visitor> criteriaForVisitorInactive = visitor -> visitor.getStatus() == (VisitStatus.Inactive);
+
+        List<Visitor> visitorsActive = gestorReserva.visitors.getElements(criteriaForVisitorActive);
+        List<Visitor> visitorInactive = gestorReserva.visitors.getElements(criteriaForVisitorInactive);
+
+        if (!visitorsActive.isEmpty()) {
+            System.out.println("Visitantes activos: \n");
+            for (Visitor visitor : visitorsActive) {
+                System.out.println(visitor);
+            }
+        } else {
+            System.out.println("No hay visitantes activos.");
+        }
+
+        if (!visitorInactive.isEmpty()) {
+            System.out.println("\nVisitantes inactivos: \n");
+            for (Visitor visitor : visitorInactive) {
+                System.out.println(visitor);
+            }
+        } else {
+            System.out.println("\nNo hay visitantes inactivos.");
+        }
+
+    }
+
+    public void updateVisitor(NatureReserveManager gestorReserva)
+    {
+        String identification, newAddress, newPhoneNumber, newNames, newLastNames;
+        VisitStatus newStatus;
+
+        System.out.println();
+        identification = errorControl.validateIDNumber(sc, "Ingrese la cedula de identidad: ");
+
+        Criteria<Visitor> criteriaForVisitor = visitor -> visitor.getIdentification().equals(identification);
+        Visitor auxVisitor = gestorReserva.visitors.getElement(criteriaForVisitor);
+
+        if (auxVisitor != null) {
+            newNames = changeVisitorWords(auxVisitor.names, "nombres");
+            newLastNames = changeVisitorWords(auxVisitor.lastNames, "apellidos");
+            newPhoneNumber = changeVisitorPhoneNumber(auxVisitor.getPhoneNumber());
+            newAddress = changeVisitorAddress(auxVisitor.getAddress());
+            newStatus = changeVisitorStatus(auxVisitor.getStatus());
+
+            if (gestorReserva.updateVisitor(newAddress, newPhoneNumber, newStatus, identification,
+                    newNames, newLastNames)) {
+                System.out.println("Se ha actualizado correctamente el visitante.");
+            }
+        } else {
+            System.err.println("Visitante no encontrado.");
+        }
+    }
+
+    public String changeVisitorWords(String originalName, String categoria)
+    {
+        String message, newWord = null;
+        int option;
+        do {
+            message = "¿Desea cambiar los " + categoria + "?\nSi (1) / No (2): ";
+            option = errorControl.validateNumericInputInt(sc, message);
+
+            switch (option) {
+                case 1:
+                    newWord = errorControl.validateTwoWords(sc, "Ingrese sus dos " + categoria + ": ", categoria);
+                    break;
+                case 2:
+                    newWord = originalName;
+                    break;
+                default:
+                    System.err.println("Error, opcion no encontrada.\n");
+            }
+
+        } while (option != 1 && option != 2);
+
+        return newWord;
+    }
+
+    public String changeVisitorPhoneNumber(String originalPhoneNumber)
+    {
+        String message, newWord = null;
+        int option;
+        do {
+            message = "¿Desea cambiar el numero de telefono? Si (1) / No (2): ";
+            option = errorControl.validateNumericInputInt(sc, message);
+
+            switch (option) {
+                case 1:
+                    newWord = errorControl.validatePhoneNumber(sc, "Ingrese el número de telefono: ");
+                    break;
+                case 2:
+                    newWord = originalPhoneNumber;
+                    break;
+                default:
+                    System.err.println("Error, opcion no encontrada.\n");
+            }
+
+        } while (option != 1 && option != 2);
+
+        return newWord;
+    }
+
+    public String changeVisitorAddress(String originalAddress)
+    {
+        String message, newWord = null;
+        int option;
+        do {
+            message = "¿Desea cambiar la direccion? Si (1) / No (2): ";
+            option = errorControl.validateNumericInputInt(sc, message);
+
+            switch (option) {
+                case 1:
+                    newWord = errorControl.validateStrings(sc, "Ingrese la direccion: ");
+                    break;
+                case 2:
+                    newWord = originalAddress;
+                    break;
+                default:
+                    System.err.println("Error, opcion no encontrada.\n");
+            }
+
+        } while (option != 1 && option != 2);
+
+        return newWord;
+    }
+
+    public VisitStatus changeVisitorStatus(VisitStatus originalStatus)
+    {
+        String message;
+        VisitStatus newStatus = null;
+        int option;
+        do {
+            message = "¿Desea cambiar el estado de visita del visitante? Si (1) / No (2): ";
+            option = errorControl.validateNumericInputInt(sc, message);
+
+            switch (option) {
+                case 1:
+                    newStatus = statusVisitor();
+                    break;
+                case 2:
+                    newStatus = originalStatus;
+                    break;
+                default:
+                    System.err.println("Error: opcion no conocida.\n");
+            }
+
+        } while (option != 1 && option != 2);
+
+        return newStatus;
+    }
+
+    // Se lo puede eliminar si no tiene visitas.
+    public void deleteVisitor(NatureReserveManager gestorReserva)
     {
 
     }
@@ -85,7 +331,6 @@ public class Program {
                     createParkRanger(gestorReserva);
                     break;
                 case 2:
-                    System.out.println();
                     showParkRangers(gestorReserva);
                     break;
                 case 3:
@@ -107,7 +352,8 @@ public class Program {
     // Opciones de los guardaparques
     public void createParkRanger(NatureReserveManager gestorReserva)
     {
-        String id, firstNames, lastNames, contractDate;
+        String id, firstNames, lastNames;
+        LocalDate contractDate;
         RangerStatus status;
 
         System.out.println();
@@ -117,33 +363,20 @@ public class Program {
         ParkRanger auxParkRanger = gestorReserva.parkRangers.getElement(criteriaForParkRangers);
 
         if (auxParkRanger == null) {
-            contractDate = errorControl.validateLocalDate(sc, "Ingrese la fecha de contrato (en formato yyyy-MM-dd): \n");
+            contractDate = errorControl.validateLocalDate(sc, "Ingrese la fecha de contrato (en formato yyyy-MM-dd): ");
             firstNames = errorControl.validateTwoWords(sc, "Ingrese sus dos nombres: ", "nombres");
             lastNames = errorControl.validateTwoWords(sc, "Ingrese sus dos apellidos: ", "apellidos");
             status = parkRangerStatus();
 
-            ParkRanger parkRanger = new ParkRanger(stringToLocalDateConverter(contractDate), id,
+            ParkRanger parkRanger = new ParkRanger(contractDate, id,
                     firstNames, lastNames, status);
 
-            gestorReserva.addParkRanger(parkRanger);
+            if (gestorReserva.addParkRanger(parkRanger)) {
+                System.out.println("Guardaparques añadio exitosamente.");
+            }
         } else {
             System.err.println("No se ha podido agregar al guardaparques: cedula ya existente.");
         }
-
-    }
-
-    public LocalDate stringToLocalDateConverter(String dateString)
-    {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDate fechaLocalDate = LocalDate.parse(dateString, formatter);
-        return fechaLocalDate;
-    }
-
-    public LocalDateTime stringToLocalDateTimeConverter(String dateString)
-    {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDateTime dateTime = LocalDateTime.parse(dateString, formatter);
-        return dateTime;
     }
 
     public RangerStatus parkRangerStatus()
@@ -173,10 +406,10 @@ public class Program {
 
     public void showParkRangers(NatureReserveManager gestorReserva)
     {
+        System.out.println();
         Criteria<ParkRanger> criteriaForParkRangersBusy = parkRanger -> parkRanger.getStatus() == (RangerStatus.busy);
         Criteria<ParkRanger> criteriaForParkRangersFree = parkRanger -> parkRanger.getStatus() == (RangerStatus.free);
 
-        // ...
         List<ParkRanger> busyRangers = gestorReserva.parkRangers.getElements(criteriaForParkRangersBusy);
         List<ParkRanger> freeRangers = gestorReserva.parkRangers.getElements(criteriaForParkRangersFree);
 
@@ -190,12 +423,12 @@ public class Program {
         }
 
         if (!freeRangers.isEmpty()) {
-            System.out.println("\nGuardabosques desocupados: \n");
+            System.out.println("Guardabosques desocupados: \n");
             for (ParkRanger parkRanger : freeRangers) {
                 System.out.println("Identificacion: " + parkRanger.identification + parkRanger.fullname() + "\n");
             }
         } else {
-            System.out.println("\nNo hay guardabosques desocupados.");
+            System.out.println("No hay guardabosques desocupados.");
         }
     }
 
@@ -206,7 +439,8 @@ public class Program {
     // Preguntar si desea cambiar el estado
     public void updateRanger(NatureReserveManager gestorReserva)
     {
-        String id, newFirstNames, newLastNames, newContractDate;
+        String id, newFirstNames, newLastNames;
+        LocalDate newContractDate;
         RangerStatus newStatus;
 
         System.out.println();
@@ -218,20 +452,21 @@ public class Program {
         if (auxParkRanger != null) {
             newFirstNames = changeRangerWords(auxParkRanger.names, "nombres");
             newLastNames = changeRangerWords(auxParkRanger.lastNames, "apellidos");
-            newContractDate = changeContractDateRanger(auxParkRanger.dateOfHire.toString());
-            // newStatus = changeRangerStatus(auxParkRanger.status); 
+            newContractDate = changeContractDateRanger(auxParkRanger.dateOfHire);
+            newStatus = changeRangerStatus(auxParkRanger.status);
 
-            gestorReserva.updateParkRanger(id, newFirstNames,
-                    newLastNames, stringToLocalDateConverter(newContractDate),
-                    auxParkRanger.status);
+            if (gestorReserva.updateParkRanger(id, newFirstNames,
+                    newLastNames, newContractDate,
+                    auxParkRanger.status)) {
+                System.out.println("Se ha actualizado la informacion del guardabosques correctamente.");
+            }
         } else {
-            System.err.println("No se ha encontrado al guardabosques con la cedula proporcionada.\n");
+            System.err.println("No se ha encontrado al guardabosques con la cedula proporcionada");
         }
     }
 
     public String changeRangerWords(String originalName, String categoria)
     {
-
         String message, newWord = null;
         int option;
         do {
@@ -254,9 +489,10 @@ public class Program {
         return newWord;
     }
 
-    public String changeContractDateRanger(String originalDate)
+    public LocalDate changeContractDateRanger(LocalDate originalDate)
     {
-        String message, newDate = null;
+        String message;
+        LocalDate newDate = null;
         int option;
         do {
             message = "¿Desea cambiar la fecha de contrato?\nSi (1) / No (2): ";
@@ -264,7 +500,7 @@ public class Program {
 
             switch (option) {
                 case 1:
-                    newDate = errorControl.validateLocalDate(sc, "Ingrese la fecha de contrato (en formato yyyy-MM-dd): \n");
+                    newDate = errorControl.validateLocalDate(sc, "Ingrese la fecha de contrato (en formato yyyy-MM-dd): ");
                     break;
                 case 2:
                     newDate = originalDate;
@@ -306,26 +542,27 @@ public class Program {
     public void deleteRanger(NatureReserveManager gestorReserva)
     {
         String id;
-        id = errorControl.validateStrings(sc, "Ingrese la cedula de identidad del guardabosques a eliminar: ");
+        id = errorControl.validateStrings(sc, "\nIngrese la cedula de identidad del guardabosques a eliminar: ");
 
         Criteria<ParkRanger> criteriaForParkRangers = parkRanger -> parkRanger.getIdentification().equals(id);
         ParkRanger auxParkRanger = gestorReserva.parkRangers.getElement(criteriaForParkRangers);
 
         if (auxParkRanger != null) {
-            if (auxParkRanger.status == RangerStatus.free) { // desocupado --> eliminar
-                gestorReserva.removeParkRanger(id);
-                System.out.println("Guardaparques eliminado exitosamente.\n");
+            if (auxParkRanger.status == RangerStatus.free) { // Desocupado --> eliminar
+                if (gestorReserva.removeParkRanger(id)) {
+                    System.out.println("Guardaparques eliminado exitosamente.");
+                }
             } else {
-                System.err.println("No se puede eliminar el guardabosques, debido a que se encuentra ocupado.\n");
+                System.err.println("No se puede eliminar el guardabosques debido a que se encuentra ocupado.");
             }
         } else {
-            System.err.println("No se ha encontrado el guardabosques con el id proporcionado\n");
+            System.err.println("No se ha encontrado el guardabosques con el id proporcionado.");
         }
 
     }
 
     // --- Areas
-    public void areasMenu(NatureReserveManager gestorReserva)
+    public void areaMenu(NatureReserveManager gestorReserva)
     {
         int option;
 
@@ -380,11 +617,13 @@ public class Program {
         if (auxArea == null) {
             name = errorControl.validateStrings(sc, "Ingrese el nombre del area: ");
             description = errorControl.validateStrings(sc, "Ingrese la descripcion del area: ");
-            stateArea = selectStatusArea();
+            stateArea = selectStatusArea(); // No lo utilizo en ningun lado
             Area area = new RecreationalArea(codeArea, name, description, stateArea);
-            gestorReserva.addArea(area);
+            if (gestorReserva.addArea(area)) {
+                System.out.println("El area se ha añadido exitosamente.");
+            }
         } else {
-            System.err.println("El codigo del area a registrar ya se encuentra en uso.\n");
+            System.err.println("El codigo del area a registrar ya se encuentra en uso.");
         }
     }
 
@@ -416,10 +655,10 @@ public class Program {
     public void showAreas(NatureReserveManager gestorReserva)
     {
 
+        System.out.println();
         Criteria<Area> criteriaForParkRangersBusy = area -> area.getStateArea() == (StateArea.accessible);
         Criteria<Area> criteriaForParkRangersFree = area -> area.getStateArea() == (StateArea.inaccessible);
 
-        // ...
         List<Area> accesibleArea = gestorReserva.areas.getElements(criteriaForParkRangersBusy);
         List<Area> inaccessibleArea = gestorReserva.areas.getElements(criteriaForParkRangersFree);
 
@@ -433,12 +672,12 @@ public class Program {
         }
 
         if (!inaccessibleArea.isEmpty()) {
-            System.out.println("Areas innacesibles: \n");
+            System.out.println("\nAreas innacesibles: \n");
             for (Area area : inaccessibleArea) {
-                System.out.println(area);
+                System.out.print(area + "\n");
             }
         } else {
-            System.out.println("\nNo hay areas inaccesible.");
+            System.out.println("No hay areas inaccesible.");
         }
 
     }
@@ -458,9 +697,11 @@ public class Program {
             newName = newNameArea(auxArea.name);
             newDescription = newDescriptionArea(auxArea.description);
             newState = newStateArea(auxArea.stateArea);
-            gestorReserva.updateArea(codeArea, newName, newDescription, newState);
+            if (gestorReserva.updateArea(codeArea, newName, newDescription, newState)) {
+                System.out.println("Se ha actualizado la informacion del area correctamente.");
+            }
         } else {
-            System.err.println("No se ha encontrado el area con el codigo proporcionada.\n");
+            System.err.println("No se ha encontrado el area con el codigo proporcionada.");
         }
     }
 
@@ -537,26 +778,27 @@ public class Program {
         return newState;
     }
 
-    // dos formas
-    // 1. utilizar la referencia a incidents de la clase Area
-    // 2. buscar entre todas los incidentes cual tiene el Area con id dado por el usuario
+    // Dos formas
+    // 1. Utilizar la referencia a incidents de la clase Area
+    // 2. Buscar entre todas los incidentes cual tiene el Area con id dado por el usuario
     public void deleteArea(NatureReserveManager gestorReserva)
     {
         String codeArea;
-        codeArea = errorControl.validateStrings(sc, "Ingrese el codigo del area a eliminar: ");
+        codeArea = errorControl.validateStrings(sc, "\nIngrese el codigo del area a eliminar: ");
 
         Criteria<Area> criteriaForParkRangers = area -> area.getCodeArea().equals(codeArea);
         Area auxArea = gestorReserva.areas.getElement(criteriaForParkRangers);
 
         if (auxArea != null) {
             if (auxArea.incidents.isEmpty()) {
-                gestorReserva.removeArea(codeArea);
-                System.out.println("Area removida exitosamente.");
+                if (gestorReserva.removeArea(codeArea)) {
+                    System.out.println("Area eliminiada exitosamente.");
+                }
             } else {
-                System.err.println("No se ha podido eliminar el area, puesto que esta relacionado con alguna incidencia.\n");
+                System.err.println("No se ha podido eliminar el area, puesto que esta relacionado con alguna incidencia.");
             }
         } else {
-            System.err.println("No se ha encontrado el area a eliminar.\n");
+            System.err.println("No se ha encontrado el area a eliminar.");
         }
 
     }
@@ -692,15 +934,15 @@ public class Program {
         Criteria<ParkRanger> criteria = parkRanger -> parkRanger.status == RangerStatus.free;
         List<ParkRanger> parkRangers = gestorReserva.parkRangers.getElements(criteria);
 
-        System.out.println("Guardabosques disponibles:");
+        System.out.println("\nGuardabosques disponibles:");
         for (int i = 0; i < parkRangers.size(); i++) {
-            System.out.println((i + 1) + ". " + parkRangers.get(i).fullname() + "\n");
+            System.out.println((i + 1) + ". " + parkRangers.get(i).getNames() + ", " + parkRangers.get(i).lastNames + "\n");
         }
         int selection;
         do {
-            selection = errorControl.validateNumericInputInt(sc, "Seleccione el número de guardabosques: ");
+            selection = errorControl.validateNumericInputInt(sc, "Seleccione un número para elegir al guardabosques: ");
             if (selection < 1 || selection > parkRangers.size()) {
-                System.err.println("Ingrese un número valido.");
+                System.err.println("Ingrese un número valido.\n");
             }
         } while (selection < 1 || selection > parkRangers.size());
 
@@ -716,21 +958,21 @@ public class Program {
         List<Area> areasInaccesible = gestorReserva.areas.getElements(criteriaByStatusAreaInaccessible);
 
         if (!areasAccesible.isEmpty()) {
-            System.out.println("Áreas accesibles disponibles:");
+            System.out.println("\nÁreas accesibles disponibles:");
             for (int i = 0; i < areasAccesible.size(); i++) {
                 System.out.println((i + 1) + ". " + areasAccesible.get(i).getName());
             }
         } else {
-            System.out.println("No hay áreas accesibles disponibles.");
+            System.out.println("\nNo hay áreas accesibles disponibles.");
         }
 
         if (!areasInaccesible.isEmpty()) {
-            System.out.println("Áreas inaccesibles disponibles:");
+            System.out.println("\nÁreas inaccesibles disponibles:");
             for (int i = 0; i < areasInaccesible.size(); i++) {
                 System.out.println((i + 1) + ". " + areasInaccesible.get(i).getName());
             }
         } else {
-            System.out.println("No hay areas innacesibles disponibles");
+            System.out.println("\nNo hay areas innacesibles disponibles");
         }
 
         int selection;
@@ -757,36 +999,35 @@ public class Program {
         Criteria<Incident> criteria2 = incident -> incident.incidentStatus == (IncidentStatus.pending);
         Criteria<Incident> criteria3 = incident -> incident.incidentStatus == (IncidentStatus.resolved);
 
-        // ...
         List<Incident> listCriteria1 = gestorReserva.incidents.getElements(criteria1);
         List<Incident> listCriteria2 = gestorReserva.incidents.getElements(criteria2);
         List<Incident> listCriteria3 = gestorReserva.incidents.getElements(criteria3);
 
         if (!listCriteria1.isEmpty()) {
-            System.out.println("Incidentes en proceso: ");
+            System.out.println("'\nIncidentes en proceso: ");
             for (Incident incident : listCriteria1) {
-                System.out.println(incident + "\n");
+                System.out.println(incident);
             }
         } else {
-            System.out.println("No hay incidentes en proceso.");
+            System.out.println("\nNo hay incidentes en proceso.");
         }
 
         if (!listCriteria2.isEmpty()) {
-            System.out.println("Incidentes pendientes: ");
+            System.out.println("\nIncidentes pendientes: ");
             for (Incident incident : listCriteria2) {
-                System.out.println(incident + "\n");
+                System.out.println(incident);
             }
         } else {
-            System.out.println("No hay incidentes pendientes.");
+            System.out.println("\nNo hay incidentes pendientes.");
         }
 
         if (!listCriteria3.isEmpty()) {
             System.out.println("Incidentes resueltos: ");
             for (Incident incident : listCriteria3) {
-                System.out.println(incident + "\n");
+                System.out.println(incident);
             }
         } else {
-            System.out.println("No hay incidentes resueltos.");
+            System.out.println("\nNo hay incidentes resueltos.");
         }
     }
 
@@ -798,7 +1039,7 @@ public class Program {
         IncidentStatus newIncidentStatus;
         LocalDateTime newDateTimeReport, newDateTimeAttention;
 
-        incidentCode = errorControl.validateStrings(sc, "Ingrese el código del incide a actualizar: ");
+        incidentCode = errorControl.validateStrings(sc, "\nIngrese el código del incide a actualizar: ");
         Criteria<Incident> criteria1 = incident -> incident.incidentCode.equals(incidentCode);
         Incident auxIncident = gestorReserva.incidents.getElement(criteria1);
 
@@ -813,9 +1054,9 @@ public class Program {
 
             if (gestorReserva.updateIncident(incidentCode, newDescription, newDateTimeReport, newDateTimeAttention,
                     newAgentSupport, newIncidentStatus, newAnnotations, newArea)) {
-                System.out.println("Se ha actualizado correctamente el incidente.\n");
+                System.out.println("Se ha actualizado correctamente el incidente");
             } else {
-                System.err.println("No se ha podido actualizar el incidente.\n");
+                System.err.println("No se ha podido actualizar el incidente");
             }
         }
 
@@ -1008,9 +1249,9 @@ public class Program {
             auxIncident.agentSupport.status = RangerStatus.free; // El guardabosques ahora esta desocupado
             gestorReserva.removeIncident(incidentCode);
             auxIncident.area.incidents.removeElement(auxIncident); // El area de "esta" incidencia, debe eliminar a la incidencia que no existe.
-            System.out.println("Incidente eliminad ocorrectamente.\n");
+            System.out.println("Incidente eliminado ocorrectamente.");
         } else {
-            System.err.println("No se ha podido eliminar el incidente: incidente no encontrado o estado no concluido.\n");
+            System.err.println("No se ha podido eliminar el incidente: incidente no encontrado o estado no concluido.");
         }
     }
 }

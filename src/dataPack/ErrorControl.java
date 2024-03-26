@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package dataPack;
 
 import java.time.LocalDate;
@@ -12,10 +8,6 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- *
- * @author ASUS
- */
 public class ErrorControl {
 
     public ErrorControl()
@@ -61,19 +53,16 @@ public class ErrorControl {
         String names;
         while (true) {
             System.out.print(message);
-            names = input.nextLine();
+            names = input.nextLine().trim().replaceAll("\\s+", " ");
 
-            Pattern pattern = Pattern.compile("^[a-zA-Z]+\\s[a-zA-Z]+$");
-            Matcher matcher = pattern.matcher(names);
+            String[] words = names.split(" ");
 
-            if (matcher.matches()) {
+            if (words.length == 2) {
                 return names;
             } else {
                 System.err.println("Error: por favor ingrese dos " + categoria + " separados por un espacio.\n");
             }
-
         }
-
     }
 
     public String validateStrings(Scanner input, String message)
@@ -87,12 +76,26 @@ public class ErrorControl {
             Matcher matcher = pattern.matcher(word.trim());
 
             if (matcher.matches()) {
-                return word;
+                return word.trim().replaceAll("\\s+", " ");
             } else {
                 System.err.println("Error: por favor ingrese un texto valido.\n");
             }
         }
+    }
 
+    public String validatePhoneNumber(Scanner input, String message)
+    {
+        String phoneNumber;
+        while (true) {
+            System.out.print(message);
+            phoneNumber = input.nextLine();
+
+            if (phoneNumber.length() == 10) {
+                return phoneNumber;
+            } else {
+                System.err.println("Número de teléfono inválido. Debe tener exactamente 10 caracteres.\n");
+            }
+        }
     }
 
     public LocalDateTime validateLocalDateTime(Scanner input, String message)
@@ -119,63 +122,25 @@ public class ErrorControl {
         }
     }
 
-    public String validateLocalDate(Scanner input, String message)
+    public LocalDate validateLocalDate(Scanner input, String message)
     {
-        String date;
+        LocalDate date;
         while (true) {
             System.out.print(message);
-            date = input.nextLine();
+            String dateString = input.nextLine();
 
             Pattern pattern = Pattern.compile("\\d{4}-\\d{2}-\\d{2}");
-            Matcher matcher = pattern.matcher(date);
+            Matcher matcher = pattern.matcher(dateString);
 
             if (matcher.matches()) {
                 try {
-                    LocalDate.parse(date);
+                    date = LocalDate.parse(dateString);
                     return date;
                 } catch (DateTimeParseException e) {
-                    System.err.println("Error: ingrese una fecha válida (año, mes, día)\n");
+                    System.err.println("Error: Ingrese una fecha válida (año, mes, día)\n");
                 }
             } else {
-                System.err.println("Error: ingrese una fecha válida (año, mes, día) en formato (yyyy-MM-dd)\n");
-            }
-
-        }
-    }
-
-//Este metodo se puede utilizar para ingresar aÃ±os/dias/meses/horas/minutos y segundos
-
-    /*
-    Ejemplo de uso
-    
-          aÃ±oNacimiento = validarFecha(lectura, "aÃ±o de nacimiento", 4, 2024);
-                            mesNacimiento = validarFecha(lectura, "mes de nacimiento", 2, 12);
-                            diaNacimiento = validarFecha(lectura, "dÃ­a de nacimiento", 2, 31);
-    
-     */
-    public int validateDate(Scanner input, String message, int length, int maximum)
-    {
-        int number;
-        while (true) {
-            try {
-                System.out.println("Ingrese el " + message + ":");
-                String userInput = input.nextLine();
-
-                if (userInput.length() != length) {
-                    throw new IllegalArgumentException("Error: La longitud de " + message + " debe ser de " + length + " dÃ­gitos.");
-                }
-
-                number = Integer.parseInt(userInput);
-
-                if (number <= 0 || number > maximum) {
-                    throw new IllegalArgumentException("Error: " + message + " debe ser un nÃºmero mayor que cero y menor o igual que " + maximum + ".");
-                }
-
-                return number;
-            } catch (NumberFormatException e) {
-                System.out.println("Error: Por favor ingrese un nÃºmero vÃ¡lido para " + message + ".");
-            } catch (IllegalArgumentException e) {
-                System.out.println(e.getMessage());
+                System.err.println("Error: Ingrese una fecha válida (año, mes, día) en formato (yyyy-MM-dd)\n");
             }
         }
     }

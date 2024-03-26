@@ -1,42 +1,61 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package dataPack;
 
-/**
- *
- * @author ASUS
- */
 public class Person {
-    
-String identification;
 
-String names;
-        
-String  lastNames;
+    String identification;
 
-    public Person(String identification, String names, String lastNames) {
+    String names;
+
+    String lastNames;
+
+    public Person(String identification, String names, String lastNames)
+    {
         this.identification = identification;
         this.names = names;
         this.lastNames = lastNames;
     }
 
-   public String fullname() {
+    @Override
+    public String toString()
+    {
+        return fullname()
+                + "\nIdentificación: " + this.identification;
+    }
 
-        return "\nNombres: " + this.names
+    public String fullname()
+    {
+        return "Nombres: " + this.names
                 + "\nApellidos: " + this.lastNames;
+    }
 
-    }    
-    
-@Override
+    public String getIdentification()
+    {
+        return identification;
+    }
 
-public String toString(){
+    public void setIdentification(String identification)
+    {
+        this.identification = identification;
+    }
 
-return fullname()+
-       "\nIdentificación: "+this.identification;
-       
-}
+    public String getNames()
+    {
+        return names;
+    }
 
-    
+    public void setNames(String names)
+    {
+        this.names = names;
+    }
+
+    public String getLastNames()
+    {
+        return lastNames;
+    }
+
+    public void setLastNames(String lastNames)
+    {
+        this.lastNames = lastNames;
+    }
+
 }

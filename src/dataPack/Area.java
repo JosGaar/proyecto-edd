@@ -74,11 +74,11 @@ public class Area {
     public String toString()
     {
         StringBuilder sb = new StringBuilder();
-        sb.append("\nCódigo del área: ").append(this.getCodeArea())
+        sb.append("Código del área: ").append(this.getCodeArea())
                 .append("\nNombre del área: ").append(this.getName())
                 .append("\nDescripción: ").append(this.getDescription())
                 .append("\nEstado: ").append(this.getStateArea())
-                .append("\nIncidentes:");
+                .append("\nIncidentes: ");
         
         Node current = incidents.firstElement;
         
