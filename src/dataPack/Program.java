@@ -250,36 +250,13 @@ public class Program {
         Visitor auxVisitor = gestorReserva.visitors.getElement(criteriaForVisitor);
 
         if (auxVisitor != null) {
-
-            // Primero eliminar las visitas relacionadas con el visitante dado
-            List<String> codeVisits = new ArrayList<>();
-            boolean activeVisit = false;
-
-            for (Visit v : auxVisitor.getVisits()) {
-
-                if (v.getStatus() == VisitStatus.Active) {
-                    activeVisit = true;
-                    break;
-                }
-
-                codeVisits.add(v.getCodeVisit());
-            }
-
-            if (!activeVisit) {
-                // Remuevo todas las visitas de la reserva natural relacionadas con el visitante
-                // for (int i = 0; i < codeVisits.size(); i++) {
-                //    gestorReserva.removeVisit(codeVisits.get(i));
-                // }
-
-                // Finalmente quito ese visitante
-                if (gestorReserva.removeVisitor(identification)) {
-                    System.out.println("Visitante eliminado exitosamente.");
-                } else {
-                    System.out.println("No se ha podido eliminar al visitante.");
-                }
+            if (gestorReserva.removeVisitor(identification)) {
+                System.out.println("Visitante eliminado exitosamente.");
             } else {
-                System.out.println("No se puede borrar un visitante con una visita activa.");
+                System.out.println("No se ha podido eliminar al visitante.");
             }
+        } else {
+            System.out.println("No se puede borrar un visitante con una visita activa.");
 
         }
 
@@ -364,7 +341,7 @@ public class Program {
                 person = gestorReserva.visitors.getElementAtIndex(numberVisitor - 1);
                 dateEntry = errorControl.validateLocalDateTime(sc, "Ingrese la fecha de entrada (yyyy-MM-dd HH:mm:ss): ");
 
-                Visit visit = new Visit(codeVisit, person, VisitStatus.Active, dateEntry);
+                Visit visit = new Visit(codeVisit, person, VisitStatus.Active, dateEntry, Visibility.visible);
 
                 if (gestorReserva.addVisit(visit)) {
                     ((Visitor) person).getVisits().insertElement(visit);
@@ -408,10 +385,11 @@ public class Program {
 
     public void showVisit(NatureReserveManager gestorReserva)
     {
-        List<Visit> visits = gestorReserva.visits.getAllElementList();
+        Criteria<Visit> criteriaForVisit = visit -> visit.getVisibility() == Visibility.visible;
+        List<Visit> auxVisits = gestorReserva.visits.getElements(criteriaForVisit);
 
-        if (!visits.isEmpty()) {
-            for (Visit v : visits) {
+        if (!auxVisits.isEmpty()) {
+            for (Visit v : auxVisits) {
                 System.out.println(v);
             }
         } else {
@@ -492,16 +470,17 @@ public class Program {
 
     public void deleteVisit(NatureReserveManager gestorReserva)
     {
-        // Eliminar visita solo si no esta activa.
         String codeVisit;
         codeVisit = errorControl.validateStrings(sc, "Ingrese el código de la visita: ");
 
         Criteria<Visit> criteriaforVisit = visit -> visit.getCodeVisit().equals(codeVisit);
         Visit auxVisit = gestorReserva.visits.getElement(criteriaforVisit);
-        
-        if (auxVisit != null) {
+
+        // Eliminar visita solo si no esta activa.
+        if (auxVisit != null && auxVisit.getStatus() == VisitStatus.Inactive) {
+            auxVisit.setVisibility(Visibility.hidden);
         }
-        
+
     }
 
     // Si elimino la visita, es porque el visitante se fue de esta.
@@ -587,7 +566,7 @@ public class Program {
             // status = parkRangerStatus();
 
             ParkRanger parkRanger = new ParkRanger(contractDate, id,
-                    firstNames, lastNames, RangerStatus.free);
+                    firstNames, lastNames, RangerStatus.free, Visibility.visible);
 
             if (gestorReserva.addParkRanger(parkRanger)) {
                 System.out.println("Guardaparques añadio exitosamente.");
@@ -624,10 +603,11 @@ public class Program {
 
     public void showParkRangers(NatureReserveManager gestorReserva)
     {
-        List<ParkRanger> parkRangres = gestorReserva.parkRangers.getAllElementList();
+        Criteria<ParkRanger> criteriaForParkRangers = parkRanger -> parkRanger.getVisibility() == Visibility.visible;
+        List<ParkRanger> auxParkRangers = gestorReserva.parkRangers.getElements(criteriaForParkRangers);
 
-        if (!parkRangres.isEmpty()) {
-            for (ParkRanger pk : parkRangres) {
+        if (!auxParkRangers.isEmpty()) {
+            for (ParkRanger pk : auxParkRangers) {
                 System.out.println(pk);
             }
         } else {
@@ -635,11 +615,6 @@ public class Program {
         }
     }
 
-    // Pedir cedula de identidad
-    // Preguntar si desea cambiar el nombre
-    // Preguntar si desea cambiar los apelldos
-    // Preguntar si desea cambiar la fecha de contrato
-    // Preguntar si desea cambiar el estado
     public void updateRanger(NatureReserveManager gestorReserva)
     {
         String id, newFirstNames, newLastNames;
@@ -749,8 +724,6 @@ public class Program {
 
         Criteria<ParkRanger> criteriaForParkRangers = parkRanger -> parkRanger.getIdentification().equals(id);
         ParkRanger auxParkRanger = gestorReserva.parkRangers.getElement(criteriaForParkRangers);
-
-        List<Incident> incidentsParkRanger;
 
         if (auxParkRanger != null) {
             if (auxParkRanger.status == RangerStatus.free) { // Desocupado --> eliminar
@@ -964,9 +937,6 @@ public class Program {
         return newState;
     }
 
-    // Dos formas
-    // 1. Utilizar la referencia a incidents de la clase Area
-    // 2. Buscar entre todas los incidentes cual tiene el Area con id dado por el usuario
     public void deleteArea(NatureReserveManager gestorReserva)
     {
         String codeArea;
@@ -976,7 +946,18 @@ public class Program {
         Area auxArea = gestorReserva.areas.getElement(criteriaForParkRangers);
 
         if (auxArea != null) {
-            if (auxArea.incidents.isEmpty()) {
+
+            // Manejar la forma de que si el area tiene al menos un incidente como VISIBLE, no se podra borrarlo.
+            boolean delete = true;
+            List<Incident> incidentsArea = auxArea.incidents.getAllElementList();
+            for (Incident in : incidentsArea) {
+                if (in.getVisibility() == Visibility.visible) {
+                    delete = false;
+                    break;
+                }
+            }
+
+            if (delete) {
                 if (gestorReserva.removeArea(codeArea)) {
                     System.out.println("Area eliminiada exitosamente.");
                 }
@@ -1055,7 +1036,7 @@ public class Program {
                 selectArea = selectAreaIncident(gestorReserva);
 
                 Incident incidente = new Incident(incidentCode, description, dateTimeReport, null,
-                        null, IncidentStatus.pending, annotations, selectArea);
+                        null, IncidentStatus.pending, annotations, selectArea, Visibility.visible);
 
                 selectArea.incidents.insertElement(incidente);
 
@@ -1154,11 +1135,12 @@ public class Program {
 
     public void showIncidents(NatureReserveManager gestorReserva)
     {
-        List<Incident> incidents = gestorReserva.incidents.getAllElementList();
-
-        if (!incidents.isEmpty()) {
-            for (int i = 0; i < incidents.size(); i++) {
-                Incident incident = incidents.get(i);
+        Criteria<Incident> criteriaForIncidents = incident -> incident.getVisibility() == Visibility.visible;
+        List<Incident> incidentsVisible = gestorReserva.incidents.getElements(criteriaForIncidents);
+        
+        if (!incidentsVisible.isEmpty()) {
+            for (int i = 0; i < incidentsVisible.size(); i++) {
+                Incident incident = incidentsVisible.get(i);
                 System.out.println(incident);
             }
         } else {
@@ -1378,6 +1360,13 @@ public class Program {
 
         Criteria<Incident> criteria1 = incident -> incident.incidentCode.equals(incidentCode);
         Incident auxIncident = gestorReserva.incidents.getElement(criteria1);
+
+        // Si el incidente esta resuelto, entonces se lo "elimina (oculta)"
+        if (auxIncident != null && auxIncident.getIncidentStatus() == IncidentStatus.resolved) {
+            auxIncident.setVisibility(Visibility.hidden);
+            System.out.println("Se ha eliminado el incidente.");
+        }
+
     }
 
     // Gestionar incidentes 

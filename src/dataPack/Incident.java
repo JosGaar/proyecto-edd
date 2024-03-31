@@ -29,7 +29,7 @@ public class Incident {
     Area area;
 
     public Incident(String incidentCode, String description, LocalDateTime dateTimeReport, LocalDateTime dateTimeAttention,
-            ParkRanger agentSupport, IncidentStatus incidentStatus, String annotations, Area area)
+            ParkRanger agentSupport, IncidentStatus incidentStatus, String annotations, Area area, Visibility visibility)
     {
         this.description = description;
         this.dateTimeReport = dateTimeReport;
@@ -39,6 +39,7 @@ public class Incident {
         this.annotations = annotations;
         this.area = area;
         this.incidentCode = incidentCode;
+        this.visibility = visibility;
     }
 
     public Visibility getVisibility()
