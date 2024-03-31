@@ -24,7 +24,7 @@ public class Person {
 
     public String fullname()
     {
-        return "Nombres: " + this.names
+        return "\nNombres: " + this.names
                 + "\nApellidos: " + this.lastNames;
     }
 

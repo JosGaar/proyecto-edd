@@ -125,7 +125,7 @@ public class Incident {
         String fullName = this.agentSupport == null ? "No se ha registrado un agente por el momento" : this.agentSupport.fullname();
         String dateTimeAttention = this.dateTimeAttention == null ? "No ha sido atendido." : this.dateTimeAttention.toString();
 
-        return "\nCódigo de incidencia: " + this.incidentCode
+        return "\nC�digo de incidencia: " + this.incidentCode
                 + "\nFecha/Hora de incidente: " + this.dateTimeReport
                 + "\nFecha/Hora de atención: " + dateTimeAttention
                 + "\nAgente de Soporte: " + fullName

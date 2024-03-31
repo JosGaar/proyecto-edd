@@ -90,10 +90,14 @@ public class ErrorControl {
             System.out.print(message);
             phoneNumber = input.nextLine();
 
-            if (phoneNumber.length() == 10) {
-                return phoneNumber;
+            if (phoneNumber.matches("\\d+")) {
+                if (phoneNumber.length() == 10) {
+                    return phoneNumber;
+                } else {
+                    System.err.println("Número de teléfono inválido. Debe tener exactamente 10 dígitos.\n");
+                }
             } else {
-                System.err.println("Número de teléfono inválido. Debe tener exactamente 10 caracteres.\n");
+                System.err.println("Número de teléfono inválido. Ingrese solo números.\n");
             }
         }
     }
@@ -147,8 +151,7 @@ public class ErrorControl {
 
     public boolean validateDateTimeRange(LocalDateTime startDate, LocalDateTime endDate)
     {
-        // Verificar si la fecha de inicio es antes o igual que la fecha de fin
-        return !endDate.isBefore(startDate) || startDate.isEqual(endDate);
+        return endDate.isAfter(startDate);
     }
 
 }

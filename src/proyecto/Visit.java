@@ -84,13 +84,13 @@ public class Visit {
     public String toString()
     {
 
-        String exit = this.exitDate == null ? "No ha salido aun." : this.exitDate.toString();
+        String exit = this.exitDate == null ? "El visitante aun no ha salido de la reserva natural." : this.exitDate.toString();
         
-        return "Codigo de visita = " + codeVisit + "\n"
-                + "Visitante = " + visitor.names + ", " + visitor.lastNames + "\n"
-                + "Estado de la visita = " + status + "\n"
-                + "Fecha de entrada = " + entryDate + "\n"
-                + "Fecha de salida = " + exit;
+        return "\nCodigo de visita: " + codeVisit + "\n"
+                + "Visitante. " + "Nombres: " + visitor.names + ", apellidos: " + visitor.lastNames + "\n"
+                + "Estado de la visita: " + status + "\n"
+                + "Fecha de entrada: " + entryDate + "\n"
+                + "Fecha de salida: " + exit;
     }
 
 }

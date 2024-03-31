@@ -49,11 +49,14 @@ public class Area {
     public String toString()
     {
         StringBuilder sb = new StringBuilder();
-        sb.append("Código del área: ").append(this.getCodeArea())
+        sb.append("\nCódigo del área: ").append(this.getCodeArea())
                 .append("\nNombre del área: ").append(this.getName())
-                .append("\nDescripción: ").append(this.getDescription())
-                .append("\nIncidentes: ");
+                .append("\nDescripción: ").append(this.getDescription());
+        
+        /*      .append("\nIncidentes: ");
 
+        Esto permite añadir los incidentes al area.
+        
         Node current = incidents.firstElement;
 
         if (current == null) {
@@ -63,7 +66,7 @@ public class Area {
         while (current != null) {
             sb.append("\n").append(current.value);
             current = current.next;
-        }
+        } */
 
         return sb.toString();
     }
