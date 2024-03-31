@@ -2,69 +2,78 @@ package dataPack;
 
 import java.time.LocalDate;
 
-public class ParkRanger extends Person{
- 
-    
- LocalDate dateOfHire;   
- 
- RangerStatus status;
+public class ParkRanger extends Person {
 
-    public ParkRanger(LocalDate dateOfHire, String identification, String names, String lastNames, RangerStatus status) {
+    LocalDate dateOfHire;
+    RangerStatus status;
+    LinkedList<Incident> incidents;
+
+    public ParkRanger(LocalDate dateOfHire, String identification, String names, String lastNames, RangerStatus status)
+    {
         super(identification, names, lastNames);
         this.dateOfHire = dateOfHire;
         this.status = status;
+        this.incidents = new LinkedList<>();
     }
 
-    public RangerStatus getStatus() {
+    public RangerStatus getStatus()
+    {
         return status;
     }
 
-    public void setStatus(RangerStatus status) {
+    public void setStatus(RangerStatus status)
+    {
         this.status = status;
     }
 
- 
-
-    public String getIdentification() {
+    public String getIdentification()
+    {
         return identification;
     }
 
-    public void setIdentification(String identification) {
+    public void setIdentification(String identification)
+    {
         this.identification = identification;
     }
 
-    public LocalDate getDateOfHire() {
+    public LocalDate getDateOfHire()
+    {
         return dateOfHire;
     }
 
-    public void setDateOfHire(LocalDate dateOfHire) {
+    public void setDateOfHire(LocalDate dateOfHire)
+    {
         this.dateOfHire = dateOfHire;
     }
 
-    public String getNames() {
+    public String getNames()
+    {
         return names;
     }
 
-    public void setNames(String names) {
+    public void setNames(String names)
+    {
         this.names = names;
     }
 
-    public String getLastNames() {
+    public String getLastNames()
+    {
         return lastNames;
     }
 
-    public void setLastNames(String lastNames) {
+    public void setLastNames(String lastNames)
+    {
         this.lastNames = lastNames;
     }
- 
+
     @Override
-    
-    public  String toString(){
-    
-    String fatherToString= super.toString();
-    
-    return fatherToString+"\nFecha de contratación:"+this.dateOfHire;
-    
+
+    public String toString()
+    {
+        String fatherToString = super.toString();
+
+        return fatherToString + "\nFecha de contratación:" + this.dateOfHire;
+
     }
-    
+
 }

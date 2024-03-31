@@ -9,89 +9,76 @@ package dataPack;
  * @author ASUS
  */
 public class Area {
-    
+
     String codeArea;
-    
+
     String name;
-    
+
     String description;
-    
-    StateArea stateArea;
-    
+
+    // StateArea stateArea;
     LinkedList<Incident> incidents;
-    
-    public Area(String codeArea, String name, String description, StateArea stateArea)
+
+    public Area(String codeArea, String name, String description)
     {
         this.codeArea = codeArea;
         this.name = name;
         this.description = description;
-        this.stateArea = stateArea;
+        // this.stateArea = stateArea;
         this.incidents = new LinkedList<>();
     }
-    
+
     public String getCodeArea()
     {
         return codeArea;
     }
-    
+
     public void setCodeArea(String codeArea)
     {
         this.codeArea = codeArea;
     }
-    
+
     public String getName()
     {
         return name;
     }
-    
+
     public void setName(String name)
     {
         this.name = name;
     }
-    
+
     public String getDescription()
     {
         return description;
     }
-    
+
     public void setDescription(String description)
     {
         this.description = description;
     }
-    
-    public StateArea getStateArea()
-    {
-        return stateArea;
-    }
-    
-    public void setStateArea(StateArea stateArea)
-    {
-        this.stateArea = stateArea;
-    }
-    
+
     @Override
-    
     public String toString()
     {
         StringBuilder sb = new StringBuilder();
         sb.append("Código del área: ").append(this.getCodeArea())
                 .append("\nNombre del área: ").append(this.getName())
                 .append("\nDescripción: ").append(this.getDescription())
-                .append("\nEstado: ").append(this.getStateArea())
                 .append("\nIncidentes: ");
-        
+
         Node current = incidents.firstElement;
-        
+
         if (current == null) {
             sb.append("No se han encontrados incidentes para esta area.");
         }
-        
+
         while (current != null) {
             sb.append("\n").append(current.value);
             current = current.next;
         }
-        
+
         return sb.toString();
     }
-    
+
 }

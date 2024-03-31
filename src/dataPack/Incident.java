@@ -20,17 +20,12 @@ public class Incident {
     }
 
     String description;
-
     LocalDateTime dateTimeReport;
-
     LocalDateTime dateTimeAttention;
-
     ParkRanger agentSupport;
-
     IncidentStatus incidentStatus;
-
+    Visibility visibility;
     String annotations;
-
     Area area;
 
     public Incident(String incidentCode, String description, LocalDateTime dateTimeReport, LocalDateTime dateTimeAttention,
@@ -44,6 +39,16 @@ public class Incident {
         this.annotations = annotations;
         this.area = area;
         this.incidentCode = incidentCode;
+    }
+
+    public Visibility getVisibility()
+    {
+        return visibility;
+    }
+
+    public void setVisibility(Visibility visibility)
+    {
+        this.visibility = visibility;
     }
 
     public void setDateTimeReport(LocalDateTime dateTimeReport)
@@ -124,11 +129,13 @@ public class Incident {
     @Override
     public String toString()
     {
+        String fullName = this.agentSupport == null ? "No se ha registrado un agente por el momento" : this.agentSupport.fullname();
+        String dateTimeAttention = this.dateTimeAttention == null ? "No ha sido atendido." : this.dateTimeAttention.toString();
 
         return "\nCódigo de incidencia: " + this.incidentCode
                 + "\nFecha/Hora de incidente: " + this.dateTimeReport
-                + "\nFecha/Hora de atención: " + this.dateTimeAttention
-                + "\nAgente de Soporte: " + this.agentSupport.fullname()
+                + "\nFecha/Hora de atención: " + dateTimeAttention
+                + "\nAgente de Soporte: " + fullName
                 + "\nEstado de Incidencia: " + this.incidentStatus
                 + "\nAnotaciones: " + this.annotations
                 + "\nArea: " + this.area.getName();

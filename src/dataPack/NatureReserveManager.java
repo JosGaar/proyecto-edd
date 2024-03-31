@@ -44,7 +44,7 @@ public class NatureReserveManager {
         return false;
     }
 
-    public boolean updateVisitor(String address, String phoneNumber, VisitStatus status, String identification, String names, String lastNames)
+    public boolean updateVisitor(String address, String phoneNumber, String identification, String names, String lastNames)
     {
         Criteria<Visitor> criteriaByIdentification = visitor -> visitor.getIdentification().equals(identification);
         Visitor auxVisitor = visitors.getElement(criteriaByIdentification);
@@ -84,7 +84,7 @@ public class NatureReserveManager {
         return false;
     }
 
-    public boolean updateVisit(String codeVisit, Person visitor, VisitStatus status, LocalDate entryDate, LocalDate exitDate)
+    public boolean updateVisit(String codeVisit, Person visitor, VisitStatus status, LocalDateTime entryDate, LocalDateTime exitDate)
     {
         Criteria<Visit> criteriaByCodeVisit = visit -> visit.getCodeVisit().equals(codeVisit);
         Visit visitToUpdate = visits.getElement(criteriaByCodeVisit);
@@ -188,7 +188,7 @@ public class NatureReserveManager {
 
     }
 
-    public boolean updateArea(String codeArea, String name, String description, StateArea stateArea)
+    public boolean updateArea(String codeArea, String name, String description)
     {
 
         Criteria<Area> criteriaByCodeArea = area -> area.getCodeArea().equals(codeArea);
@@ -204,8 +204,6 @@ public class NatureReserveManager {
             area.setCodeArea(codeArea);
             area.setDescription(description);
             area.setName(name);
-            area.setStateArea(stateArea);
-
         };
 
         return areas.update(auxArea, criteriaByCodeArea, updateAccion);

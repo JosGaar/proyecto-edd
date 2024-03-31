@@ -14,6 +14,22 @@ public class LinkedList<T> implements Iterable<T> {
         this.firstElement = null;
     }
 
+    public int numberOfElements()
+    {
+
+        if (firstElement == null) {
+            return 0; // Empty list
+        }
+
+        int count = 0;
+        Node<T> firstNode = firstElement;
+        while (firstNode != null) {
+            count++;
+            firstNode = firstNode.next;
+        }
+        return count;
+    }
+
     public boolean isEmpty()
     {
         return this.firstElement == null;
@@ -156,13 +172,12 @@ public class LinkedList<T> implements Iterable<T> {
 
     }
 
-    public String getAllElement()
+    public String getAllElementString()
     {
 
         StringBuilder descriptionElements = new StringBuilder();
 
         if (firstElement == null) {
-
             return "No existe registros";
         }
         Node<T> current = firstElement;
@@ -172,7 +187,35 @@ public class LinkedList<T> implements Iterable<T> {
             current = current.next;
         }
         return descriptionElements.toString();
+    }
 
+    // Método para obtener todos los elementos como una lista
+    public List<T> getAllElementList()
+    {
+        List<T> elementsList = new ArrayList<>();
+
+        if (firstElement == null) {
+            return elementsList;
+        }
+
+        Node<T> current = firstElement;
+        while (current != null) {
+            elementsList.add(current.value);
+            current = current.next;
+        }
+
+        return elementsList;
+    }
+
+    // Método para obtener un visitante específico por índice
+    public T getElementAtIndex(int index)
+    {
+        List<T> elementsList = getAllElementList();
+        if (index >= 0 && index < elementsList.size()) {
+            return elementsList.get(index);
+        } else {
+            return null;
+        }
     }
 
     //Aqui se usa un arrayList para ordenar los datos en base a un comparator despues   

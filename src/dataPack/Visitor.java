@@ -5,15 +5,20 @@ public class Visitor extends Person {
     private String address;
     private String phoneNumber;
     private LinkedList<Visit> visits;
-    private VisitStatus status;
+    // private VisitStatus status;
 
-    public Visitor(String address, String phoneNumber, VisitStatus status, String identification, String names, String lastNames)
+    public Visitor(String address, String phoneNumber, String identification, String names, String lastNames)
     {
         super(identification, names, lastNames);
         this.address = address;
         this.phoneNumber = phoneNumber;
-        this.status = status;
+        // this.status = status;
         this.visits = new LinkedList<>();
+    }
+
+    public LinkedList<Visit> getVisits()
+    {
+        return visits;
     }
 
     public String getAddress()
@@ -36,22 +41,22 @@ public class Visitor extends Person {
         this.phoneNumber = phoneNumber;
     }
 
-    public VisitStatus getStatus()
-    {
-        return status;
-    }
-
-    public void setStatus(VisitStatus status)
-    {
-        this.status = status;
-    }
-
     @Override
     public String toString()
     {
+        StringBuilder sb = new StringBuilder();
+
+        for (Visit v : visits) {
+            if (v.getStatus() == VisitStatus.Active) {
+                sb.append("Codigo de visita: ").append(v.getCodeVisit()).append(", fecha: ").append(v.getEntryDate());
+            }
+        }
+
+        String visitsInfo = sb.length() > 0 ? "\n " + sb.toString() + "\n" : "";
         String fatherToString = super.toString();
-        return fatherToString + "\nDirección: " + this.address
-                + "\nNúmero de Télefono: " + this.phoneNumber;
+        return fatherToString + "\nDirección: " + this.address + "\n"
+                + "Número de Télefono: " + this.phoneNumber
+                + visitsInfo;
     }
 
     @Override
