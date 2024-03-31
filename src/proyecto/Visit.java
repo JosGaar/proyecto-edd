@@ -1,6 +1,7 @@
 package proyecto;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class Visit {
 
@@ -85,7 +86,7 @@ public class Visit {
     {
 
         String exit = this.exitDate == null ? "El visitante aun no ha salido de la reserva natural." : this.exitDate.toString();
-        
+
         return "\nCodigo de visita: " + codeVisit + "\n"
                 + "Visitante. " + "Nombres: " + visitor.names + ", apellidos: " + visitor.lastNames + "\n"
                 + "Estado de la visita: " + status + "\n"

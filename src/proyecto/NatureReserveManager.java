@@ -275,7 +275,7 @@ public class NatureReserveManager {
 
         if (!errorController.validateDateTimeRange(startTime, endTime)) {
 
-            return "Error: la fecha de inicio  ingresada es igual o sobrepasa la fecha de fin";
+            return "Error: la fecha de inicio ingresada es igual o sobrepasa la fecha de fin";
         }
 
         TimeIntervalCriteria<Incident> intervalCriteria = (incident, start, end)
@@ -297,8 +297,15 @@ public class NatureReserveManager {
         // Construir un StringBuilder con los incidentes ordenados
         StringBuilder builder = new StringBuilder();
         for (Incident incident : auxIncidents) {
-            builder.append(incident);
-            builder.append("\n");
+            if (incident.getIncidentStatus() == IncidentStatus.resolved) {
+                builder.append("\nIncidencia resuelta: ").append(incident);
+                builder.append("\n");
+            }
+
+            if (incident.getIncidentStatus() == IncidentStatus.inProcess) {
+                builder.append("\nIncidencia en proceso: ").append(incident);
+                builder.append("\n");
+            }
         }
 
         return builder.toString();
@@ -315,7 +322,7 @@ public class NatureReserveManager {
         if (dailyVisits.isEmpty()) {
             report.append("No hay visitantes para la fecha ").append(date).append(".");
         } else {
-            report.append("Informe de visitantes para el ").append(date).append(":\n");
+            report.append("\nInforme de visitantes para el ").append(date).append(":\n");
             for (Visit visit : dailyVisits) {
                 report.append("- ").append(visit.getVisitor().fullname());
                 if (visit.getExitDate() == null) {
@@ -331,7 +338,8 @@ public class NatureReserveManager {
     {
         LinkedList<Visit> dailyVisits = new LinkedList<>();
         for (Visit visit : visits) {
-            if (visit.getEntryDate().equals(date)) {
+            LocalDate entryDate = visit.getEntryDate().toLocalDate();
+            if (entryDate.equals(date)) {
                 dailyVisits.insertElement(visit);
             }
         }

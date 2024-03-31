@@ -29,7 +29,8 @@ public class Program {
                              4. Gestionar areas
                              5. Gestionar incidentes
                              6. Gestionar atenciones de incidentes
-                             7. Salir
+                             7. Reportes
+                             8. Salir
                              """;
             System.out.print(message);
             option = errorControl.validateNumericInputInt(sc, "Seleccione una opcion: ");
@@ -54,13 +55,15 @@ public class Program {
                     manageIncidentMenu(reserveManage);
                     break;
                 case 7:
+                    reportMenu(reserveManage);
+                case 8:
                     System.out.println("\nSaliendo...\n");
                     break;
                 default:
                     System.err.println("Error, opcion no disponible.\n");
             }
 
-        } while (option != 7);
+        } while (option != 8);
     }
 
     public void visitorMenu(NatureReserveManager gestorReserva)
@@ -925,7 +928,7 @@ public class Program {
                 System.out.println("\nLas areas disponibles son: ");
                 for (int i = 0; i < areas.size(); i++) {
                     Area area = areas.get(i);
-                    System.out.println((i + 1) + " nombre: " + area.name + ", descripcion: " + area.description);
+                    System.out.println(("Numero: " + i + 1) + ". Nombre: " + area.name + ", descripcion: " + area.description);
                 }
             } else {
                 System.out.println("No se han encontrado áreas para mostrar.");
@@ -1193,11 +1196,11 @@ public class Program {
 
                     numberParkRanger = errorControl.validateNumericInputInt(sc, "Seleccione una opción: ");
 
-                    if (numberParkRanger <= 0 || numberParkRanger > auxIncidents.size()) {
+                    if (numberParkRanger <= 0 || numberParkRanger > auxParkRangers.size()) {
                         System.err.println("Error: ingrese un numero en el rango valido.");
                     }
 
-                } while (numberParkRanger <= 0 || numberParkRanger > auxIncidents.size());
+                } while (numberParkRanger <= 0 || numberParkRanger > auxParkRangers.size());
 
                 parkRangerObtained = auxParkRangers.get(numberParkRanger - 1);
 
@@ -1244,6 +1247,7 @@ public class Program {
                     Incident aux = auxIncidents.get(i);
                     System.out.println("Numero: " + (i + 1) + ". "
                             + "Nombre area: " + aux.area.name
+                            + ", anotaciones: " + aux.annotations
                             + ", descripcion: " + aux.area.description);
                 }
                 numberIncident = errorControl.validateNumericInputInt(sc, "Seleccione una opción: ");
@@ -1265,6 +1269,58 @@ public class Program {
         } else {
             System.out.println("No hay incidentes en proceso para concluirlos.");
         }
+    }
+
+    // Personas que han visitado la reserva, dado una fecha, señalando aquellas que no han salido.
+    // Incidencias atentidas en un periodo de tiempo.
+    // Incidentecias pendientes.
+    public void reportMenu(NatureReserveManager gestorReserva)
+    {
+        int option;
+        do {
+            System.out.println();
+            String message = """
+                             === Reportes ===
+                             1. Reporte de personas que han visitado la reserva
+                             2. Reporte de las incidencias atentidas y en proceso
+                             3. Regresar
+                             """;
+            System.out.print(message);
+            option = errorControl.validateNumericInputInt(sc, "Seleccione una opcion: ");
+
+            switch (option) {
+                case 1:
+                    visitsReport(gestorReserva);
+                    break;
+                case 2:
+                    incidentsReportings(gestorReserva);
+                    break;
+                case 3:
+                    System.out.println("Regresando...\n");
+                    break;
+                default:
+                    System.err.println("Error, opcion no disponible.\n");
+            }
+
+        } while (option != 3);
+    }
+
+    public void visitsReport(NatureReserveManager gestorReserva)
+    {
+        LocalDate date;
+        date = errorControl.validateLocalDate(sc, "Ingrese la fecha de inicio: ");
+        System.out.println(gestorReserva.generateDailyVisitorReport(date));
+    }
+
+    public void incidentsReportings(NatureReserveManager gestorReserva)
+    {
+        LocalDateTime startTime;
+        LocalDateTime endTime;
+
+        startTime = errorControl.validateLocalDateTime(sc, "Ingrese la fecha de inicio: ");
+        endTime = errorControl.validateLocalDateTime(sc, "Ingrese la fecha de fin: ");
+
+        System.out.println(gestorReserva.orderIncidentsByReportDate(startTime, endTime));
     }
 
 }
