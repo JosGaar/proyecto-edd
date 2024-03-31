@@ -1,9 +1,7 @@
-package dataPack;
+package proyecto;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -32,9 +30,9 @@ public class Program {
                              5. Gestionar incidentes
                              6. Gestionar atenciones de incidentes
                              7. Salir
-                             Seleccione una opcion: 
                              """;
-            option = errorControl.validateNumericInputInt(sc, message);
+            System.out.print(message);
+            option = errorControl.validateNumericInputInt(sc, "Seleccione una opcion: ");
 
             switch (option) {
                 case 1:
@@ -78,9 +76,9 @@ public class Program {
                              3. Actualizar visitante
                              4. Eliminar visitante
                              5. Regresar
-                             Seleccione una opcion: 
                              """;
-            option = errorControl.validateNumericInputInt(sc, message);
+            System.out.print(message);
+            option = errorControl.validateNumericInputInt(sc, "Seleccione una opcion: ");
 
             switch (option) {
                 case 1:
@@ -110,7 +108,7 @@ public class Program {
         String identification, address, phoneNumber, names, lastNames;
 
         System.out.println();
-        identification = errorControl.validateIDNumber(sc, "Ingrese la cedula de identidad: ");
+        identification = errorControl.validateIDNumber(sc, "\nIngrese la cedula de identidad: ");
 
         Criteria<Visitor> criteriaForVisitor = visitor -> visitor.getIdentification().equals(identification);
         Visitor auxVisitor = gestorReserva.visitors.getElement(criteriaForVisitor);
@@ -278,9 +276,9 @@ public class Program {
                              4. Eliminar visita
                              5. Registrar salida visita
                              6. Regresar
-                             Seleccione una opcion: 
                              """;
-            option = errorControl.validateNumericInputInt(sc, message);
+            System.out.print(message);
+            option = errorControl.validateNumericInputInt(sc, "Seleccione una opcion: ");
 
             switch (option) {
                 case 1:
@@ -519,9 +517,9 @@ public class Program {
                              3. Actualizar guardaparque
                              4. Eliminar guardaparque
                              5. Regresar
-                             Seleccione una opcion: 
                              """;
-            option = errorControl.validateNumericInputInt(sc, message);
+            System.out.print(message);
+            option = errorControl.validateNumericInputInt(sc, "Seleccione una opcion: ");
 
             switch (option) {
                 case 1:
@@ -752,9 +750,9 @@ public class Program {
                              3. Actualizar area
                              4. Eliminar area
                              5. Regresar
-                             Seleccione una opcion: 
                              """;
-            option = errorControl.validateNumericInputInt(sc, message);
+            System.out.print(message);
+            option = errorControl.validateNumericInputInt(sc, "Seleccione una opción: ");
 
             switch (option) {
                 case 1:
@@ -985,9 +983,9 @@ public class Program {
                              3. Actualizar incidente
                              4. Eliminar incidente
                              5. Regresar
-                             Seleccione una opcion: 
                              """;
-            option = errorControl.validateNumericInputInt(sc, message);
+            System.out.print(message);
+            option = errorControl.validateNumericInputInt(sc, "Seleccione una opcion: ");
 
             switch (option) {
                 case 1:
@@ -1137,7 +1135,7 @@ public class Program {
     {
         Criteria<Incident> criteriaForIncidents = incident -> incident.getVisibility() == Visibility.visible;
         List<Incident> incidentsVisible = gestorReserva.incidents.getElements(criteriaForIncidents);
-        
+
         if (!incidentsVisible.isEmpty()) {
             for (int i = 0; i < incidentsVisible.size(); i++) {
                 Incident incident = incidentsVisible.get(i);
@@ -1381,9 +1379,9 @@ public class Program {
                              1. Atender un incidente
                              2. Terminar atencion de un incidente
                              3. Regresar
-                             Seleccione una opcion: 
                              """;
-            option = errorControl.validateNumericInputInt(sc, message);
+            System.out.print(message);
+            option = errorControl.validateNumericInputInt(sc, "Seleccione una opcion: ");
 
             switch (option) {
                 case 1:

@@ -1,18 +1,16 @@
-package dataPack;
+package proyecto;
 
 public class Visitor extends Person {
 
     private String address;
     private String phoneNumber;
     private LinkedList<Visit> visits;
-    // private VisitStatus status;
 
     public Visitor(String address, String phoneNumber, String identification, String names, String lastNames)
     {
         super(identification, names, lastNames);
         this.address = address;
         this.phoneNumber = phoneNumber;
-        // this.status = status;
         this.visits = new LinkedList<>();
     }
 

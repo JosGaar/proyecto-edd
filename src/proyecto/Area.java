@@ -1,22 +1,10 @@
-package dataPack;
+package proyecto;
 
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-/**
- *
- * @author ASUS
- */
 public class Area {
 
     String codeArea;
-
     String name;
-
     String description;
-
-    // StateArea stateArea;
     LinkedList<Incident> incidents;
 
     public Area(String codeArea, String name, String description)
@@ -24,7 +12,6 @@ public class Area {
         this.codeArea = codeArea;
         this.name = name;
         this.description = description;
-        // this.stateArea = stateArea;
         this.incidents = new LinkedList<>();
     }
 

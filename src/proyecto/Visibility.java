@@ -1,4 +1,4 @@
-package dataPack;
+package proyecto;
 
 
 public enum Visibility {
