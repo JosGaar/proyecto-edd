@@ -358,31 +358,6 @@ public class Program {
         }
     }
 
-    public VisitStatus visitStatus()
-    {
-        VisitStatus estado = null;
-        int opcion;
-
-        do {
-            String message = "Seleccione un estado: activa (1), inactiva (2): ";
-            opcion = errorControl.validateNumericInputInt(sc, message);
-
-            switch (opcion) {
-                case 1:
-                    estado = VisitStatus.Active;
-                    break;
-                case 2:
-                    estado = VisitStatus.Inactive;
-                    break;
-                default:
-                    System.err.println("Seleccione un estado valido.\n");
-            }
-
-        } while (opcion != 1 && opcion != 2);
-
-        return estado;
-    }
-
     public void showVisit(NatureReserveManager gestorReserva)
     {
         Criteria<Visit> criteriaForVisit = visit -> visit.getVisibility() == Visibility.visible;
@@ -419,31 +394,6 @@ public class Program {
         } else {
             System.out.println("Error: no se ha encontrado la visita.");
         }
-    }
-
-    public VisitStatus updateStatusVisit(VisitStatus originalStatus)
-    {
-        String message;
-        VisitStatus newStatus = null;
-        int option;
-        do {
-            message = "¿Desea cambiar el estado de la visita?\nSi (1) / No (2): ";
-            option = errorControl.validateNumericInputInt(sc, message);
-
-            switch (option) {
-                case 1:
-                    newStatus = visitStatus();
-                    break;
-                case 2:
-                    newStatus = originalStatus;
-                    break;
-                default:
-                    System.err.println("Error: opcion no conocida.\n");
-            }
-
-        } while (option != 1 && option != 2);
-
-        return newStatus;
     }
 
     public LocalDateTime updateDateEntry(LocalDateTime originalDate)
@@ -590,31 +540,6 @@ public class Program {
         }
     }
 
-    public RangerStatus parkRangerStatus()
-    {
-        RangerStatus estado = null;
-        int opcion;
-
-        do {
-            String message = "Seleccione un estado: ocupado (1), desocupado (2): ";
-            opcion = errorControl.validateNumericInputInt(sc, message);
-
-            switch (opcion) {
-                case 1:
-                    estado = RangerStatus.busy;
-                    break;
-                case 2:
-                    estado = RangerStatus.free;
-                    break;
-                default:
-                    System.err.println("Seleccione un estado valido.\n");
-            }
-
-        } while (opcion != 1 && opcion != 2);
-
-        return estado;
-    }
-
     public void showParkRangers(NatureReserveManager gestorReserva)
     {
         Criteria<ParkRanger> criteriaForParkRangers = parkRanger -> parkRanger.getVisibility() == Visibility.visible;
@@ -707,31 +632,6 @@ public class Program {
         return newDate;
     }
 
-    public RangerStatus changeRangerStatus(RangerStatus originalStatus)
-    {
-        String message;
-        RangerStatus newStatus = null;
-        int option;
-        do {
-            message = "¿Desea cambiar el estado del guardabosque?\nSi (1) / No (2): ";
-            option = errorControl.validateNumericInputInt(sc, message);
-
-            switch (option) {
-                case 1:
-                    newStatus = parkRangerStatus();
-                    break;
-                case 2:
-                    newStatus = originalStatus;
-                    break;
-                default:
-                    System.err.println("Error: opcion no conocida.\n");
-            }
-
-        } while (option != 1 && option != 2);
-
-        return newStatus;
-    }
-
     public void deleteRanger(NatureReserveManager gestorReserva)
     {
         String id;
@@ -816,31 +716,6 @@ public class Program {
         }
     }
 
-    public StateArea selectStatusArea()
-    {
-        String message;
-        StateArea area = null;
-        int option;
-        do {
-            message = "Accesibilidad del area: accesible (1), innacesible (2): ";
-            option = errorControl.validateNumericInputInt(sc, message);
-
-            switch (option) {
-                case 1:
-                    area = StateArea.accessible;
-                    break;
-                case 2:
-                    area = StateArea.inaccessible;
-                    break;
-                default:
-                    System.err.println("Error: opcion no conocida.\n");
-            }
-
-        } while (option != 1 && option != 2);
-
-        return area;
-    }
-
     public void showAreas(NatureReserveManager gestorReserva)
     {
 
@@ -921,31 +796,6 @@ public class Program {
         } while (option != 1 && option != 2);
 
         return newDescription;
-    }
-
-    public StateArea newStateArea(StateArea originalState)
-    {
-        String message;
-        StateArea newState = null;
-        int option;
-        do {
-            message = "¿Desea cambiar el estado del area?\nSi (1) / No (2): ";
-            option = errorControl.validateNumericInputInt(sc, message);
-
-            switch (option) {
-                case 1:
-                    newState = selectStatusArea();
-                    break;
-                case 2:
-                    newState = originalState;
-                    break;
-                default:
-                    System.err.println("Error: opcion no conocida.\n");
-            }
-
-        } while (option != 1 && option != 2);
-
-        return newState;
     }
 
     public void deleteArea(NatureReserveManager gestorReserva)
@@ -1063,52 +913,6 @@ public class Program {
 
     }
 
-    public IncidentStatus selectIndicentStatus()
-    {
-        String message;
-        IncidentStatus status = null;
-        int option;
-        do {
-            message = "Estado del incidente: en proceso (1), pendiente (2), resuelta (3): ";
-            option = errorControl.validateNumericInputInt(sc, message);
-
-            switch (option) {
-                case 1:
-                    status = IncidentStatus.inProcess;
-                    break;
-                case 2:
-                    status = IncidentStatus.pending;
-                    break;
-                default:
-                    System.err.println("Error: opcion no conocida.\n");
-            }
-
-        } while (option != 1 && option != 2 && option != 3);
-
-        return status;
-    }
-
-    public ParkRanger selectAgentSupport(NatureReserveManager gestorReserva)
-    {
-
-        Criteria<ParkRanger> criteria = parkRanger -> parkRanger.status == RangerStatus.free;
-        List<ParkRanger> parkRangers = gestorReserva.parkRangers.getElements(criteria);
-
-        System.out.println("\nGuardabosques disponibles:");
-        for (int i = 0; i < parkRangers.size(); i++) {
-            System.out.println((i + 1) + ". " + parkRangers.get(i).getNames() + ", " + parkRangers.get(i).lastNames + "\n");
-        }
-        int selection;
-        do {
-            selection = errorControl.validateNumericInputInt(sc, "Seleccione un número para elegir al guardabosques: ");
-            if (selection < 1 || selection > parkRangers.size()) {
-                System.err.println("Ingrese un número valido.\n");
-            }
-        } while (selection < 1 || selection > parkRangers.size());
-
-        return parkRangers.get(selection - 1);
-    }
-
     public Area selectAreaIncident(NatureReserveManager gestorReserva)
     {
         Area areaFound;
@@ -1168,10 +972,7 @@ public class Program {
         if (auxIncident != null) {
             newDescription = changeDescriptionIncident(auxIncident.description);
             newAnnotations = changeAnnotations(auxIncident.annotations);
-            // newAgentSupport = changeAgentSupport(auxIncident.agentSupport, gestorReserva);
             newDateTimeReport = changeDateTimeReport(auxIncident.dateTimeReport);
-            // newDateTimeAttention = changeDateTimeAttetion(auxIncident.dateTimeAttention);
-            // newIncidentStatus = changeIncidentStatus(auxIncident.incidentStatus);
             newArea = changeArea(auxIncident.area, gestorReserva);
 
             if (gestorReserva.updateIncident(incidentCode, newDescription, newDateTimeReport, auxIncident.getDateTimeAttention(),
@@ -1235,56 +1036,6 @@ public class Program {
         return newTime;
     }
 
-    public LocalDateTime changeDateTimeAttetion(LocalDateTime originalDate)
-    {
-        String message;
-        LocalDateTime newTime = null;
-        int option;
-        do {
-            message = "¿Desea cambiar el tiempo de atencion del incidente?\nSi (1) / No (2): ";
-            option = errorControl.validateNumericInputInt(sc, message);
-
-            switch (option) {
-                case 1:
-                    newTime = errorControl.validateLocalDateTime(sc, "Ingrese el nuevo tiempo de atención del incidente\n");
-                    break;
-                case 2:
-                    newTime = originalDate;
-                    break;
-                default:
-                    System.err.println("Error, opcion no encontrada.\n");
-            }
-
-        } while (option != 1 && option != 2);
-
-        return newTime;
-    }
-
-    public IncidentStatus changeIncidentStatus(IncidentStatus originalStatus)
-    {
-        String message;
-        IncidentStatus statusIncident = null;
-        int option;
-        do {
-            message = "¿Desea cambiar el estado del incidente?\nSi (1) / No (2): ";
-            option = errorControl.validateNumericInputInt(sc, message);
-
-            switch (option) {
-                case 1:
-                    statusIncident = selectIndicentStatus();
-                    break;
-                case 2:
-                    statusIncident = originalStatus;
-                    break;
-                default:
-                    System.err.println("Error, opcion no encontrada.\n");
-            }
-
-        } while (option != 1 && option != 2);
-
-        return statusIncident;
-    }
-
     public String changeAnnotations(String originalAnnotation)
     {
         String message;
@@ -1308,31 +1059,6 @@ public class Program {
         } while (option != 1 && option != 2);
 
         return newAnottations;
-    }
-
-    public ParkRanger changeAgentSupport(ParkRanger originalParkRanger, NatureReserveManager gestorReserva)
-    {
-        String message;
-        ParkRanger newParkRanger = null;
-        int option;
-        do {
-            message = "¿Desea cambiar el agente de soporte del incidente?\nSi (1) / No (2): ";
-            option = errorControl.validateNumericInputInt(sc, message);
-
-            switch (option) {
-                case 1:
-                    newParkRanger = selectAgentSupport(gestorReserva);
-                    break;
-                case 2:
-                    newParkRanger = originalParkRanger;
-                    break;
-                default:
-                    System.err.println("Error, opcion no encontrada.\n");
-            }
-
-        } while (option != 1 && option != 2);
-
-        return newParkRanger;
     }
 
     public Area changeArea(Area originalArea, NatureReserveManager gestorReserva)
