@@ -4,6 +4,7 @@
  */
 package dataPack;
 
+import dataStructures.LinkedList;
 import java.time.LocalDate;
 
 /**
@@ -47,20 +48,37 @@ public class Visitor extends Person{
     public void setStatus(VisitStatus status) {
         this.status = status;
     }
+
+    public void insertVisits(Visit visit) {
+        this.visits.addByLast(visit);
+    }
+    
+    public void removeVisits(Visit visit) {
+        this.visits.remove(visit);
+    }
     
     @Override
     public  String toString(){
         String fatherToString= super.toString();
-        return fatherToString+"\nDirección registrada:"+this.address
-                +"\nNúmero de Télefono:"+this.phoneNumber;
+        return fatherToString+"\nDirección registrada: "+this.address
+                +"\nNúmero de Télefono: "+this.phoneNumber;
     }
     
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof Visitor){
+        if (this == obj) 
+            return true;
+        
+        if (obj instanceof Visitor) {
             Visitor v = (Visitor) obj;
             return v.identification.equals(this.identification);
         }
-        return true;
+       
+       if (obj instanceof String) {
+            String id = (String) obj;
+            return id.equals(this.identification);
+        }
+       
+        return false;
     }
 }

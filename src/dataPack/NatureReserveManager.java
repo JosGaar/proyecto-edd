@@ -4,6 +4,7 @@
  */
 package dataPack;
 
+import dataStructures.LinkedList;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -30,11 +31,20 @@ public class NatureReserveManager {
         this.visits = new LinkedList<>();
     }
     
+    /*
     public boolean addVisitor(Visitor newVisitor) {
-        Criteria<Visitor> criteriaByIdentification = visitor -> visitor.getIdentification().equals(newVisitor.getIdentification());
-        
-        if (visitors.getElement(criteriaByIdentification) == null) 
-            return visitors.insertElement(newVisitor);
+        Criteria<Visitor> criteriaByIdentification = visitor -> visitor.getIdentification().equals(identification);
+        if(!visitors.contains(criteriaByIdentification)){
+            return visitors.addByLast(newVisitor);
+        }
+        return false;
+     }
+    */
+    
+    public boolean addVisitor(Visitor newVisitor) {
+        if(!visitors.contains(newVisitor)){
+            return visitors.addByLast(newVisitor);
+        }
         return false;
      }
     
@@ -43,7 +53,7 @@ public class NatureReserveManager {
         Visitor auxVisitor = visitors.getElement(criteriaByIdentification);
         
         if (auxVisitor != null) 
-            return visitors.removeElement(auxVisitor);
+            return visitors.remove(auxVisitor);
         return false;
     }
     
@@ -64,26 +74,45 @@ public class NatureReserveManager {
     }
     
     public boolean addVisit(Visit newVisit) {
-        LinkedList<Visit> activeVisits = getActiveVisits();
-        for(Visit visit : activeVisits){
-            if(visit.getVisitor().equals(newVisit.getVisitor())){
-                return false;
-            }
+        if(!this.visitors.contains(newVisit.getVisitor()))
+            return false;
+        
+        if(this.visits.contains(newVisit))
+            return false;
+        
+        LinkedList<Visitor> activeVisitors = getActiveVisitors();
+        if(activeVisitors.contains(newVisit.getVisitor()))
+            return false;
+        
+        if(visits.addByLast(newVisit)){
+            newVisit.getVisitor().setStatus(VisitStatus.Active);
+            newVisit.getVisitor().insertVisits(newVisit);
+            return true;
         }
-       return visits.insertElement(newVisit);
+        return false;
     }
-
+    
+    public boolean endVisit(String codeVisit, LocalDate endOfVisit) {
+        Visit visitToEnd = this.visits.getElement(codeVisit);
+        
+        if(visitToEnd == null || !visitToEnd.getVisitor().getStatus().equals(VisitStatus.Active))
+                return false;
+        visitToEnd.getVisitor().setStatus(VisitStatus.Inactive );
+        visitToEnd.setExitDate(endOfVisit);
+        return true;
+    }
+    
     public boolean removeVisit(String codeVisit) {
         Criteria<Visit> criteriaByCodeVisit = visit -> visit.getCodeVisit().equals(codeVisit);
         Visit visitToRemove = visits.getElement(criteriaByCodeVisit);
         
         if (visitToRemove != null) 
-            return visits.removeElement(visitToRemove);
+            return visits.remove(visitToRemove);
         return false;
     }
 
-    public boolean updateVisit(String codeVisit, Person visitor, VisitStatus status, LocalDate entryDate, LocalDate exitDate) {
-         Criteria<Visit> criteriaByCodeVisit = visit -> visit.getCodeVisit().equals(codeVisit);
+    public boolean updateVisit(String codeVisit, Visitor visitor, VisitStatus status, LocalDate entryDate, LocalDate exitDate) {
+        Criteria<Visit> criteriaByCodeVisit = visit -> visit.getCodeVisit().equals(codeVisit);
         Visit visitToUpdate = visits.getElement(criteriaByCodeVisit);
         
         if (visitToUpdate == null) 
@@ -91,7 +120,6 @@ public class NatureReserveManager {
         
         Consumer<Visit> updateAction = updateVisit -> {
             updateVisit.setVisitor(visitor);
-            updateVisit.setStatus(status);
             updateVisit.setEntryDate(entryDate);
             if (exitDate != null) {
                 updateVisit.setExitDate(exitDate);
@@ -105,7 +133,7 @@ public class NatureReserveManager {
         ParkRanger auxParkRanger = parkRangers.getElement(criteriaByCedula);
         
         if (auxParkRanger == null) 
-            return parkRangers.insertElement(newParkRanger);
+            return parkRangers.addByLast(newParkRanger);
         
         auxParkRanger = null; // Limpiar el objeto auxParkRanger
         return false;
@@ -116,7 +144,7 @@ public class NatureReserveManager {
         ParkRanger auxParkRanger = parkRangers.getElement(criteriaByIdentification);
         
         if (auxParkRanger != null) 
-            return parkRangers.removeElement(auxParkRanger);
+            return parkRangers.remove(auxParkRanger);
 
         return false;
     }
@@ -142,7 +170,7 @@ public class NatureReserveManager {
         Area auxArea = areas.getElement(criteriaByCodeArea);
 
         if (auxArea == null) 
-            return areas.insertElement(newArea);
+            return areas.addByLast(newArea);
 
         auxArea = null;
         return false;
@@ -153,7 +181,7 @@ public class NatureReserveManager {
         Area auxArea = areas.getElement(criteriaByCodeArea);
 
         if (auxArea != null) 
-            return areas.removeElement(auxArea);
+            return areas.remove(auxArea);
 
         return false;
     }
@@ -183,7 +211,7 @@ public class NatureReserveManager {
         Incident auxIncident = incidents.getElement(criteriaByCodeIncident);
 
         if (auxIncident == null) 
-            return incidents.insertElement(newIncident);
+            return incidents.addByLast(newIncident);
 
         auxIncident = null;
         return false;
@@ -194,7 +222,7 @@ public class NatureReserveManager {
         Incident auxIncident = incidents.getElement(criteriaByCodeIncident);
 
         if (auxIncident != null) 
-            return incidents.removeElement(auxIncident);
+            return incidents.remove(auxIncident);
 
         return false;
     }
@@ -245,47 +273,51 @@ public class NatureReserveManager {
 
         return builder.toString();
     }
-       
+    
     public String generateDailyVisitorReport(LocalDate date) {
-        StringBuilder report = new StringBuilder();
-        
-        // Filtrar las visitas para obtener solo las que coinciden con la fecha dada
         LinkedList<Visit> dailyVisits = visitsPerDay(date);
-        
-        // Generar el informe con la información de las visitas filtradas
+        return dailyVisits.getAllElements();
+    }
+       
+    /*public String generateDailyVisitorReport(LocalDate date) {
+        StringBuilder report = new StringBuilder();
+        LinkedList<Visit> dailyVisits = visitsPerDay(date);
         if (dailyVisits.isEmpty()) {
             report.append("No hay visitantes para la fecha ").append(date).append(".");
         } else {
-            report.append("Informe de visitantes para el ").append(date).append(":\n");
+            report.append("Informe de visitantes para el ").append(date);
             for (Visit visit : dailyVisits) {
-                report.append("- ").append(visit.getVisitor().fullname());
-                if (visit.getExitDate() == null) {
-                    report.append(" (Aún en la reserva)");
-                }
-                report.append("\n");
-            }
+                report.append("\n- ").append(visit.toString());
+             }
         }
         return report.toString();
-    }
+    }*/
     
-    public LinkedList<Visit> visitsPerDay(LocalDate date){
+    private LinkedList<Visit> visitsPerDay(LocalDate date){
         LinkedList<Visit> dailyVisits = new LinkedList<>();
         for (Visit visit : visits) {
             if (visit.getEntryDate().equals(date)) {
-                dailyVisits.insertElement(visit);
+                dailyVisits.addByLast(visit);
             }
         }
         return dailyVisits;
     }
     
-    public LinkedList<Visit> getActiveVisits() {
-        LinkedList<Visit> activeVisits = new LinkedList<>();
+    private LinkedList<Visitor> getActiveVisitors() {
+        LinkedList<Visitor> activeVisitors = new LinkedList<>();
 
-        for (Visit visit : visits) {
-            if (visit.getStatus() == VisitStatus.Active) {
-                activeVisits.insertElement(visit);
+        for (Visitor visitor : this.visitors) {
+            if (visitor.getStatus() == VisitStatus.Active) {
+                activeVisitors.addByLast(visitor);
             }
         }
-        return activeVisits;
+        return activeVisitors;
     }
+    
+     
+    private LinkedList<Visitor> getActiveVisitorsC() {
+        Criteria<Visitor> criteriaByActivity = visitor -> visitor.getStatus().equals(VisitStatus.Active);
+        return this.visitors.getByValue(criteriaByActivity);
+    }    
+    
 }

@@ -14,103 +14,6 @@ import java.time.LocalDateTime;
 public class Principal {
 
     public static void main(String[] args) {
-//           // Crear una lista enlazada para almacenar guardabosques
-//        LinkedList<ParkRanger> listaParkRanger = new LinkedList<>();
-//
-//        // Añadir guardabosques a la lista
-//        ParkRanger guardabosques1 = new ParkRanger("1234567890", "Juan", "Perez", LocalDate.parse("2023-01-15"));
-//        ParkRanger guardabosques4 = new ParkRanger("09876543211", "Maria", "Gomez", LocalDate.parse("2023-03-20"));
-// 
-//                ParkRanger guardabosques3 = new ParkRanger("0987654321", "Pepe", "Gomez", LocalDate.parse("2023-03-20"));
-//                
-//                NatureReserveManager gestor = new NatureReserveManager();
-//                
-//                    System.out.println( gestor.addParkRanger(guardabosques3));
-//                    
-//                    
-//                   // System.out.println(gestor.removeParkRanger(guardabosques));
-//                
-//            //   System.out.println( gestor.addParkRanger(guardabosques4));
-//                
-//                
-//              ParkRanger guardabosques4 = null;
-//        listaParkRanger.insertElement(guardabosques1);
-//        listaParkRanger.insertElement(guardabosques2);
-//            listaParkRanger.insertElement(guardabosques4);
-//          listaParkRanger.insertElement(guardabosques3);
-//listaParkRanger.removeElement(guardabosques4);
-//        // Imprimir la lista de guardabosques
-//     // Definir el criterio de búsqueda por cédula
-//     
-//                                          //pametros        //expresion
-//Criteria< ParkRanger> criteriaByCedula = guardabosques -> guardabosques.lastNames.equals("Juan");
-//
-//ParkRanger guardabosquesEncontrado = listaParkRanger.getElement(criteriaByCedula);
-//
-//if (guardabosquesEncontrado!=null){
-//    System.out.println("Encontrado");  
-//    }
-//
-// Crear una lista enlazada para almacenar guardabosques
-//LinkedList<ParkRanger> listaGuardabosques = new LinkedList<>();
-//
-// //Añadir guardabosques a la lista
-//ParkRanger guardabosques1 = new ParkRanger("1234567890", "Juan", "Perez", LocalDate.of(2023, 1, 15));
-//ParkRanger guardabosques2 = new ParkRanger("0987654321", "Maria", "Gomez", LocalDate.of(2023, 3, 20));
-//
-//listaGuardabosques.insertElement(guardabosques1);
-//listaGuardabosques.insertElement(guardabosques2);
-//
-// //Definir el criterio de búsqueda por cédula
-//                                         //Parametro        //Funcion a evaluar
-//Criteria<ParkRanger> criteriaByCedula = guardabosques -> guardabosques.getIdentification().equals("1234567890");
-//
-//ParkRanger auxGuardabosques = listaGuardabosques.getElement(criteriaByCedula);
-//
-// //Definir la acción de actualización
-//Consumer<ParkRanger> updateAction = guardabosques -> {
-//    guardabosques.setNames("NuevoNombre");
-//    guardabosques.setLastNames("NuevoApellido");
-//
-//    
-//};//En esta parte se define la expresion lambda que se ejecutara cuando el metodo accept  sea llamado
-//
-// //Llamar al método actualizar
-//listaGuardabosques.update(guardabosques1, criteriaByCedula, updateAction);
-//
-//        System.out.println("");
-
-//
-//
-    //Crear un objeto Area
-       // Area area = new Area("Área de Observación de Aves", "Zona designada para la observación de aves.", StateArea.accessible);
-
-        // Cambiar el estado del área
-        //area.setStateArea(StateArea.inaccessible);
-
-//         //Imprimir el nuevo estado del área
-////        System.out.println("El estado del área '" + area.getName() + "' ha sido cambiado a: " + area.getStateArea());
-//        NatureReserveManager manager = new NatureReserveManager();
-//
-//        // Crear algunos guardaparques
-//        ParkRanger ranger1 = new ParkRanger("123456789", "John", "Doe", LocalDate.of(2020, 5, 15));
-//        ParkRanger ranger2 = new ParkRanger("987654321", "Jane", "Smith", LocalDate.of(2018, 8, 20));
-//
-//        // Agregar los guardaparques al gestor de la reserva natural
-//        manager.addParkRanger(ranger1);
-//        manager.addParkRanger(ranger2);
-//        
-//         LinkedList<ParkRanger> listaParkRanger = new LinkedList<>();
-//         listaParkRanger.insertElement(ranger2);
-//         
-//        listaParkRanger.insertElement(ranger1);
-//        
-//     //   System.out.println(listaParkRanger.getAllElements());
-//        // Actualizar el guardaparques con la identificación "123456789"
-//        ;
-
-       // System.out.println(manager.updateParkRanger("123456789", "Actualizado", "Apellido Actualizado", LocalDate.of(2020, 5, 15)));
-        // Crear una instancia de NatureReserveManager
         NatureReserveManager manager = new NatureReserveManager();
         
         // Crear instancias de ParkRanger
@@ -120,9 +23,9 @@ public class Principal {
         manager.addParkRanger(parkRanger1);
         manager.addParkRanger(parkRanger2);
         
-        Visitor visitor1 = new Visitor("123 Main St", "555-1234", VisitStatus.Active, "V1234", "John", "Doe");
-        Visitor visitor2 = new Visitor("456 Elm St", "555-5678", VisitStatus.Inactive, "V5678", "Jane", "Smith");
-        Visitor visitor3 = new Visitor("789 Oak St", "555-9012", VisitStatus.Active, "V9012", "Alice", "Johnson");
+        Visitor visitor1 = new Visitor("123 Main St", "555-1234", VisitStatus.Inactive, "V1234", "Vistante 1", "Doe");
+        Visitor visitor2 = new Visitor("456 Elm St", "555-5678", VisitStatus.Inactive, "V5678", "Visitante 2", "Smith");
+        Visitor visitor3 = new Visitor("789 Oak St", "555-9012", VisitStatus.Inactive, "V9012", "Alice", "Johnson");
         
         manager.addVisitor(visitor1);
         manager.addVisitor(visitor2);
@@ -149,20 +52,33 @@ public class Principal {
 
         System.out.println(manager.orderIncidentsByReportDate(startTime, endTime));
         
-        
         /*Nota lo que se encuenta comentado se utilizo para fines de prueba*/
         
         // Creating instances of Visit
-        Visit visit1 = new Visit("V001", visitor1, VisitStatus.Active, LocalDate.of(2021, 3, 19));
-        visit1.setExitDate(LocalDate.of(2021, 3, 19)); // Assuming the visitor exits on the same day
-        visit1.setStatus(VisitStatus.Inactive);
-        Visit visit2 = new Visit("V002", visitor2, VisitStatus.Active, LocalDate.of(2021, 3, 19));
+        Visit visit1 = new Visit("V-1", visitor1, LocalDate.of(2021, 3, 19));
+        Visit visit2 = new Visit("V-2", visitor2, LocalDate.of(2021, 3, 19));
         
         manager.addVisit(visit1);
         manager.addVisit(visit2);
+        manager.endVisit("V-1", LocalDate.now());
+        manager.endVisit("V-n", LocalDate.now());
+        
+        String mensaje="";
+        /*mensaje  = (manager.endVisit("V-1", LocalDate.now()))?"Visita terminada":"Fallo de cierre";//Prueba de fin de visita
+        System.out.println(mensaje);
+        mensaje = (manager.endVisit("V-2", LocalDate.now()))?"Visita terminada":"Fallo de cierre";//no finaliza un visita si ya esta finalizada
+        System.out.println(mensaje);*/
+        mensaje = (manager.endVisit("V-2", LocalDate.now()))?"Visita terminada":"Fallo de cierre";//no finaliza un visita si ya esta finalizada
+        System.out.println(mensaje);
+        
+        Visit visit3 = new Visit("V-3", visitor2,  LocalDate.of(2021, 3, 19));
+        
+        mensaje = (manager.addVisit(visit3))?"A�adido a�n siendo repetido":"Visita no a�adida\n";
+        System.out.println(mensaje);
         
         LocalDate search = LocalDate.of(2021, 3, 19);
         
-        System.out.println(manager.generateDailyVisitorReport(search));
+        System.out.println("Informe de visitantes para el "+search+":\n"
+                +manager.generateDailyVisitorReport(search));
         }
 }

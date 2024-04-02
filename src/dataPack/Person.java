@@ -57,7 +57,7 @@ public class Person {
    
     @Override
     public String toString(){
-    return fullname()+
-           "\nIdentificación: "+this.identification;
+    return "\nIdentificación: "+this.identification
+            +fullname();
     }
 }

@@ -7,9 +7,10 @@ package dataPack;
 /**
  *
  * @author ASUS
+ * @param <T>
  */
 //Interfaz funcional solo tiene un metodo abstracto
 @FunctionalInterface
-interface Criteria<T> {
+public interface Criteria<T> {
     boolean match(T value);
 }

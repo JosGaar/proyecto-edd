@@ -11,16 +11,13 @@ import java.time.LocalDate;
  */
 public class Visit {
     private String codeVisit;
-    private Person visitor;
-    private VisitStatus status;
-    
+    private Visitor visitor;
     private LocalDate entryDate;
     private LocalDate exitDate;
     
-    public Visit(String codeVisit, Person visitor, VisitStatus status, LocalDate entryDate) {
+    public Visit(String codeVisit, Visitor visitor, LocalDate entryDate) {
         this.codeVisit = codeVisit;
         this.visitor = visitor;
-        this.status = status;
         this.entryDate = entryDate;
     }
 
@@ -32,20 +29,12 @@ public class Visit {
         this.codeVisit = codeVisit;
     }
 
-    public Person getVisitor() {
+    public Visitor getVisitor() {
         return visitor;
     }
 
-    public void setVisitor(Person visitor) {
+    public void setVisitor(Visitor visitor) {
         this.visitor = visitor;
-    }
-
-    public VisitStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(VisitStatus status) {
-        this.status = status;
     }
 
     public LocalDate getEntryDate() {
@@ -62,5 +51,32 @@ public class Visit {
 
     public void setExitDate(LocalDate exitDate) {
         this.exitDate = exitDate;
+    }
+    
+    @Override
+    public  String toString(){
+        String fatherToString= super.toString();
+        return "\nCódigo de la Visita: "+this.codeVisit
+                +this.visitor.toString()
+                +"\nFecha de Entrada: "+this.entryDate
+                +"\nFecha de Salida: "+((this.exitDate != null)?this.exitDate:"(Aún en la reserva)");
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) 
+            return true;
+        
+        if (obj instanceof Visit) {
+            Visit v = (Visit) obj;
+            return v.getCodeVisit().equals(this.getCodeVisit());
+        }
+       
+       if (obj instanceof String) {
+            String id = (String) obj;
+            return id.equals(this.getCodeVisit());
+        }
+       
+        return false;
     }
 }

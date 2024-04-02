@@ -2,8 +2,11 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package dataPack;
+package dataStructures;
 
+import dataPack.Consumer;
+import dataPack.Criteria;
+import dataPack.TimeIntervalCriteria;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -20,7 +23,7 @@ public class LinkedList<T> implements Iterable<T>{
         this.firstElement = null;
     }
 
-    public boolean insertElement(T value) {
+    public boolean addByLast(T value) {
         if (value == null) 
             return false;
         Node<T> newNode = new Node<>(value);
@@ -32,34 +35,27 @@ public class LinkedList<T> implements Iterable<T>{
         }
         return true;
     }
-
-   public boolean removeElement(T value) {
-        if (value == null || isEmpty()) {
-            return false; // No se puede eliminar si el valor es nulo o la lista está vacía
-        }
-        
-        // Caso especial: el elemento a eliminar es el primer elemento de la lista
+    
+   public boolean remove(T value) {
+        if (value == null || isEmpty()) 
+            return false;
+                    
         if (firstElement.value.equals(value)) {
-            firstElement = firstElement.next; // Actualizar el primer elemento para que apunte al siguiente nodo
-            return true; // Indicar que se eliminó el elemento correctamente
+            return this.removeFirst();
         }
         
-        // Buscar el nodo anterior al nodo a eliminar
         Node<T> current = firstElement;
         while (current.next != null && !current.next.value.equals(value)) {
             current = current.next;
         }
         
-        // Si no se encontró el elemento a eliminar, devolver false
         if (current.next == null)
             return false;
         
-        // Enlazar el nodo anterior al nodo siguiente al nodo a eliminar
         current.next = current.next.next;
-        return true; // Indicar que se eliminó el elemento correctamente
+        return true;
     }
     
-    //Con este metodo  se podra filtrar para el delete, add y updateElement
     public T getElement(Criteria<T> criteria) {
         if (isEmpty() || criteria == null)
             return null;
@@ -72,28 +68,63 @@ public class LinkedList<T> implements Iterable<T>{
         return null;
     }
     
-    public T getElement(T data) {
-        if (isEmpty() || data == null)
+    public boolean contains(Criteria<T> criteria) {
+        if (isEmpty() || criteria == null)
+            return false;
+        Node<T> current = firstElement;
+        while (current != null) {
+            if (criteria.match(current.value)) 
+                return true;
+            current = current.next;
+        }
+        return false;
+    }
+    
+    public boolean contains(Object obj) {
+        if (isEmpty() || obj == null)
+            return false;
+        Node<T> current = firstElement;
+        while (current != null) {
+            if (current.value.equals(obj)) 
+                return true;
+            current = current.next;
+        }
+        return false;
+    }
+    
+    public T getElement(Object obj) {
+        if (isEmpty() || obj == null)
             return null;
         Node<T> current = firstElement;
         while (current != null) {
-            if (data.equals(current.value)) 
+            if (current.value.equals(obj)) 
                 return current.value;
             current = current.next;
         }
         return null;
     }
+    
+    public LinkedList<T> getByValue(Criteria<T> criteria) {
+        LinkedList<T> foundList = new LinkedList<>();
+        
+        Node<T> current = firstElement;
+        
+        while (current != null) {
+            if (current.value != null && criteria.match(current.value)) {
+                foundList.addByLast(current.value);
+            }
+        }
+        return foundList;
+    }
 
     public boolean updateElement(T elementoActualizar, Criteria<T> criteria, Consumer<T> updateAction) {
         if (isEmpty() || criteria == null || updateAction == null) {
             return false; 
-            // No se puede actualizar si la lista está vacía o si los parámetros son nulos
         }
         
         Node<T> current = firstElement;
         while (current != null) {
             if (criteria.match(current.value)) {
-                // Si el elemento actual cumple con el criterio, aplicar la acción de actualización
                 updateAction.accept(current.value);
                 return true;
             }
@@ -105,12 +136,11 @@ public class LinkedList<T> implements Iterable<T>{
     public boolean updateElement(T elementUpdate) {
         if (this.isEmpty()) {
             return false; 
-            // No se puede actualizar si la lista está vacía o si los parámetros son nulos
         }
         
         Node<T> current = firstElement;
         while (current != null) {
-            if (elementUpdate.equals(current.value)) {
+            if (current.value.equals(elementUpdate)) {
                 current.value = elementUpdate;
                 return true;
             }
@@ -148,10 +178,16 @@ public class LinkedList<T> implements Iterable<T>{
            }
 
            return elementsWithinInterval;
-       
-       }
+        }
     
-     public Node<T> lastElement() {
+    public boolean removeFirst(){
+        if (isEmpty()) 
+            return false;
+        this.firstElement = this.firstElement.next;
+        return true;
+    }
+    
+     private Node<T> lastElement() {
         if (isEmpty()) 
             return null;
         Node<T> current = firstElement;
@@ -160,9 +196,26 @@ public class LinkedList<T> implements Iterable<T>{
         }
         return current;
     }
+     
+     public LinkedList<T> findByValue(T data) {
+        LinkedList<T> foundList = new LinkedList<>();
+        
+        Node<T> current = firstElement;
+        
+        while (current != null) {
+            if (current.value != null && current.value.equals(data)) {
+                foundList.addByLast(current.value);
+            }
+        }
+        return foundList;
+    }
     
     public boolean isEmpty(){
         return (this.firstElement == null);
+    }
+    
+    public void clear(){
+        this.firstElement = null;
     }
     
     @Override
