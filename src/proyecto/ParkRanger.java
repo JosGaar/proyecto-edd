@@ -1,5 +1,6 @@
 package proyecto;
 
+import dataStructures.LinkedList;
 import java.time.LocalDate;
 
 public class ParkRanger extends Person {

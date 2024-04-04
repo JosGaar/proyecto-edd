@@ -1,4 +1,4 @@
-package proyecto;
+package dataStructures;
 
 public class Node<T> {
 

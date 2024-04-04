@@ -1,6 +1,6 @@
 package proyecto;
 
 @FunctionalInterface
-interface Criteria<T> {
+public interface Criteria<T> {
     boolean match(T value);
 }

@@ -10,10 +10,6 @@ import java.util.regex.Pattern;
 
 public class ErrorControl {
 
-    public ErrorControl()
-    {
-    }
-
     public int validateNumericInputInt(Scanner input, String message)
     {
         int number;
@@ -153,7 +149,4 @@ public class ErrorControl {
     {
         return endDate.isAfter(startDate);
     }
-
-    
-    
 }

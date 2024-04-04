@@ -1,5 +1,7 @@
 package proyecto;
 
+import dataStructures.LinkedList;
+
 public class Area {
 
     String codeArea;

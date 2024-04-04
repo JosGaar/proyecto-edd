@@ -6,19 +6,17 @@ import java.util.Objects;
 public class Visit {
 
     private String codeVisit;
-    private Person visitor;
+    private Visitor visitor;
     private Visibility visibility;
-    private VisitStatus status;
     private LocalDateTime entryDate;
     private LocalDateTime exitDate;
 
-    public Visit(String codeVisit, Person visitor, VisitStatus status, LocalDateTime entryDate, Visibility visibility)
+    public Visit(String codeVisit, Visitor visitor, Visibility visibility, LocalDateTime entryDate)
     {
         this.codeVisit = codeVisit;
         this.visitor = visitor;
-        this.status = status;
-        this.entryDate = entryDate;
         this.visibility = visibility;
+        this.entryDate = entryDate;
     }
 
     public Visibility getVisibility()
@@ -41,24 +39,14 @@ public class Visit {
         this.codeVisit = codeVisit;
     }
 
-    public Person getVisitor()
+    public Visitor getVisitor()
     {
         return visitor;
     }
 
-    public void setVisitor(Person visitor)
+    public void setVisitor(Visitor visitor)
     {
         this.visitor = visitor;
-    }
-
-    public VisitStatus getStatus()
-    {
-        return status;
-    }
-
-    public void setStatus(VisitStatus status)
-    {
-        this.status = status;
     }
 
     public LocalDateTime getEntryDate()
@@ -80,18 +68,34 @@ public class Visit {
     {
         this.exitDate = exitDate;
     }
-
+    
+    
+    
     @Override
-    public String toString()
-    {
-
-        String exit = this.exitDate == null ? "El visitante aun no ha salido de la reserva natural." : this.exitDate.toString();
-
-        return "\nCodigo de visita: " + codeVisit + "\n"
-                + "Visitante. " + "Nombres: " + visitor.names + ", apellidos: " + visitor.lastNames + "\n"
-                + "Estado de la visita: " + status + "\n"
-                + "Fecha de entrada: " + entryDate + "\n"
-                + "Fecha de salida: " + exit;
+    public  String toString(){
+        String fatherToString= super.toString();
+        return "\nCódigo de la Visita: "+this.codeVisit
+                +this.visitor.toString()
+                +"\nFecha de Entrada: "+this.entryDate
+                +"\nFecha de Salida: "+((this.exitDate != null)?this.exitDate:"(Aún en la reserva)");
     }
-
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) 
+            return true;
+        
+        if (obj instanceof Visit) {
+            Visit v = (Visit) obj;
+            return v.getCodeVisit().equals(this.getCodeVisit());
+        }
+       
+       if (obj instanceof String) {
+            String id = (String) obj;
+            return id.equals(this.getCodeVisit());
+        }
+       
+        return false;
+    }
+    
 }
