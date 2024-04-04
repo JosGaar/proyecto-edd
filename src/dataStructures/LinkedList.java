@@ -103,7 +103,7 @@ public class LinkedList<T> implements Iterable<T>{
     public LinkedList<T> getElements(Criteria<T> criteria) {
         LinkedList<T> foundList = new LinkedList<>();
         
-        if (isEmpty()|| criteria == null) {
+        if (isEmpty() || criteria == null) {
             return foundList;
         }
         
@@ -112,6 +112,7 @@ public class LinkedList<T> implements Iterable<T>{
             if (current.value != null && criteria.match(current.value)) {
                 foundList.addByLast(current.value);
             }
+            current = current.next;
         }
         return foundList;
     }
@@ -179,7 +180,7 @@ public class LinkedList<T> implements Iterable<T>{
         
         Node<T> current = firstElement;
         while (current != null) {
-            descriptionElements.append("\n-");
+            descriptionElements.append("\n");
             descriptionElements.append(current.value.toString());
             current=current.next;
         }

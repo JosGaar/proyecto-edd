@@ -65,7 +65,8 @@ public class NatureReserveManager {
         if(this.visits.contains(newVisit))
             return false;
         
-        if(newVisit.getVisitor().getStatus().equals(VisitStatus.Active))
+        LinkedList<Visitor> activeVisitors = getActiveVisitors();
+        if(activeVisitors.contains(newVisit.getVisitor()))
             return false;
         
         if(visits.addByLast(newVisit)){
@@ -119,8 +120,6 @@ public class NatureReserveManager {
         
         if (auxParkRanger == null) 
             return parkRangers.addByLast(newParkRanger);
-        
-        auxParkRanger = null; // Limpiar el objeto auxParkRanger
         return false;
     }
 
@@ -156,8 +155,6 @@ public class NatureReserveManager {
 
         if (auxArea == null) 
             return areas.addByLast(newArea);
-
-        auxArea = null;
         return false;
     }
 
@@ -338,13 +335,17 @@ public class NatureReserveManager {
         LinkedList<Visit> activeVisits = this.getActiveVisits();
         StringBuilder report = new StringBuilder();
         
-        report.append("Informe de visitantes para el ").append(date).append(":\n");
+        report.append("\n=== Informe de visitantes para el ").append(date).append(": ===\n");
         if (dailyVisits.isEmpty()) {
-            report.append("- No hay visitantes para la fecha ").append(date).append(".");
+            report.append("- No hay visitantes para la fecha. ").append(date).append(".");
         }
         
         if (activeVisits.isEmpty()) {
-            return report.append("\n- No se encontraron visitantes con una visita activa. ").toString();
+            report.append("\n- No se encontraron visitantes con una visita activa. \n");
+        }
+        
+        if(dailyVisits.isEmpty() && activeVisits.isEmpty()){
+            return report.toString();
         }
         
         LinkedList<Visit> visitsToAppend = this.getAllVisitsReport(dailyVisits, activeVisits);
@@ -374,7 +375,7 @@ public class NatureReserveManager {
     }
     
     private void appendStatistics(StringBuilder report, LinkedList<Visit> dailyVisits) {
-        report.append("\nEstadísticas:\n");
+        report.append("\n\n=== Estadísticas: ===\n");
         int totalVisitingTime = getTotalVisitingTime(dailyVisits);
         int numberOfVisitors = dailyVisits.size();
         double averageVisitingTime = calculateAverageVisitingTime(totalVisitingTime, numberOfVisitors);
@@ -382,11 +383,12 @@ public class NatureReserveManager {
         report.append("- Número de visitantes en el día: ").append(numberOfVisitors).append("\n");
         report.append("- Tiempo promedio de visita: ").append(averageVisitingTime).append(" minutos\n");
         
-        ArrayList<String> repeatedVisitors = findRepeatedVisitors(dailyVisits);
+        LinkedList<Visitor> repeatedVisitors = findRepeatedVisitors(dailyVisits);
         if (!repeatedVisitors.isEmpty()) {
             report.append("- Visitantes frecuentes en el día:\n");
-            for (String visitorId : repeatedVisitors) {
-                report.append("  - ").append(visitorId).append("\n");
+            for (Visitor visitor : repeatedVisitors) {
+                report.append("  - ").append(visitor.getIdentification())
+                        .append(visitor.fullname()).append("\n");
             }
         }
     }
@@ -405,16 +407,16 @@ public class NatureReserveManager {
         return (numberOfVisitors > 0) ? (double) totalVisitingTime / numberOfVisitors : 0;
     }
     
-    private ArrayList<String> findRepeatedVisitors(LinkedList<Visit> dailyVisits) {
-        ArrayList<String> repeatedVisitors = new ArrayList<>();
-        ArrayList<String> visitedIds = new ArrayList<>();
+    private LinkedList<Visitor> findRepeatedVisitors(LinkedList<Visit> dailyVisits) {
+        LinkedList<Visitor> repeatedVisitors = new LinkedList<>();
+        LinkedList<String> visitedIds = new LinkedList<>();
         
         for (Visit visit : dailyVisits) {
             String visitorId = visit.getVisitor().getIdentification();
             if (visitedIds.contains(visitorId) && !repeatedVisitors.contains(visitorId)) {
-                repeatedVisitors.add(visitorId);
+                repeatedVisitors.addByLast(visit.getVisitor());
             }
-            visitedIds.add(visitorId);
+            visitedIds.addByLast(visitorId);
         }
         
         return repeatedVisitors;
@@ -423,7 +425,7 @@ public class NatureReserveManager {
     private LinkedList<Visit> visitsPerDay(LocalDate date){
         LinkedList<Visit> dailyVisits = new LinkedList<>();
         for (Visit visit : visits) {
-            if (visit.getEntryDate().equals(date)) {
+            if (visit.getEntryDate().toLocalDate().equals(date)) {
                 dailyVisits.addByLast(visit);
             }
         }

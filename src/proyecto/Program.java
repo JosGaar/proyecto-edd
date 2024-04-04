@@ -261,7 +261,7 @@ public class Program {
                    + "2. Mostrar visitas\n"
                    + "3. Actualizar visita\n"
                    + "4. Eliminar visita\n"
-                   + "5. Registrar salida visita\n"
+                   + "5. Terminar visita\n"
                    + "6. Regresar\n";
             System.out.print(message);
             option = errorControl.validateNumericInputInt(sc, "Seleccione una opcion: ");
@@ -1223,7 +1223,7 @@ public class Program {
     public void visitsReport()
     {
         LocalDate date;
-        date = errorControl.validateLocalDate(sc, "Ingrese la fecha de inicio: ");
+        date = errorControl.validateLocalDate(sc, "Ingrese la fecha de inicio (YYYY-MM-DD): ");
         System.out.println(this.reserveManager.generateDailyVisitorReport(date));
     }
 
