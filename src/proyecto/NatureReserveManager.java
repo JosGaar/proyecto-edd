@@ -64,9 +64,8 @@ public class NatureReserveManager {
             return false;
         if(this.visits.contains(newVisit))
             return false;
-        System.out.println("adgsdfgsfg");
-        LinkedList<Visitor> activeVisitors = getActiveVisitors();
-        if(activeVisitors.contains(newVisit.getVisitor()))
+        
+        if(newVisit.getVisitor().getStatus().equals(VisitStatus.Active))
             return false;
         
         if(visits.addByLast(newVisit)){
