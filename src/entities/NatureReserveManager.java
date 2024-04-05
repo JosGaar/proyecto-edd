@@ -391,6 +391,7 @@ public class NatureReserveManager {
         }
 
         incidentToAttend.setAgentSupport(parkRangerToAssign);
+        parkRangerToAssign.setStatus(RangerStatus.BUSY);
         incidentToAttend.setDateTimeAttention(dateAttention);
         incidentToAttend.setIncidentStatus(IncidentStatus.IN_PROCESS);
 
@@ -468,7 +469,7 @@ public class NatureReserveManager {
         LinkedList<Visit> activeVisits = this.getActiveVisits();
         StringBuilder report = new StringBuilder();
 
-        report.append("\n=== Informe de visitantes para el ").append(date).append(": ===\n");
+        report.append("\n=== Informe de visitantes para el ").append(date).append(": ===");
         if (dailyVisits.isEmpty())
         {
             report.append("- No hay visitantes para la fecha. ").append(date).append(".");
@@ -476,7 +477,7 @@ public class NatureReserveManager {
 
         if (activeVisits.isEmpty())
         {
-            report.append("\n- No se encontraron visitantes con una visita activa. \n");
+            report.append("\n- No se encontraron visitantes con una visita activa.");
         }
 
         if (dailyVisits.isEmpty() && activeVisits.isEmpty())

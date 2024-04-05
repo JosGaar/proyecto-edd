@@ -936,7 +936,7 @@ public class Program {
         if (this.reserveManager.getAreas().isEmpty()
                 || this.reserveManager.getParkRangers().isEmpty())
         {
-            System.err.println("Debe existir en el sistema al menos un visitante activo o guardabosques y un area para reportar un incidente.");
+            System.err.println("Debe existir en el sistema al menos un guardabosques y un area para reportar un incidente.");
             return;
         }
 
@@ -1061,7 +1061,7 @@ public class Program {
                 for (int i = 0; i < this.reserveManager.getAreas().size(); i++)
                 {
                     Area area = this.reserveManager.getAreas().getAt(i);
-                    System.out.println(("Numero: " + (i + 1)) + "Codigo: " + area.getCodeArea() + ", nombre: " + area.getName() + ", descripcion: " + area.getDescription());
+                    System.out.println(("Numero: " + (i + 1)) + ". Codigo: " + area.getCodeArea() + ", nombre: " + area.getName() + ", descripcion: " + area.getDescription());
                 }
             } else
             {
@@ -1371,7 +1371,7 @@ public class Program {
         int parkRangerNumber;
         do
         {
-            parkRangerNumber = errorControl.validateNumericInputInt(this.sc, "Seleccione un guardaparques: ");
+            parkRangerNumber = errorControl.validateNumericInputInt(this.sc, "\nSeleccione un guardaparques: ");
             if (parkRangerNumber <= 0 || parkRangerNumber > parkRangers.size())
             {
                 System.err.println("Error: ingrese un número valido.");
@@ -1423,14 +1423,15 @@ public class Program {
 
     private void showInProcessIncidents(LinkedList<Incident> incidents)
     {
-        System.out.println("\nIncidents in Process:");
+        System.out.println("\nIncidentes en proceso:");
         for (int i = 0; i < incidents.size(); i++)
         {
             Incident incident = incidents.getAt(i);
             System.out.println("Number: " + (i + 1)
-                    + ". Area Name: " + incident.getArea().getName()
-                    + ", Description: " + incident.getArea().getDescription()
-                    + ", Annotations: " + incident.getAnnotations());
+                    + ". Codigo incidente: " + incident.getIncidentCode()
+                    + ", nombre del area: " + incident.getArea().getName()
+                    + ", descripcion: " + incident.getArea().getDescription()
+                    + ", anotaciones: " + incident.getAnnotations());
         }
     }
 
@@ -1439,10 +1440,10 @@ public class Program {
         int incidentNumber;
         do
         {
-            incidentNumber = errorControl.validateNumericInputInt(sc, "Select an incident to terminate: ");
+            incidentNumber = errorControl.validateNumericInputInt(sc, "\nSeleccione un incidente a terminar: ");
             if (incidentNumber <= 0 || incidentNumber > incidents.size())
             {
-                System.err.println("Error: Please enter a valid number.");
+                System.err.println("Error: ingrese un número valido.");
             }
         } while (incidentNumber <= 0 || incidentNumber > incidents.size());
 

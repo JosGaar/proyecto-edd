@@ -66,7 +66,8 @@ public class ParkRanger extends Person {
     {
         String fatherToString = super.toString();
 
-        return fatherToString + "\nFecha de contratación:" + this.dateOfHire;
+        return fatherToString + "\nFecha de contratación:" + this.dateOfHire
+                + "\nEstado del guardabosques: " + this.status;
 
     }
 
