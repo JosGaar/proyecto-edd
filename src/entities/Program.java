@@ -332,7 +332,7 @@ public class Program {
             return;
         }
         this.showVisitorsToSelect();
-        
+
         Visitor selectedVisitor = selectVisitor();
         if (selectedVisitor == null)
         {
@@ -385,9 +385,7 @@ public class Program {
     {
         if (!reserveManager.getVisits().isEmpty())
         {
-            System.out.println("\nLas visitas disponibles son: ");
-            String message = reserveManager.getVisits().getElementsToString();
-            System.out.println(((message != null) ? message : "No se han registrado visitas por el momento."));
+            this.reserveManager.showVisibleVisits();
         } else
         {
             System.out.println("No se han registrado visitas por el momento.");
@@ -583,7 +581,6 @@ public class Program {
     {
         String id, newFirstNames, newLastNames;
         LocalDate newContractDate;
-        RangerStatus newStatus;
 
         System.out.println();
         id = errorControl.validateIDNumber(sc, "Ingrese la cedula de identidad: ");
@@ -922,12 +919,13 @@ public class Program {
             return;
         }
 
+        // Pedir la persona de quien reporto el incidente.
         incidentCode = errorControl.validateStrings(sc, "\nIngrese el codigo del incidente: ");
         description = errorControl.validateStrings(sc, "Ingrese la descripcion del incidente: ");
         annotations = errorControl.validateStrings(sc, "Ingrese las anotaciones del incidente: ");
         dateTimeReport = errorControl.validateLocalDateTime(sc, "Ingrese la fecha de reporte (yyyy-MM-dd HH:mm:ss): ");
         selectArea = selectAreaIncident();
-
+        
         Incident incidente = new Incident(incidentCode, description, dateTimeReport, null, null,
                 annotations, selectArea);
 
@@ -953,13 +951,13 @@ public class Program {
                 for (int i = 0; i < this.reserveManager.getAreas().size(); i++)
                 {
                     Area area = this.reserveManager.getAreas().getAt(i);
-                    System.out.println(("Numero: " + i + 1) + ". Nombre: " + area.getName() + ", descripcion: " + area.getDescription());
+                    System.out.println(("\n\tNumero: " + (i + 1)) + ". Nombre: " + area.getName() + ", descripcion: " + area.getDescription());
                 }
             } else
             {
                 System.out.println("No se han encontrado áreas para mostrar.");
             }
-            areaNumber = errorControl.validateNumericInputInt(sc, "Ingrese la opcion deseada: ");
+            areaNumber = errorControl.validateNumericInputInt(sc, "\nIngrese la opcion deseada: ");
 
             if (areaNumber <= 0 || areaNumber > this.reserveManager.getAreas().size())
             {

@@ -6,6 +6,7 @@ import criteria.Criteria;
 import services.ErrorControl;
 import services.Consumer;
 import dataStructures.LinkedList;
+import dataStructures.Node;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -269,13 +270,8 @@ public class NatureReserveManager {
 
     public boolean addIncident(Incident newIncident)
     {
-        if (newIncident.getAgentSupport().getStatus() == RangerStatus.BUSY)
-        {
-            return false;
-        }
-
         Criteria<Incident> criteriaByCodeIncident = incident -> incident.getIncidentCode().equals(newIncident.getIncidentCode());
-        if (this.incidents.contains(criteriaByCodeIncident))
+        if (!this.incidents.contains(criteriaByCodeIncident))
         {
             if (incidents.addByLast(newIncident))
             {
@@ -579,4 +575,30 @@ public class NatureReserveManager {
         Criteria<Visitor> criteriaByActivity = visitor -> visitor.getStatus().equals(VisitStatus.ACTIVE);
         return this.visitors.getElements(criteriaByActivity);
     }
+
+    public void showVisibleVisits()
+    {
+        Criteria<Visit> criteriaForVisits = visit -> visit.getVisibility() == Visibility.VISIBLE;
+        LinkedList<Visit> visitAux = this.visits.getElements(criteriaForVisits);
+
+        Node first = visitAux.firstElement;
+        StringBuilder sb = new StringBuilder();
+
+        while (first != null)
+        {
+            sb.append(first.value).append("\n");
+            first = first.next;
+        }
+
+        if (sb.length() > 0)
+        {
+            System.out.println("\nLas visitas disponibles son: ");
+            System.out.print(sb.toString());
+        } else
+        {
+            System.err.println("Error: no se han encontrado visitas disponibles por el momento.");
+        }
+
+    }
+
 }
