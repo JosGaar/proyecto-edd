@@ -568,7 +568,7 @@ public class Program {
     {
         if (!this.reserveManager.getParkRangers().isEmpty())
         {
-            System.out.println("\nLos guardabosques disponibles son: ");
+            System.out.print("\nLos guardabosques disponibles son: ");
             String message = reserveManager.getParkRangers().getElementsToString();
             System.out.println(((message != null) ? message : "No se han encontrado guardabsoques."));
         } else
@@ -754,7 +754,7 @@ public class Program {
         {
             System.out.println("\nAreas disponibles: ");
             String message = reserveManager.getAreas().getElementsToString();
-            System.out.println(((message != null) ? message : "No se han encontrado aareas por el momento."));
+            System.out.print(((message != null) ? message : "No se han encontrado aareas por el momento."));
         } else
         {
             System.out.println("No se han encontrado areas registradas.");
@@ -784,6 +784,25 @@ public class Program {
         {
             System.out.println("No se pudo actualizar el área.");
         }
+    }
+
+    public ParkRanger selectRanger()
+    {
+        if (reserveManager.getVisitors().isEmpty())
+        {
+            return null;
+        }
+        int numberVisitor;
+        do
+        {
+            numberVisitor = errorControl.validateNumericInputInt(sc, "\nSeleccione un número: ");
+            if (numberVisitor <= 0 || numberVisitor > reserveManager.getParkRangers().size())
+            {
+                System.err.println("Ingrese un número en el intervalo mostrado.");
+            }
+        } while (numberVisitor <= 0 || numberVisitor > reserveManager.getParkRangers().size());
+
+        return reserveManager.getParkRangers().getAt(numberVisitor - 1);
     }
 
     public String newNameArea(String originalName)
@@ -912,21 +931,32 @@ public class Program {
         String incidentCode, description, annotations;
         LocalDateTime dateTimeReport;
         Area selectArea;
+        Person reportingPerson;
 
-        if (this.reserveManager.getAreas().isEmpty())
+        if (this.reserveManager.getAreas().isEmpty()
+                || this.reserveManager.getParkRangers().isEmpty()
+                || this.reserveManager.getVisitorsActive().isEmpty())
         {
-            System.err.println("Por favor, registre las areas o guardabosques para poder crear un incidente.");
+            System.err.println("Debe existir en el sistema al menos un visitante activo o guardabosques y un area para reportar un incidente.\n");
             return;
         }
 
-        // Pedir la persona de quien reporto el incidente.
         incidentCode = errorControl.validateStrings(sc, "\nIngrese el codigo del incidente: ");
+
+        reportingPerson = selectReportingPerson();
+
+        if (reportingPerson == null)
+        {
+            System.err.println("No se ha podido crear el incidente.");
+            return;
+        }
+
         description = errorControl.validateStrings(sc, "Ingrese la descripcion del incidente: ");
         annotations = errorControl.validateStrings(sc, "Ingrese las anotaciones del incidente: ");
         dateTimeReport = errorControl.validateLocalDateTime(sc, "Ingrese la fecha de reporte (yyyy-MM-dd HH:mm:ss): ");
         selectArea = selectAreaIncident();
-        
-        Incident incidente = new Incident(incidentCode, description, dateTimeReport, null, null,
+
+        Incident incidente = new Incident(incidentCode, reportingPerson, description, dateTimeReport, null, null,
                 annotations, selectArea);
 
         if (reserveManager.addIncident(incidente))
@@ -936,6 +966,87 @@ public class Program {
         {
             System.err.println("No se ha podido añadir el incidente correctamente.");
         }
+    }
+
+    public void showVisitorActiveToSelect()
+    {
+        System.out.println("\nSeleccione algun visitante activo de los que se le muestra a continuación:");
+        for (int i = 0; i < reserveManager.getVisitorsActive().size(); i++)
+        {
+            System.out.println("\n\tNumero: " + (i + 1)
+                    + reserveManager.getVisitorsActive().getAt(i).toString());
+        }
+    }
+
+    public void showRangerActiveToSelect()
+    {
+        System.out.println("\nSeleccione algun guardabosques de los que se le muestra a continuación:");
+        for (int i = 0; i < reserveManager.getParkRangers().size(); i++)
+        {
+            System.out.println("\n\tNumero: " + (i + 1)
+                    + reserveManager.getParkRangers().getAt(i).toString());
+        }
+    }
+
+    public Person selectVisitorActive()
+    {
+        if (reserveManager.getVisitorsActive().isEmpty())
+        {
+            return null;
+        }
+        int numberVisitor;
+        do
+        {
+            numberVisitor = errorControl.validateNumericInputInt(sc, "\nSeleccione un número: ");
+            if (numberVisitor <= 0 || numberVisitor > reserveManager.getVisitorsActive().size())
+            {
+                System.err.println("Ingrese un número en el intervalo mostrado.");
+            }
+        } while (numberVisitor <= 0 || numberVisitor > reserveManager.getVisitorsActive().size());
+
+        return reserveManager.getVisitorsActive().getAt(numberVisitor - 1);
+    }
+
+    public Person selectReportingPerson()
+    {
+        String message;
+        Person person = null;
+        int option;
+
+        do
+        {
+            message = "¿Quien reporto el incidente?\nVisitante (1) / Guardabosques (2): ";
+            option = errorControl.validateNumericInputInt(sc, message);
+
+            switch (option)
+            {
+                case 1:
+                    if (this.reserveManager.getVisitorsActive().isEmpty())
+                    {
+                        System.err.print("Error: no se han encontrado visitantes activos.\n");
+                        return null;
+                    }
+
+                    showVisitorActiveToSelect();
+                    person = selectVisitorActive();
+                    break;
+                case 2:
+                    if (this.reserveManager.getParkRangers().isEmpty())
+                    {
+                        System.err.print("Error: no se han encontrado guardabosques.\n");
+                        return null;
+                    }
+
+                    this.showRangerActiveToSelect();
+                    person = selectRanger();
+                    break;
+                default:
+                    System.err.println("Error, opcion no encontrada.\n");
+            }
+
+        } while (option != 1 && option != 2);
+
+        return person;
     }
 
     public Area selectAreaIncident()
@@ -1180,6 +1291,7 @@ public class Program {
             System.out.println("No se encontarron incientes pendientes.");
             return;
         }
+
         showPendingIncidents(pendingIncidents);
         Incident selectedIncident = selectIncident(pendingIncidents);
 
@@ -1203,22 +1315,24 @@ public class Program {
         }
         LocalDateTime attentionDate = enterAttentionDate(selectedIncident.getDateTimeReport());
 
+        
+        
         if (reserveManager.atenderIncident(selectedIncident, selectedParkRanger, attentionDate))
         {
             System.out.println("Incidente atendiendose.");
         } else
         {
-            System.out.println("No se ha podido atender el incidente.");
+            System.err.println("Error: no se ha podido atender el incidente.");
         }
     }
 
     private void showPendingIncidents(LinkedList<Incident> incidents)
     {
-        System.out.println("\nPending Incidents:");
+        System.out.println("\nIncidentes pendientes:");
         for (int i = 0; i < incidents.size(); i++)
         {
             Incident incident = incidents.getAt(i);
-            System.out.println("Number: " + (i + 1) + ". Area Name: " + incident.getArea().getName() + ", Description: " + incident.getArea().getDescription());
+            System.out.println("Numero: " + (i + 1) + ". Nombre del area: " + incident.getArea().getName() + ", Descripcion: " + incident.getArea().getDescription());
         }
     }
 
@@ -1231,10 +1345,10 @@ public class Program {
         int incidentNumber;
         do
         {
-            incidentNumber = errorControl.validateNumericInputInt(this.sc, "Select an incident: ");
+            incidentNumber = errorControl.validateNumericInputInt(this.sc, "Seleccione un incidente: ");
             if (incidentNumber <= 0 || incidentNumber > incidents.size())
             {
-                System.err.println("Error: Please enter a valid number.");
+                System.err.println("Error: ingrese un número valido.");
             }
         } while (incidentNumber <= 0 || incidentNumber > incidents.size());
 
@@ -1243,11 +1357,11 @@ public class Program {
 
     private void showFreeParkRangers(LinkedList<ParkRanger> parkRangers)
     {
-        System.out.println("\nFree Park Rangers:");
+        System.out.println("\nGuardabosques libres:");
         for (int i = 0; i < parkRangers.size(); i++)
         {
             ParkRanger ranger = parkRangers.getAt(i);
-            System.out.println("Number: " + (i + 1) + ". Names: " + ranger.getNames() + ", Last Names: " + ranger.getLastNames());
+            System.out.println("Numero: " + (i + 1) + ". Nombres: " + ranger.getNames() + ", Apellidos: " + ranger.getLastNames());
         }
     }
 
@@ -1260,10 +1374,10 @@ public class Program {
         int parkRangerNumber;
         do
         {
-            parkRangerNumber = errorControl.validateNumericInputInt(this.sc, "Select a park ranger: ");
+            parkRangerNumber = errorControl.validateNumericInputInt(this.sc, "Seleccione un guardaparques: ");
             if (parkRangerNumber <= 0 || parkRangerNumber > parkRangers.size())
             {
-                System.err.println("Error: Please enter a valid number.");
+                System.err.println("Error: ingrese un número valido.");
             }
         } while (parkRangerNumber <= 0 || parkRangerNumber > parkRangers.size());
 
@@ -1275,10 +1389,10 @@ public class Program {
         LocalDateTime attentionDate;
         do
         {
-            attentionDate = errorControl.validateLocalDateTime(sc, "\nEnter the attention date (yyyy-MM-dd HH:mm:ss): ");
+            attentionDate = errorControl.validateLocalDateTime(sc, "\nIngrese la fecha de atención (yyyy-MM-dd HH:mm:ss): ");
             if (errorControl.validateDateTimeRange(attentionDate, reportDate))
             {
-                System.err.println("Error: The date must be after the report date.");
+                System.err.println("Error: la fecha debe ser posterior a la del reporte del incidente.");
             } else
             {
                 break;

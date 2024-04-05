@@ -6,6 +6,7 @@ import java.util.Iterator;
 import services.Consumer;
 import criteria.Criteria;
 import criteria.TimeIntervalCriteria;
+import java.util.function.Predicate;
 
 /**
  * @param <T>

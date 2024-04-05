@@ -2,6 +2,7 @@ package entities;
 
 import utils.Visibility;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class Incident {
 
@@ -14,11 +15,13 @@ public class Incident {
     private Visibility visibility;
     private String annotations;
     private Area area;
+    private Person reportingPerson;
 
-    public Incident(String incidentCode, String description, LocalDateTime dateTimeReport, LocalDateTime dateTimeAttention,
+    public Incident(String incidentCode, Person reportingPerson, String description, LocalDateTime dateTimeReport, LocalDateTime dateTimeAttention,
             ParkRanger agentSupport, String annotations, Area area)
     {
         this.description = description;
+        this.reportingPerson = reportingPerson;
         this.dateTimeReport = dateTimeReport;
         this.dateTimeAttention = dateTimeAttention;
         this.agentSupport = agentSupport;
@@ -27,6 +30,16 @@ public class Incident {
         this.area = area;
         this.incidentCode = incidentCode;
         this.visibility = Visibility.VISIBLE;
+    }
+
+    public Person getReportingPerson()
+    {
+        return reportingPerson;
+    }
+
+    public void setReportingPerson(Person reportingPerson)
+    {
+        this.reportingPerson = reportingPerson;
     }
 
     public void setIncidentCode(String incidentCode)
@@ -117,6 +130,32 @@ public class Incident {
     public void setArea(Area area)
     {
         this.area = area;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        int hash = 5;
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (this == obj)
+        {
+            return true;
+        }
+        if (obj == null)
+        {
+            return false;
+        }
+        if (getClass() != obj.getClass())
+        {
+            return false;
+        }
+        final Incident other = (Incident) obj;
+        return Objects.equals(this.incidentCode, other.incidentCode);
     }
 
     @Override
