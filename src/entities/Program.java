@@ -132,7 +132,7 @@ public class Program {
     {
         if (reserveManager.getVisitors().isEmpty())
         {
-            System.err.println("Error: No se puede mostra visitantes. No se han registrado visitantes por el momento.");
+            System.err.println("Error: No se puede mostrar visitantes. No se han registrado visitantes por el momento.");
             return;
         }
 
@@ -332,6 +332,7 @@ public class Program {
             return;
         }
         this.showVisitorsToSelect();
+        
         Visitor selectedVisitor = selectVisitor();
         if (selectedVisitor == null)
         {
@@ -340,7 +341,7 @@ public class Program {
         }
 
         LocalDateTime entryDate = errorControl.validateLocalDateTime(sc, "Ingrese la fecha de entrada (yyyy-MM-dd HH:mm:ss): ");
-        Visit visit = new Visit(codeVisit, selectedVisitor, Visibility.VISIBLE, entryDate);
+        Visit visit = new Visit(codeVisit, selectedVisitor, entryDate);
 
         if (reserveManager.addVisit(visit))
         {
@@ -356,7 +357,7 @@ public class Program {
         System.out.println("\nSeleccione algun visitante de los que se le muestra a continuación:");
         for (int i = 0; i < reserveManager.getVisitors().size(); i++)
         {
-            System.out.println("Numero: " + (i + 1)
+            System.out.println("\n\tNumero: " + (i + 1)
                     + reserveManager.getVisitors().getAt(i).toString());
         }
     }
@@ -370,7 +371,7 @@ public class Program {
         int numberVisitor;
         do
         {
-            numberVisitor = errorControl.validateNumericInputInt(sc, "Seleccione un número: ");
+            numberVisitor = errorControl.validateNumericInputInt(sc, "\nSeleccione un número: ");
             if (numberVisitor <= 0 || numberVisitor > reserveManager.getVisitors().size())
             {
                 System.err.println("Ingrese un número en el intervalo mostrado.");

@@ -11,12 +11,12 @@ public class Visit {
     private LocalDateTime entryDate;
     private LocalDateTime exitDate;
 
-    public Visit(String codeVisit, Visitor visitor, Visibility visibility, LocalDateTime entryDate)
+    public Visit(String codeVisit, Visitor visitor, LocalDateTime entryDate)
     {
         this.codeVisit = codeVisit;
         this.visitor = visitor;
-        this.visibility = visibility;
         this.entryDate = entryDate;
+        this.visibility = Visibility.VISIBLE;
     }
 
     public Visibility getVisibility()

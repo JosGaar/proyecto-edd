@@ -15,7 +15,7 @@ public class Visitor extends Person {
         this.address = address;
         this.phoneNumber = phoneNumber;
         this.visits = new LinkedList<>();
-        this.status = VisitStatus.ACTIVE;
+        this.status = VisitStatus.INACTIVE;
     }
 
     public String getAddress()
