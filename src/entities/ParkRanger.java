@@ -1,14 +1,15 @@
-package proyecto;
+package entities;
 
+import utils.Visibility;
 import dataStructures.LinkedList;
 import java.time.LocalDate;
 
 public class ParkRanger extends Person {
 
-    LocalDate dateOfHire;
-    RangerStatus status;
-    Visibility visibility;
-    LinkedList<Incident> incidents;
+    private LocalDate dateOfHire;
+    private RangerStatus status;
+    private Visibility visibility;
+    private LinkedList<Incident> incidents;
 
     public ParkRanger(LocalDate dateOfHire, String identification, String names, String lastNames, RangerStatus status, Visibility visibility)
     {
@@ -17,6 +18,16 @@ public class ParkRanger extends Person {
         this.status = status;
         this.incidents = new LinkedList<>();
         this.visibility = visibility;
+    }
+
+    public LinkedList<Incident> getIncidents()
+    {
+        return incidents;
+    }
+
+    public void setIncidents(LinkedList<Incident> incidents)
+    {
+        this.incidents = incidents;
     }
 
     public Visibility getVisibility()
@@ -39,16 +50,6 @@ public class ParkRanger extends Person {
         this.status = status;
     }
 
-    public String getIdentification()
-    {
-        return identification;
-    }
-
-    public void setIdentification(String identification)
-    {
-        this.identification = identification;
-    }
-
     public LocalDate getDateOfHire()
     {
         return dateOfHire;
@@ -57,26 +58,6 @@ public class ParkRanger extends Person {
     public void setDateOfHire(LocalDate dateOfHire)
     {
         this.dateOfHire = dateOfHire;
-    }
-
-    public String getNames()
-    {
-        return names;
-    }
-
-    public void setNames(String names)
-    {
-        this.names = names;
-    }
-
-    public String getLastNames()
-    {
-        return lastNames;
-    }
-
-    public void setLastNames(String lastNames)
-    {
-        this.lastNames = lastNames;
     }
 
     @Override

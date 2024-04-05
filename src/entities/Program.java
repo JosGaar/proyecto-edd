@@ -1,5 +1,8 @@
-package proyecto;
+package entities;
 
+import utils.Visibility;
+import criteria.Criteria;
+import services.ErrorControl;
 import dataStructures.LinkedList;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -19,21 +22,23 @@ public class Program {
     public void showMainMenu()
     {
         int option;
-        this.reserveManager= new NatureReserveManager();
-        
-        do {
+        this.reserveManager = new NatureReserveManager();
+
+        do
+        {
             System.out.println("=== Gestion de la reserva natural ===");
-            String message = "1. Gestionar visitantes\n" 
-                    + "2. Gestionar visitas\n" 
-                    + "3. Gestionar guardaparques\n" 
-                    + "4. Gestionar areas\n" + "5. Gestionar incidentes\n" 
-                    + "6. Gestionar atenciones de incidentes\n" 
-                    + "7. Reportes\n" 
+            String message = "1. Gestionar visitantes\n"
+                    + "2. Gestionar visitas\n"
+                    + "3. Gestionar guardaparques\n"
+                    + "4. Gestionar areas\n" + "5. Gestionar incidentes\n"
+                    + "6. Gestionar atenciones de incidentes\n"
+                    + "7. Reportes\n"
                     + "8. Salir\n";
             System.out.print(message);
             option = this.errorControl.validateNumericInputInt(this.sc, "Seleccione una opcion: ");
-            
-            switch (option) {
+
+            switch (option)
+            {
                 case 1:
                     visitorMenu();
                     break;
@@ -66,20 +71,22 @@ public class Program {
     public void visitorMenu()
     {
         int option;
-        
-        do {
+
+        do
+        {
             System.out.println();
             String message = "=== Visitantes ===\n"
-               + "1. Crear visitante\n"
-               + "2. Mostrar visitantes\n"
-               + "3. Actualizar visitante\n"
-               + "4. Eliminar visitante\n"
-               + "5. Regresar\n";
-            
+                    + "1. Crear visitante\n"
+                    + "2. Mostrar visitantes\n"
+                    + "3. Actualizar visitante\n"
+                    + "4. Eliminar visitante\n"
+                    + "5. Regresar\n";
+
             System.out.print(message);
             option = this.errorControl.validateNumericInputInt(this.sc, "Seleccione una opcion: ");
 
-            switch (option) {
+            switch (option)
+            {
                 case 1:
                     createVisitor();
                     break;
@@ -111,32 +118,36 @@ public class Program {
         address = errorControl.validateStrings(sc, "Ingrese la direccion: ");
         phoneNumber = errorControl.validatePhoneNumber(sc, "Ingrese el número de teléfono: ");
 
-        Visitor visitor = new Visitor(address, phoneNumber, VisitStatus.Inactive, identification, names, lastNames);
-        if (this.reserveManager.addVisitor(visitor)) {
+        Visitor visitor = new Visitor(address, phoneNumber, identification, names, lastNames);
+        if (this.reserveManager.addVisitor(visitor))
+        {
             System.out.println("Visitante agregado exitosamente.");
-        }else{
+        } else
+        {
             System.err.println("No se ha podido agregar el visitante: cédula ya existente.");
         }
     }
 
     public void showVisitors()
     {
-        if(reserveManager.visitors.isEmpty()) {
+        if (reserveManager.getVisitors().isEmpty())
+        {
             System.err.println("Error: No se puede mostra visitantes. No se han registrado visitantes por el momento.");
             return;
         }
-        
-        System.out.println("\nLos visitantes registrados son: ");
-        String message = reserveManager.visitors.getElementsToString();
-        System.out.println(((message!=null)?message:"No se han registrado visitantes por el momento."));
+
+        System.out.print("\nLos visitantes registrados son: ");
+        String message = reserveManager.getVisitors().getElementsToString();
+        System.out.println(((message != null) ? message : "No se han registrado visitantes por el momento."));
     }
 
     public void updateVisitor()
     {
         String identification, newAddress, newPhoneNumber, newNames, newLastNames;
         VisitStatus visitStatus;
-        
-        if (reserveManager.visitors.isEmpty()) {
+
+        if (reserveManager.getVisitors().isEmpty())
+        {
             System.err.println("Error: No se puede actualizar un Visitante. No se han registrado visitantes por el momento.");
             return;
         }
@@ -145,22 +156,25 @@ public class Program {
         identification = errorControl.validateIDNumber(sc, "Ingrese la cedula de identidad para actualizar: ");
 
         Criteria<Visitor> criteriaForVisitor = visitor -> visitor.getIdentification().equals(identification);
-        Visitor auxVisitor = reserveManager.visitors.getElement(criteriaForVisitor);
-        
-        if(auxVisitor == null){
+        Visitor auxVisitor = reserveManager.getVisitors().getElement(criteriaForVisitor);
+
+        if (auxVisitor == null)
+        {
             System.err.println("Error: Visitante no encontrado.");
             return;
         }
-        
-        newNames = changeVisitorWords(auxVisitor.names, "nombres");
-        newLastNames = changeVisitorWords(auxVisitor.lastNames, "apellidos");
+
+        newNames = changeVisitorWords(auxVisitor.getNames(), "nombres");
+        newLastNames = changeVisitorWords(auxVisitor.getLastNames(), "apellidos");
         newPhoneNumber = changeVisitorPhoneNumber(auxVisitor.getPhoneNumber());
         newAddress = changeVisitorAddress(auxVisitor.getAddress());
-        visitStatus = VisitStatus.Active;
+        visitStatus = VisitStatus.ACTIVE;
 
-        if (reserveManager.updateVisitor(newAddress, newPhoneNumber, visitStatus, identification, newNames, newLastNames)) {
+        if (reserveManager.updateVisitor(newAddress, newPhoneNumber, visitStatus, identification, newNames, newLastNames))
+        {
             System.out.println("Proceso realizado correctamente.");
-        } else {
+        } else
+        {
             System.err.println("Error al actualizar el visitante.");
         }
     }
@@ -169,11 +183,13 @@ public class Program {
     {
         String message, newWord = null;
         int option;
-        do {
+        do
+        {
             message = "¿Desea cambiar los " + categoria + "?\nSi (1) / No (2): ";
             option = errorControl.validateNumericInputInt(sc, message);
-            
-            switch (option) {
+
+            switch (option)
+            {
                 case 1:
                     newWord = errorControl.validateTwoWords(sc, "Ingrese sus dos " + categoria + ": ", categoria);
                     break;
@@ -184,7 +200,7 @@ public class Program {
                     System.err.println("Error, opcion no encontrada.\n");
             }
         } while (option != 1 && option != 2);
-        
+
         return newWord;
     }
 
@@ -192,11 +208,13 @@ public class Program {
     {
         String message, newWord = null;
         int option;
-        do {
+        do
+        {
             message = "¿Desea cambiar el numero de telefono? Si (1) / No (2): ";
             option = errorControl.validateNumericInputInt(sc, message);
-            
-            switch (option) {
+
+            switch (option)
+            {
                 case 1:
                     newWord = errorControl.validatePhoneNumber(sc, "Ingrese el número de telefono: ");
                     break;
@@ -207,7 +225,7 @@ public class Program {
                     System.err.println("Error, opcion no encontrada.\n");
             }
         } while (option != 1 && option != 2);
-        
+
         return newWord;
     }
 
@@ -215,11 +233,13 @@ public class Program {
     {
         String message, newWord = null;
         int option;
-        do {
+        do
+        {
             message = "¿Desea cambiar la direccion? Si (1) / No (2): ";
             option = errorControl.validateNumericInputInt(sc, message);
 
-            switch (option) {
+            switch (option)
+            {
                 case 1:
                     newWord = errorControl.validateStrings(sc, "Ingrese la direccion: ");
                     break;
@@ -236,37 +256,42 @@ public class Program {
     }
 
     public void deleteVisitor()
-    {   
-        if (reserveManager.visitors.isEmpty()) {
+    {
+        if (reserveManager.getVisitors().isEmpty())
+        {
             System.err.println("Error: No se puede borrar un Visitante. No se han registrado visitantes por el momento.");
             return;
         }
         String identification;
         identification = errorControl.validateStrings(sc, "\nIngrese la identificación del visitante a eliminar: ");
-        
-        if (reserveManager.removeVisitor(identification)) {
+
+        if (reserveManager.removeVisitor(identification))
+        {
             System.out.println("Visitante eliminado exitosamente.");
-        } else {
+        } else
+        {
             System.err.println("Error: no se ha podido eliminar al visitante.");
         }
     }
 
     public void visitMenu()
     {
-        int option; 
-        do {
+        int option;
+        do
+        {
             System.out.println();
             String message = "=== Visitas ===\n"
-                   + "1. Crear visita\n"
-                   + "2. Mostrar visitas\n"
-                   + "3. Actualizar visita\n"
-                   + "4. Eliminar visita\n"
-                   + "5. Terminar visita\n"
-                   + "6. Regresar\n";
+                    + "1. Crear visita\n"
+                    + "2. Mostrar visitas\n"
+                    + "3. Actualizar visita\n"
+                    + "4. Eliminar visita\n"
+                    + "5. Terminar visita\n"
+                    + "6. Regresar\n";
             System.out.print(message);
             option = errorControl.validateNumericInputInt(sc, "Seleccione una opcion: ");
 
-            switch (option) {
+            switch (option)
+            {
                 case 1:
                     createVisit();
                     break;
@@ -292,64 +317,78 @@ public class Program {
         } while (option != 6);
     }
 
-    public void createVisit() {
-        if (reserveManager.visitors.isEmpty()) {
+    public void createVisit()
+    {
+        if (reserveManager.getVisitors().isEmpty())
+        {
             System.out.println("No puede generar una visita si no tiene visitantes.");
             return;
         }
-        
+
         String codeVisit = errorControl.validateStrings(sc, "\nIngrese el código de la visita: ");
-        if (reserveManager.visits.getElement(codeVisit) != null) {
+        if (reserveManager.getVisits().getElement(codeVisit) != null)
+        {
             System.err.println("Error: La visita con el código dado ya existe.");
             return;
         }
         this.showVisitorsToSelect();
         Visitor selectedVisitor = selectVisitor();
-        if (selectedVisitor == null) {
+        if (selectedVisitor == null)
+        {
             System.err.println("Error: No se ha seleccionado ningún visitante.");
             return;
         }
-        
+
         LocalDateTime entryDate = errorControl.validateLocalDateTime(sc, "Ingrese la fecha de entrada (yyyy-MM-dd HH:mm:ss): ");
-        Visit visit = new Visit(codeVisit, selectedVisitor, Visibility.visible,  entryDate);
-        
-        if (reserveManager.addVisit(visit)) {
+        Visit visit = new Visit(codeVisit, selectedVisitor, Visibility.VISIBLE, entryDate);
+
+        if (reserveManager.addVisit(visit))
+        {
             System.out.println("Se ha añadido exitosamente la visita.");
-        } else {
+        } else
+        {
             System.err.println("Error: Ya existe una visita con el visitante seleccionado.");
         }
     }
-    
-    private void showVisitorsToSelect() {
+
+    private void showVisitorsToSelect()
+    {
         System.out.println("\nSeleccione algun visitante de los que se le muestra a continuación:");
-        for (int i = 0; i < reserveManager.visitors.size(); i++) {
+        for (int i = 0; i < reserveManager.getVisitors().size(); i++)
+        {
             System.out.println("Numero: " + (i + 1)
-                    + reserveManager.visitors.getAt(i).toString());
+                    + reserveManager.getVisitors().getAt(i).toString());
         }
     }
-    
-    private Visitor selectVisitor() {
-        if (reserveManager.visitors.isEmpty()) {
+
+    private Visitor selectVisitor()
+    {
+        if (reserveManager.getVisitors().isEmpty())
+        {
             return null;
         }
         int numberVisitor;
-        do {
+        do
+        {
             numberVisitor = errorControl.validateNumericInputInt(sc, "Seleccione un número: ");
-            if (numberVisitor <= 0 || numberVisitor > reserveManager.visitors.size()) {
+            if (numberVisitor <= 0 || numberVisitor > reserveManager.getVisitors().size())
+            {
                 System.err.println("Ingrese un número en el intervalo mostrado.");
             }
-        } while (numberVisitor <= 0 || numberVisitor > reserveManager.visitors.size());
+        } while (numberVisitor <= 0 || numberVisitor > reserveManager.getVisitors().size());
 
-        return reserveManager.visitors.getAt(numberVisitor - 1);
+        return reserveManager.getVisitors().getAt(numberVisitor - 1);
     }
 
     public void showVisit()
     {
-        if (!reserveManager.visits.isEmpty()) {
+        if (!reserveManager.getVisits().isEmpty())
+        {
             System.out.println("\nLas visitas disponibles son: ");
-            String message = reserveManager.visits.getElementsToString();
-            System.out.println(((message!=null)?message:"No se han registrado visitas por el momento."));
-        } else {
+            String message = reserveManager.getVisits().getElementsToString();
+            System.out.println(((message != null) ? message : "No se han registrado visitas por el momento."));
+        } else
+        {
             System.out.println("No se han registrado visitas por el momento.");
         }
     }
@@ -362,17 +401,20 @@ public class Program {
         codeVisit = errorControl.validateStrings(sc, "\nIngrese el código de la visita: ");
 
         Criteria<Visit> criteriaforVisit = visit -> visit.getCodeVisit().equals(codeVisit);
-        Visit auxVisit = this.reserveManager.visits.getElement(criteriaforVisit);
+        Visit auxVisit = this.reserveManager.getVisits().getElement(criteriaforVisit);
 
-        if (auxVisit == null) {
+        if (auxVisit == null)
+        {
             System.out.println("Error: no se ha encontrado la visita.");
             return;
         }
-        
+
         newDateEntry = updateDateEntry(auxVisit.getEntryDate());
-        if (reserveManager.updateVisit(codeVisit, auxVisit.getVisitor(), newDateEntry, null)) {
+        if (reserveManager.updateVisit(codeVisit, auxVisit.getVisitor(), newDateEntry, null))
+        {
             System.out.println("Proceso realizado correctamente.");
-        } else {
+        } else
+        {
             System.err.println("Error: no se ha podido actualizar la visita.");
         }
     }
@@ -382,11 +424,13 @@ public class Program {
         String message;
         LocalDateTime newDate = null;
         int option;
-        do {
+        do
+        {
             message = "¿Desea cambiar la fecha de la visita?\nSi (1) / No (2): ";
             option = errorControl.validateNumericInputInt(sc, message);
 
-            switch (option) {
+            switch (option)
+            {
                 case 1:
                     newDate = errorControl.validateLocalDateTime(sc, "Ingrese la fecha (yyyy-MM-dd HH:mm:ss): ");
                     break;
@@ -405,16 +449,19 @@ public class Program {
     public void deleteVisit()
     {
         String codeVisit = errorControl.validateStrings(sc, "\nIngrese el código de la visita: ");
-        Visit auxVisit = reserveManager.visits.getElement(codeVisit);
+        Visit auxVisit = reserveManager.getVisits().getElement(codeVisit);
 
-        if (auxVisit == null) {
+        if (auxVisit == null)
+        {
             System.err.println("Error: no se ha encontrado la visita.");
             return;
         }
-        if (auxVisit.getVisitor().getStatus() == VisitStatus.Inactive) {
-            auxVisit.setVisibility(Visibility.hidden);
+        if (auxVisit.getVisitor().getStatus() == VisitStatus.INACTIVE)
+        {
+            auxVisit.setVisibility(Visibility.HIDDEN);
             System.out.println("La visita ha sido eliminada correctamente.");
-        } else {
+        } else
+        {
             System.err.println("Error: la visita sigue activa.");
         }
 
@@ -427,25 +474,31 @@ public class Program {
         codeVisit = errorControl.validateStrings(sc, "\nIngrese el código de la visita: ");
 
         Criteria<Visit> criteriaforVisit = visit -> visit.getCodeVisit().equals(codeVisit);
-        Visit auxVisit = this.reserveManager.visits.getElement(criteriaforVisit);
+        Visit auxVisit = this.reserveManager.getVisits().getElement(criteriaforVisit);
 
-        if (auxVisit == null) {
+        if (auxVisit == null)
+        {
             System.err.println("Error: no se ha encontrado la visita con el codigo proporcionado");
             return;
-            
+
         }
-        do {
+        do
+        {
             exitDate = errorControl.validateLocalDateTime(sc, "Ingrese la fecha de salida (yyyy-MM-dd HH:mm:ss): ");
-            if (errorControl.validateDateTimeRange(exitDate, auxVisit.getEntryDate())) {
+            if (errorControl.validateDateTimeRange(exitDate, auxVisit.getEntryDate()))
+            {
                 System.err.println("Error: la fecha de salida no puede ser anterior a la de registro.\n");
-            } else {
+            } else
+            {
                 break;
             }
         } while (true);
-        
-        if(this.reserveManager.endVisit(codeVisit, exitDate)){
+
+        if (this.reserveManager.endVisit(codeVisit, exitDate))
+        {
             System.out.println("La visita ha sido registrada para su salida.");
-        }else{
+        } else
+        {
             System.err.println("La visita no se pudo regristrar su salida");
         }
     }
@@ -454,18 +507,20 @@ public class Program {
     {
         int option;
 
-        do {
+        do
+        {
             System.out.println();
             String message = "=== Guardabosques ===\n"
-                   + "1. Crear guardaparque\n"
-                   + "2. Mostrar guardaparques\n"
-                   + "3. Actualizar guardaparque\n"
-                   + "4. Eliminar guardaparque\n"
-                   + "5. Regresar\n";
+                    + "1. Crear guardaparque\n"
+                    + "2. Mostrar guardaparques\n"
+                    + "3. Actualizar guardaparque\n"
+                    + "4. Eliminar guardaparque\n"
+                    + "5. Regresar\n";
             System.out.print(message);
             option = errorControl.validateNumericInputInt(sc, "Seleccione una opcion: ");
 
-            switch (option) {
+            switch (option)
+            {
                 case 1:
                     createParkRanger();
                     break;
@@ -492,29 +547,33 @@ public class Program {
     {
         String id, firstNames, lastNames;
         LocalDate contractDate;
-        
+
         System.out.println();
         id = errorControl.validateIDNumber(sc, "Ingrese la cedula de identidad: ");
         contractDate = errorControl.validateLocalDate(sc, "Ingrese la fecha de contrato (en formato yyyy-MM-dd): ");
         firstNames = errorControl.validateTwoWords(sc, "Ingrese sus dos nombres: ", "nombres");
         lastNames = errorControl.validateTwoWords(sc, "Ingrese sus dos apellidos: ", "apellidos");
-        
-        ParkRanger parkRanger = new ParkRanger(contractDate, id, firstNames, lastNames, RangerStatus.free, Visibility.visible);
 
-        if (reserveManager.addParkRanger(parkRanger)) {
+        ParkRanger parkRanger = new ParkRanger(contractDate, id, firstNames, lastNames, RangerStatus.FREE, Visibility.VISIBLE);
+
+        if (reserveManager.addParkRanger(parkRanger))
+        {
             System.out.println("Guardaparques añadio exitosamente.");
-        }else{
+        } else
+        {
             System.err.println("Error: No se pudo añadir al guardabosques");
         }
-    }     
+    }
 
     public void showParkRangers()
     {
-        if (!this.reserveManager.parkRangers.isEmpty()) {
+        if (!this.reserveManager.getParkRangers().isEmpty())
+        {
             System.out.println("\nLos guardabosques disponibles son: ");
-            String message = reserveManager.parkRangers.getElementsToString();
-            System.out.println(((message!=null)?message:"No se han encontrado guardabsoques."));
-        } else {
+            String message = reserveManager.getParkRangers().getElementsToString();
+            System.out.println(((message != null) ? message : "No se han encontrado guardabsoques."));
+        } else
+        {
             System.out.println("No se han encontrado guardabosques.");
         }
     }
@@ -529,20 +588,22 @@ public class Program {
         id = errorControl.validateIDNumber(sc, "Ingrese la cedula de identidad: ");
 
         Criteria<ParkRanger> criteriaForParkRangers = parkRanger -> parkRanger.getIdentification().equals(id);
-        ParkRanger auxParkRanger = reserveManager.parkRangers.getElement(criteriaForParkRangers);
+        ParkRanger auxParkRanger = reserveManager.getParkRangers().getElement(criteriaForParkRangers);
 
-        if (auxParkRanger == null) {
+        if (auxParkRanger == null)
+        {
             System.err.println("Error: no se ha encontrado al guardabosques con la cedula proporcionada");
             return;
         }
-        newFirstNames = changeRangerWords(auxParkRanger.names, "nombres");
-        newLastNames = changeRangerWords(auxParkRanger.lastNames, "apellidos");
-        newContractDate = changeContractDateRanger(auxParkRanger.dateOfHire);
-        // newStatus = changeRangerStatus(auxParkRanger.status);
+        newFirstNames = changeRangerWords(auxParkRanger.getNames(), "nombres");
+        newLastNames = changeRangerWords(auxParkRanger.getLastNames(), "apellidos");
+        newContractDate = changeContractDateRanger(auxParkRanger.getDateOfHire());
 
-        if (reserveManager.updateParkRanger(id, newFirstNames, newLastNames, newContractDate, auxParkRanger.status)) {
+        if (reserveManager.updateParkRanger(id, newFirstNames, newLastNames, newContractDate, auxParkRanger.getStatus()))
+        {
             System.out.println("Guardabosques actualizado correctamente.");
-        }else{
+        } else
+        {
             System.out.println("No se pudo actualizar el guardabosques.");
         }
     }
@@ -551,11 +612,13 @@ public class Program {
     {
         String message, newWord = null;
         int option;
-        do {
+        do
+        {
             message = "¿Desea cambiar los " + categoria + "?\nSi (1) / No (2): ";
             option = errorControl.validateNumericInputInt(sc, message);
 
-            switch (option) {
+            switch (option)
+            {
                 case 1:
                     newWord = errorControl.validateTwoWords(sc, "Ingrese sus dos " + categoria + ": ", categoria);
                     break;
@@ -576,11 +639,13 @@ public class Program {
         String message;
         LocalDate newDate = null;
         int option;
-        do {
+        do
+        {
             message = "¿Desea cambiar la fecha de contrato?\nSi (1) / No (2): ";
             option = errorControl.validateNumericInputInt(sc, message);
 
-            switch (option) {
+            switch (option)
+            {
                 case 1:
                     newDate = errorControl.validateLocalDate(sc, "Ingrese la fecha de contrato (en formato yyyy-MM-dd): ");
                     break;
@@ -602,42 +667,48 @@ public class Program {
         id = this.errorControl.validateStrings(this.sc, "\nIngrese la cedula de identidad del guardabosques a eliminar: ");
 
         Criteria<ParkRanger> criteriaForParkRangers = parkRanger -> parkRanger.getIdentification().equals(id);
-        ParkRanger auxParkRanger = this.reserveManager.parkRangers.getElement(criteriaForParkRangers);
+        ParkRanger auxParkRanger = this.reserveManager.getParkRangers().getElement(criteriaForParkRangers);
 
-        if (auxParkRanger == null) {
+        if (auxParkRanger == null)
+        {
             System.err.println("No se ha encontrado el guardabosques con el id proporcionado.");
             return;
         }
-        
-         if (auxParkRanger.status == RangerStatus.free) { // Desocupado --> eliminar
-             System.err.println("No se puede eliminar el guardabosques debido a que se encuentra ocupado.");
-             return;
-         }
-       
-         if (this.reserveManager.removeParkRanger(id)) {
-            System.out.println("Guardaparques eliminado exitosamente.");
-        }else{
-            System.out.println("No se pudo eliminar al guardabosques.");
-        }   
-    }
 
+        // Free ---> Delete
+        if (auxParkRanger.getStatus() == RangerStatus.BUSY)
+        {
+            System.err.println("No se puede eliminar el guardabosques debido a que se encuentra ocupado.");
+            return;
+        }
+
+        if (this.reserveManager.removeParkRanger(id))
+        {
+            System.out.println("Guardaparques eliminado exitosamente.");
+        } else
+        {
+            System.out.println("No se pudo eliminar al guardabosques.");
+        }
+    }
 
     public void areaMenu()
     {
         int option;
 
-        do {
+        do
+        {
             System.out.println();
             String message = "=== Areas ===\n"
-               + "1. Crear area\n"
-               + "2. Mostrar areas\n"
-               + "3. Actualizar area\n"
-               + "4. Eliminar area\n"
-               + "5. Regresar\n";
+                    + "1. Crear area\n"
+                    + "2. Mostrar areas\n"
+                    + "3. Actualizar area\n"
+                    + "4. Eliminar area\n"
+                    + "5. Regresar\n";
             System.out.print(message);
             option = this.errorControl.validateNumericInputInt(this.sc, "Seleccione una opción: ");
 
-            switch (option) {
+            switch (option)
+            {
                 case 1:
                     createArea();
                     break;
@@ -669,21 +740,25 @@ public class Program {
         name = errorControl.validateStrings(sc, "Ingrese el nombre del area: ");
         description = errorControl.validateStrings(sc, "Ingrese la descripcion del area: ");
         Area area = new Area(codeArea, name, description);
-        
-        if (this.reserveManager.addArea(area)) {
+
+        if (this.reserveManager.addArea(area))
+        {
             System.out.println("El area se ha añadido exitosamente.");
-        }else{
+        } else
+        {
             System.out.println("No se pudo registrar la nueva Área");
         }
     }
 
     public void showAreas()
     {
-        if (!this.reserveManager.areas.isEmpty()) {
+        if (!this.reserveManager.getAreas().isEmpty())
+        {
             System.out.println("\nAreas disponibles: ");
-            String message = reserveManager.visits.getElementsToString();
-            System.out.println(((message!=null)?message:"No se han encontrado aareas por el momento."));
-        } else {
+            String message = reserveManager.getAreas().getElementsToString();
+            System.out.println(((message != null) ? message : "No se han encontrado aareas por el momento."));
+        } else
+        {
             System.out.println("No se han encontrado areas registradas.");
         }
     }
@@ -694,18 +769,21 @@ public class Program {
         codeArea = errorControl.validateStrings(sc, "\nIngrese el codigo del area: ");
 
         Criteria<Area> criteriaForParkRangers = area -> area.getCodeArea().equals(codeArea);
-        Area auxArea = this.reserveManager.areas.getElement(criteriaForParkRangers);
+        Area auxArea = this.reserveManager.getAreas().getElement(criteriaForParkRangers);
 
-        if (auxArea == null) {
+        if (auxArea == null)
+        {
             System.err.println("No se ha encontrado el area con el codigo proporcionada.");
             return;
         }
-        
-        newName = newNameArea(auxArea.name);
-        newDescription = newDescriptionArea(auxArea.description);
-        if (this.reserveManager.updateArea(codeArea, newName, newDescription)) {
+
+        newName = newNameArea(auxArea.getName());
+        newDescription = newDescriptionArea(auxArea.getDescription());
+        if (this.reserveManager.updateArea(codeArea, newName, newDescription))
+        {
             System.out.println("Se actualizo el área correctamente.");
-        }else{
+        } else
+        {
             System.out.println("No se pudo actualizar el área.");
         }
     }
@@ -714,11 +792,13 @@ public class Program {
     {
         String message, newName = null;
         int option;
-        do {
+        do
+        {
             message = "¿Desea cambiar el nombre del area?\nSi (1) / No (2): ";
             option = errorControl.validateNumericInputInt(sc, message);
 
-            switch (option) {
+            switch (option)
+            {
                 case 1:
                     newName = errorControl.validateStrings(sc, "Ingrese el nombre del area: ");
                     break;
@@ -738,11 +818,13 @@ public class Program {
     {
         String message, newDescription = null;
         int option;
-        do {
+        do
+        {
             message = "¿Desea cambiar la descripcion del area?\nSi (1) / No (2): ";
             option = errorControl.validateNumericInputInt(sc, message);
 
-            switch (option) {
+            switch (option)
+            {
                 case 1:
                     newDescription = errorControl.validateStrings(sc, "Ingrese la descripcion del area: ");
                     break;
@@ -762,24 +844,28 @@ public class Program {
     {
         String codeArea;
         codeArea = this.errorControl.validateStrings(this.sc, "\nIngrese el codigo del area a eliminar: ");
-        
+
         Criteria<Area> criteriaForParkRangers = area -> area.getCodeArea().equals(codeArea);
-        Area auxArea = this.reserveManager.areas.getElement(criteriaForParkRangers);
-        
-        if (auxArea == null) {
+        Area auxArea = this.reserveManager.getAreas().getElement(criteriaForParkRangers);
+
+        if (auxArea == null)
+        {
             System.err.println("Error: no se ha encontrado el area a eliminar.");
             return;
         }
         // Manejar la forma de que si el area tiene al menos un incidente como VISIBLE, no se podra borrarlo.
-        Criteria<Incident> criteriaByVisinility = incident -> incident.getVisibility().equals(Visibility.visible);
-        if (auxArea.incidents.contains(criteriaByVisinility)) {
+        Criteria<Incident> criteriaByVisinility = incident -> incident.getVisibility().equals(Visibility.VISIBLE);
+        if (auxArea.getIncidents().contains(criteriaByVisinility))
+        {
             System.err.println("Error: no se ha podido eliminar el area, puesto que esta relacionado con alguna incidencia.");
             return;
         }
-        
-        if (this.reserveManager.removeArea(codeArea)) {
+
+        if (this.reserveManager.removeArea(codeArea))
+        {
             System.out.println("Area eliminiada exitosamente.");
-        }else{
+        } else
+        {
             System.out.println("No se pudo eliminar el Área.");
         }
     }
@@ -788,18 +874,20 @@ public class Program {
     {
         int option;
 
-        do {
+        do
+        {
             System.out.println();
             String message = "=== Incidentes ===\n"
-                           + "1. Reportar incidente\n"
-                           + "2. Mostrar incidentes\n"
-                           + "3. Actualizar incidente\n"
-                           + "4. Eliminar incidente\n"
-                           + "5. Regresar\n";
+                    + "1. Reportar incidente\n"
+                    + "2. Mostrar incidentes\n"
+                    + "3. Actualizar incidente\n"
+                    + "4. Eliminar incidente\n"
+                    + "5. Regresar\n";
             System.out.print(message);
             option = errorControl.validateNumericInputInt(sc, "Seleccione una opcion: ");
-            
-            switch (option) {
+
+            switch (option)
+            {
                 case 1:
                     createIndicent();
                     break;
@@ -826,23 +914,27 @@ public class Program {
         String incidentCode, description, annotations;
         LocalDateTime dateTimeReport;
         Area selectArea;
-        
-        if (this.reserveManager.areas.isEmpty()) {
-             System.err.println("Por favor, registre las areas o guardabosques para poder crear un incidente.");
-             return;
+
+        if (this.reserveManager.getAreas().isEmpty())
+        {
+            System.err.println("Por favor, registre las areas o guardabosques para poder crear un incidente.");
+            return;
         }
-        
+
         incidentCode = errorControl.validateStrings(sc, "\nIngrese el codigo del incidente: ");
         description = errorControl.validateStrings(sc, "Ingrese la descripcion del incidente: ");
         annotations = errorControl.validateStrings(sc, "Ingrese las anotaciones del incidente: ");
         dateTimeReport = errorControl.validateLocalDateTime(sc, "Ingrese la fecha de reporte (yyyy-MM-dd HH:mm:ss): ");
         selectArea = selectAreaIncident();
 
-        Incident incidente = new Incident(incidentCode, description, dateTimeReport, null, null, IncidentStatus.pending, annotations, selectArea, Visibility.visible);
+        Incident incidente = new Incident(incidentCode, description, dateTimeReport, null, null,
+                annotations, selectArea);
 
-        if (reserveManager.addIncident(incidente)) {
+        if (reserveManager.addIncident(incidente))
+        {
             System.out.println("Se ha añadido el incidente correctamente.");
-        } else {
+        } else
+        {
             System.err.println("No se ha podido añadir el incidente correctamente.");
         }
     }
@@ -851,26 +943,31 @@ public class Program {
     {
         Area areaFound;
         int areaNumber;
-        
-        do {
-            if (!this.reserveManager.areas.isEmpty()) {
+
+        do
+        {
+            if (!this.reserveManager.getAreas().isEmpty())
+            {
                 System.out.println("\nLas areas disponibles son: ");
-                for (int i = 0; i < this.reserveManager.areas.size(); i++) {
-                    Area area = this.reserveManager.areas.getAt(i);
-                    System.out.println(("Numero: " + i + 1) + ". Nombre: " + area.name + ", descripcion: " + area.description);
+                for (int i = 0; i < this.reserveManager.getAreas().size(); i++)
+                {
+                    Area area = this.reserveManager.getAreas().getAt(i);
+                    System.out.println(("Numero: " + i + 1) + ". Nombre: " + area.getName() + ", descripcion: " + area.getDescription());
                 }
-            } else {
+            } else
+            {
                 System.out.println("No se han encontrado áreas para mostrar.");
             }
             areaNumber = errorControl.validateNumericInputInt(sc, "Ingrese la opcion deseada: ");
 
-            if (areaNumber <= 0 || areaNumber > this.reserveManager.areas.size()) {
+            if (areaNumber <= 0 || areaNumber > this.reserveManager.getAreas().size())
+            {
                 System.err.println("Error: ingrese un valor en el rango mostrado.");
             }
 
-        } while (areaNumber <= 0 || areaNumber > this.reserveManager.areas.size());
+        } while (areaNumber <= 0 || areaNumber > this.reserveManager.getAreas().size());
 
-        areaFound = this.reserveManager.areas.getElementAt(areaNumber - 1);
+        areaFound = this.reserveManager.getAreas().getElementAt(areaNumber - 1);
 
         return areaFound;
     }
@@ -887,23 +984,26 @@ public class Program {
         LocalDateTime newDateTimeReport;
 
         incidentCode = errorControl.validateStrings(sc, "\nIngrese el código del incide a actualizar: ");
-        Criteria<Incident> criteria1 = incident -> incident.incidentCode.equals(incidentCode);
-        Incident auxIncident = this.reserveManager.incidents.getElement(criteria1);
+        Criteria<Incident> criteria1 = incident -> incident.getIncidentCode().equals(incidentCode);
+        Incident auxIncident = this.reserveManager.getIncidents().getElement(criteria1);
 
-        if (auxIncident == null) {
-             System.out.println("No se ha encontrado el incidente con el codigo proporcionado.");
-             return;
+        if (auxIncident == null)
+        {
+            System.out.println("No se ha encontrado el incidente con el codigo proporcionado.");
+            return;
         }
-        
-        newDescription = changeDescriptionIncident(auxIncident.description);
-        newAnnotations = changeAnnotations(auxIncident.annotations);
-        newDateTimeReport = changeDateTimeReport(auxIncident.dateTimeReport);
-        newArea = changeArea(auxIncident.area);
+
+        newDescription = changeDescriptionIncident(auxIncident.getDescription());
+        newAnnotations = changeAnnotations(auxIncident.getAnnotations());
+        newDateTimeReport = changeDateTimeReport(auxIncident.getDateTimeReport());
+        newArea = changeArea(auxIncident.getArea());
 
         if (this.reserveManager.updateIncident(incidentCode, newDescription, newDateTimeReport, auxIncident.getDateTimeAttention(),
-                auxIncident.getAgentSupport(), auxIncident.getIncidentStatus(), newAnnotations, newArea)) {
+                auxIncident.getAgentSupport(), auxIncident.getIncidentStatus(), newAnnotations, newArea))
+        {
             System.out.println("Incidente actualizado correctamente.");
-        } else {
+        } else
+        {
             System.err.println("No se ha podido actualizar el incidente.");
         }
     }
@@ -912,11 +1012,13 @@ public class Program {
     {
         String message, newDescription = null;
         int option;
-        do {
+        do
+        {
             message = "¿Desea cambiar la descripcion del incidente?\nSi (1) / No (2): ";
             option = errorControl.validateNumericInputInt(sc, message);
 
-            switch (option) {
+            switch (option)
+            {
                 case 1:
                     newDescription = errorControl.validateStrings(sc, "Ingrese la nueva descripcion del incidente\n");
                     break;
@@ -937,11 +1039,13 @@ public class Program {
         String message;
         LocalDateTime newTime = null;
         int option;
-        do {
+        do
+        {
             message = "¿Desea cambiar el tiempo de reporte del incidente?\nSi (1) / No (2): ";
             option = errorControl.validateNumericInputInt(sc, message);
 
-            switch (option) {
+            switch (option)
+            {
                 case 1:
                     newTime = errorControl.validateLocalDateTime(sc, "Ingrese el nuevo tiempo de reporte del incidente\n");
                     break;
@@ -962,11 +1066,13 @@ public class Program {
         String message;
         String newAnottations = null;
         int option;
-        do {
+        do
+        {
             message = "¿Desea cambiar las anotaciones del incidente?\nSi (1) / No (2): ";
             option = errorControl.validateNumericInputInt(sc, message);
 
-            switch (option) {
+            switch (option)
+            {
                 case 1:
                     newAnottations = errorControl.validateStrings(sc, "Ingrese las nuevas anotaciones del incidente:\n");
                     break;
@@ -987,11 +1093,13 @@ public class Program {
         String message;
         Area newArea = null;
         int option;
-        do {
+        do
+        {
             message = "¿Desea cambiar el area del incidente?\nSi (1) / No (2): ";
             option = errorControl.validateNumericInputInt(sc, message);
 
-            switch (option) {
+            switch (option)
+            {
                 case 1:
                     newArea = selectAreaIncident();
                     break;
@@ -1012,37 +1120,42 @@ public class Program {
         String incidentCode;
         incidentCode = errorControl.validateStrings(sc, "\nIngrese el código del incide a eliminar: ");
 
-        Criteria<Incident> criteriaByCode = incident -> incident.incidentCode.equals(incidentCode);
-        Incident auxIncident = this.reserveManager.incidents.getElement(criteriaByCode);
-        
+        Criteria<Incident> criteriaByCode = incident -> incident.getIncidentCode().equals(incidentCode);
+        Incident auxIncident = this.reserveManager.getIncidents().getElement(criteriaByCode);
+
         // Si el incidente esta resuelto, entonces se lo "elimina (oculta)"
-        if (auxIncident == null) {
+        if (auxIncident == null)
+        {
             System.out.println("El incide no ha sido encontrado");
             return;
         }
-        
-        if (auxIncident.getIncidentStatus() == IncidentStatus.resolved) {
-            auxIncident.setVisibility(Visibility.hidden);
+
+        if (auxIncident.getIncidentStatus() == IncidentStatus.RESOLVED)
+        {
+            auxIncident.setVisibility(Visibility.HIDDEN);
             System.out.println("Se ha eliminado el incidente.");
-        } else {
+        } else
+        {
             System.err.println("Error: el incidente no ha sido resuelto.");
         }
     }
-    
+
     public void manageIncidentMenu()
     {
         int option;
 
-        do {
+        do
+        {
             System.out.println();
             String message = "=== Gestion de atenciones de incidentes ===\n"
-                               + "1. Atender un incidente\n"
-                               + "2. Terminar atencion de un incidente\n"
-                               + "3. Regresar\n";
+                    + "1. Atender un incidente\n"
+                    + "2. Terminar atencion de un incidente\n"
+                    + "3. Regresar\n";
             System.out.print(message);
             option = errorControl.validateNumericInputInt(sc, "Seleccione una opcion: ");
-            
-            switch (option) {
+
+            switch (option)
+            {
                 case 1:
                     handleIncident();
                     break;
@@ -1057,153 +1170,193 @@ public class Program {
             }
         } while (option != 3);
     }
-    
-    public void handleIncident() {
-        LinkedList<Incident> pendingIncidents = reserveManager.incidents.getElements(incident -> incident.getIncidentStatus() == IncidentStatus.pending);
-        LinkedList<ParkRanger> freeParkRangers = reserveManager.parkRangers.getElements(parkRanger -> parkRanger.getStatus() == RangerStatus.free);
 
-        if (pendingIncidents.isEmpty()) {
+    public void handleIncident()
+    {
+        LinkedList<Incident> pendingIncidents = reserveManager.getIncidents().getElements(incident -> incident.getIncidentStatus() == IncidentStatus.PENDING);
+        LinkedList<ParkRanger> freeParkRangers = reserveManager.getParkRangers().getElements(parkRanger -> parkRanger.getStatus() == RangerStatus.FREE);
+
+        if (pendingIncidents.isEmpty())
+        {
             System.out.println("No se encontarron incientes pendientes.");
             return;
         }
         showPendingIncidents(pendingIncidents);
         Incident selectedIncident = selectIncident(pendingIncidents);
-        if (selectedIncident == null) {
+
+        if (selectedIncident == null)
+        {
             return;
         }
-        if (freeParkRangers.isEmpty()) {
+
+        if (freeParkRangers.isEmpty())
+        {
             System.err.println("No hay guardabosques disponibles actualmente para atender el Incidente.");
             return;
         }
+
         showFreeParkRangers(freeParkRangers);
         ParkRanger selectedParkRanger = selectParkRanger(freeParkRangers);
-        if (selectedParkRanger == null) {
+
+        if (selectedParkRanger == null)
+        {
             return;
         }
         LocalDateTime attentionDate = enterAttentionDate(selectedIncident.getDateTimeReport());
-        
-        if(reserveManager.atenderIncident(selectedIncident, selectedParkRanger, attentionDate)){
-            System.out.println("");
+
+        if (reserveManager.atenderIncident(selectedIncident, selectedParkRanger, attentionDate))
+        {
+            System.out.println("Incidente atendiendose.");
+        } else
+        {
+            System.out.println("No se ha podido atender el incidente.");
         }
     }
 
-    private void showPendingIncidents(LinkedList<Incident> incidents) {
+    private void showPendingIncidents(LinkedList<Incident> incidents)
+    {
         System.out.println("\nPending Incidents:");
-        for (int i = 0; i < incidents.size(); i++) {
+        for (int i = 0; i < incidents.size(); i++)
+        {
             Incident incident = incidents.getAt(i);
             System.out.println("Number: " + (i + 1) + ". Area Name: " + incident.getArea().getName() + ", Description: " + incident.getArea().getDescription());
         }
     }
 
-    private Incident selectIncident(LinkedList<Incident> incidents) {
-        if (incidents.isEmpty()) {
+    private Incident selectIncident(LinkedList<Incident> incidents)
+    {
+        if (incidents.isEmpty())
+        {
             return null;
         }
         int incidentNumber;
-        do {
+        do
+        {
             incidentNumber = errorControl.validateNumericInputInt(this.sc, "Select an incident: ");
-            if (incidentNumber <= 0 || incidentNumber > incidents.size()) {
+            if (incidentNumber <= 0 || incidentNumber > incidents.size())
+            {
                 System.err.println("Error: Please enter a valid number.");
             }
         } while (incidentNumber <= 0 || incidentNumber > incidents.size());
 
         return incidents.getAt(incidentNumber - 1);
     }
-    
-    private void showFreeParkRangers(LinkedList<ParkRanger> parkRangers) {
+
+    private void showFreeParkRangers(LinkedList<ParkRanger> parkRangers)
+    {
         System.out.println("\nFree Park Rangers:");
-        for (int i = 0; i < parkRangers.size(); i++) {
+        for (int i = 0; i < parkRangers.size(); i++)
+        {
             ParkRanger ranger = parkRangers.getAt(i);
             System.out.println("Number: " + (i + 1) + ". Names: " + ranger.getNames() + ", Last Names: " + ranger.getLastNames());
         }
     }
-    
-    private ParkRanger selectParkRanger(LinkedList<ParkRanger> parkRangers) {
-        if (parkRangers.isEmpty()) {
+
+    private ParkRanger selectParkRanger(LinkedList<ParkRanger> parkRangers)
+    {
+        if (parkRangers.isEmpty())
+        {
             return null;
         }
         int parkRangerNumber;
-        do {
+        do
+        {
             parkRangerNumber = errorControl.validateNumericInputInt(this.sc, "Select a park ranger: ");
-            if (parkRangerNumber <= 0 || parkRangerNumber > parkRangers.size()) {
+            if (parkRangerNumber <= 0 || parkRangerNumber > parkRangers.size())
+            {
                 System.err.println("Error: Please enter a valid number.");
             }
         } while (parkRangerNumber <= 0 || parkRangerNumber > parkRangers.size());
 
         return parkRangers.getAt(parkRangerNumber - 1);
     }
-    
-    private LocalDateTime enterAttentionDate(LocalDateTime reportDate) {
+
+    private LocalDateTime enterAttentionDate(LocalDateTime reportDate)
+    {
         LocalDateTime attentionDate;
-        do {
+        do
+        {
             attentionDate = errorControl.validateLocalDateTime(sc, "\nEnter the attention date (yyyy-MM-dd HH:mm:ss): ");
-            if (errorControl.validateDateTimeRange(attentionDate, reportDate)) {
+            if (errorControl.validateDateTimeRange(attentionDate, reportDate))
+            {
                 System.err.println("Error: The date must be after the report date.");
-            } else {
+            } else
+            {
                 break;
             }
         } while (true);
 
         return attentionDate;
     }
-    
-    public void terminateIncident() {
-        LinkedList<Incident> inProcessIncidents = reserveManager.incidents.getElements(incident -> incident.getIncidentStatus() == IncidentStatus.inProcess);
 
-        if (inProcessIncidents.isEmpty()) {
+    public void terminateIncident()
+    {
+        LinkedList<Incident> inProcessIncidents = reserveManager.getIncidents().getElements(incident -> incident.getIncidentStatus() == IncidentStatus.IN_PROCESS);
+
+        if (inProcessIncidents.isEmpty())
+        {
             System.out.println("No hay incidentes en proceso para ser concluidos.");
             return;
         }
-        
+
         showInProcessIncidents(inProcessIncidents);
         Incident selectedIncident = selectIncidentToTerminate(inProcessIncidents);
-        
-        if (reserveManager.terminateIncident(selectedIncident)) {
+
+        if (reserveManager.terminateIncident(selectedIncident))
+        {
             System.out.println("Se ha concluido la incidencia correctamente.");
-        }else{
+        } else
+        {
             System.err.println("No se pudo concluir la incidencia.");
         }
     }
 
-    private void showInProcessIncidents(LinkedList<Incident> incidents) {
+    private void showInProcessIncidents(LinkedList<Incident> incidents)
+    {
         System.out.println("\nIncidents in Process:");
-        for (int i = 0; i < incidents.size(); i++) {
+        for (int i = 0; i < incidents.size(); i++)
+        {
             Incident incident = incidents.getAt(i);
-            System.out.println("Number: " + (i + 1) 
-                    + ". Area Name: " + incident.getArea().getName() 
-                    + ", Description: " + incident.getArea().getDescription() 
+            System.out.println("Number: " + (i + 1)
+                    + ". Area Name: " + incident.getArea().getName()
+                    + ", Description: " + incident.getArea().getDescription()
                     + ", Annotations: " + incident.getAnnotations());
         }
     }
 
-    private Incident selectIncidentToTerminate(LinkedList<Incident> incidents) {
+    private Incident selectIncidentToTerminate(LinkedList<Incident> incidents)
+    {
         int incidentNumber;
-        do {
+        do
+        {
             incidentNumber = errorControl.validateNumericInputInt(sc, "Select an incident to terminate: ");
-            if (incidentNumber <= 0 || incidentNumber > incidents.size()) {
+            if (incidentNumber <= 0 || incidentNumber > incidents.size())
+            {
                 System.err.println("Error: Please enter a valid number.");
             }
         } while (incidentNumber <= 0 || incidentNumber > incidents.size());
 
         return incidents.getAt(incidentNumber - 1);
     }
-    
+
     // Personas que han visitado la reserva, dado una fecha, señalando aquellas que no han salido.
     // Incidencias atentidas en un periodo de tiempo.
     // Incidentecias pendientes.
     public void reportMenu()
     {
         int option;
-        do {
+        do
+        {
             System.out.println();
             String message = "=== Reportes ===\n"
-                   + "1. Reporte de personas que han visitado la reserva\n"
-                   + "2. Reporte de las incidencias atentidas y en proceso\n"
-                   + "3. Regresar\n";
+                    + "1. Reporte de personas que han visitado la reserva\n"
+                    + "2. Reporte de las incidencias atentidas y en proceso\n"
+                    + "3. Regresar\n";
             System.out.print(message);
             option = errorControl.validateNumericInputInt(sc, "Seleccione una opcion: ");
 
-            switch (option) {
+            switch (option)
+            {
                 case 1:
                     visitsReport();
                     break;

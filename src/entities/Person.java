@@ -1,12 +1,10 @@
-package proyecto;
+package entities;
 
 public class Person {
 
-    String identification;
-
-    String names;
-
-    String lastNames;
+    private String identification;
+    private String names;
+    private String lastNames;
 
     public Person(String identification, String names, String lastNames)
     {

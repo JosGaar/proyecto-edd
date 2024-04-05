@@ -1,4 +1,4 @@
-package proyecto;
+package services;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -13,18 +13,23 @@ public class ErrorControl {
     public int validateNumericInputInt(Scanner input, String message)
     {
         int number;
-        while (true) {
-            try {
+        while (true)
+        {
+            try
+            {
                 System.out.print(message);
                 number = Integer.parseInt(input.nextLine());
-                if (number < 0) {
+                if (number < 0)
+                {
                     throw new IllegalArgumentException("Error: El nÃºmero no puede ser negativo.");
 
                 }
                 return number;
-            } catch (NumberFormatException e) {
+            } catch (NumberFormatException e)
+            {
                 System.err.println("Error: Por favor ingrese un nÃºmero vÃ¡lido.\n");
-            } catch (IllegalArgumentException e) {
+            } catch (IllegalArgumentException e)
+            {
                 System.err.println("Error: Por favor ingrese un nÃºmero vÃ¡lido.\n");
             }
         }
@@ -33,12 +38,15 @@ public class ErrorControl {
     public String validateIDNumber(Scanner input, String message)
     {
         String idNumber;
-        while (true) {
+        while (true)
+        {
             System.out.print(message);
             idNumber = input.nextLine();
-            if (idNumber.matches("\\d{10}")) {
+            if (idNumber.matches("\\d{10}"))
+            {
                 return idNumber;
-            } else {
+            } else
+            {
                 System.err.println("Error: La cÃ©dula debe tener 10 nÃºmeros.\n");
             }
         }
@@ -47,15 +55,18 @@ public class ErrorControl {
     public String validateTwoWords(Scanner input, String message, String categoria)
     {
         String names;
-        while (true) {
+        while (true)
+        {
             System.out.print(message);
             names = input.nextLine().trim().replaceAll("\\s+", " ");
 
             String[] words = names.split(" ");
 
-            if (words.length == 2) {
+            if (words.length == 2)
+            {
                 return names;
-            } else {
+            } else
+            {
                 System.err.println("Error: por favor ingrese dos " + categoria + " separados por un espacio.\n");
             }
         }
@@ -64,16 +75,19 @@ public class ErrorControl {
     public String validateStrings(Scanner input, String message)
     {
         String word;
-        while (true) {
+        while (true)
+        {
             System.out.print(message);
             word = input.nextLine();
 
             Pattern pattern = Pattern.compile("^[a-zA-Z0-9,](?:[a-zA-Z0-9, ]*[a-zA-Z0-9,])?$");
             Matcher matcher = pattern.matcher(word.trim());
 
-            if (matcher.matches()) {
+            if (matcher.matches())
+            {
                 return word.trim().replaceAll("\\s+", " ");
-            } else {
+            } else
+            {
                 System.err.println("Error: por favor ingrese un texto valido.\n");
             }
         }
@@ -82,17 +96,22 @@ public class ErrorControl {
     public String validatePhoneNumber(Scanner input, String message)
     {
         String phoneNumber;
-        while (true) {
+        while (true)
+        {
             System.out.print(message);
             phoneNumber = input.nextLine();
 
-            if (phoneNumber.matches("\\d+")) {
-                if (phoneNumber.length() == 10) {
+            if (phoneNumber.matches("\\d+"))
+            {
+                if (phoneNumber.length() == 10)
+                {
                     return phoneNumber;
-                } else {
+                } else
+                {
                     System.err.println("Número de teléfono inválido. Debe tener exactamente 10 dígitos.\n");
                 }
-            } else {
+            } else
+            {
                 System.err.println("Número de teléfono inválido. Ingrese solo números.\n");
             }
         }
@@ -101,22 +120,27 @@ public class ErrorControl {
     public LocalDateTime validateLocalDateTime(Scanner input, String message)
     {
         String date;
-        while (true) {
+        while (true)
+        {
             System.out.print(message);
             date = input.nextLine();
 
             Pattern pattern = Pattern.compile("\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}");
             Matcher matcher = pattern.matcher(date);
 
-            if (matcher.matches()) {
-                try {
+            if (matcher.matches())
+            {
+                try
+                {
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
                     LocalDateTime dateTime = LocalDateTime.parse(date, formatter);
                     return dateTime;
-                } catch (DateTimeParseException e) {
+                } catch (DateTimeParseException e)
+                {
                     System.err.println("Error: ingrese una fecha y hora válidas en el formato (yyyy-MM-dd HH:mm:ss)\n");
                 }
-            } else {
+            } else
+            {
                 System.err.println("Error: ingrese una fecha y hora válidas en el formato (yyyy-MM-dd HH:mm:ss)\n");
             }
         }
@@ -125,21 +149,26 @@ public class ErrorControl {
     public LocalDate validateLocalDate(Scanner input, String message)
     {
         LocalDate date;
-        while (true) {
+        while (true)
+        {
             System.out.print(message);
             String dateString = input.nextLine();
 
             Pattern pattern = Pattern.compile("\\d{4}-\\d{2}-\\d{2}");
             Matcher matcher = pattern.matcher(dateString);
 
-            if (matcher.matches()) {
-                try {
+            if (matcher.matches())
+            {
+                try
+                {
                     date = LocalDate.parse(dateString);
                     return date;
-                } catch (DateTimeParseException e) {
+                } catch (DateTimeParseException e)
+                {
                     System.err.println("Error: Ingrese una fecha válida (año, mes, día)\n");
                 }
-            } else {
+            } else
+            {
                 System.err.println("Error: Ingrese una fecha válida (año, mes, día) en formato (yyyy-MM-dd)\n");
             }
         }

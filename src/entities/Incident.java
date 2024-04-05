@@ -1,37 +1,42 @@
-package proyecto;
+package entities;
 
+import utils.Visibility;
 import java.time.LocalDateTime;
 
 public class Incident {
 
-    String incidentCode;
+    private String incidentCode;
+    private String description;
+    private LocalDateTime dateTimeReport;
+    private LocalDateTime dateTimeAttention;
+    private ParkRanger agentSupport;
+    private IncidentStatus incidentStatus;
+    private Visibility visibility;
+    private String annotations;
+    private Area area;
+
+    public Incident(String incidentCode, String description, LocalDateTime dateTimeReport, LocalDateTime dateTimeAttention,
+            ParkRanger agentSupport, String annotations, Area area)
+    {
+        this.description = description;
+        this.dateTimeReport = dateTimeReport;
+        this.dateTimeAttention = dateTimeAttention;
+        this.agentSupport = agentSupport;
+        this.incidentStatus = IncidentStatus.PENDING;
+        this.annotations = annotations;
+        this.area = area;
+        this.incidentCode = incidentCode;
+        this.visibility = Visibility.VISIBLE;
+    }
 
     public void setIncidentCode(String incidentCode)
     {
         this.incidentCode = incidentCode;
     }
 
-    String description;
-    LocalDateTime dateTimeReport;
-    LocalDateTime dateTimeAttention;
-    ParkRanger agentSupport;
-    IncidentStatus incidentStatus;
-    Visibility visibility;
-    String annotations;
-    Area area;
-
-    public Incident(String incidentCode, String description, LocalDateTime dateTimeReport, LocalDateTime dateTimeAttention,
-            ParkRanger agentSupport, IncidentStatus incidentStatus, String annotations, Area area, Visibility visibility)
+    public String getIncidentCode()
     {
-        this.description = description;
-        this.dateTimeReport = dateTimeReport;
-        this.dateTimeAttention = dateTimeAttention;
-        this.agentSupport = agentSupport;
-        this.incidentStatus = incidentStatus;
-        this.annotations = annotations;
-        this.area = area;
-        this.incidentCode = incidentCode;
-        this.visibility = visibility;
+        return incidentCode;
     }
 
     public Visibility getVisibility()
@@ -47,11 +52,6 @@ public class Incident {
     public void setDateTimeReport(LocalDateTime dateTimeReport)
     {
         this.dateTimeReport = dateTimeReport;
-    }
-
-    public String getIncidentCode()
-    {
-        return incidentCode;
     }
 
     public String getDescription()
@@ -132,7 +132,6 @@ public class Incident {
                 + "\nEstado de Incidencia: " + this.incidentStatus
                 + "\nAnotaciones: " + this.annotations
                 + "\nArea: " + this.area.getName();
-
     }
 
 }

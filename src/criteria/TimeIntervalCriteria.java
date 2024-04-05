@@ -1,4 +1,4 @@
-package proyecto;
+package criteria;
 
 import java.time.LocalDateTime;
 

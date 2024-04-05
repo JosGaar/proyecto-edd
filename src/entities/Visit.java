@@ -1,7 +1,7 @@
-package proyecto;
+package entities;
 
+import utils.Visibility;
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 public class Visit {
 
@@ -68,34 +68,38 @@ public class Visit {
     {
         this.exitDate = exitDate;
     }
-    
-    
-    
+
     @Override
-    public  String toString(){
-        String fatherToString= super.toString();
-        return "\nCódigo de la Visita: "+this.codeVisit
-                +this.visitor.toString()
-                +"\nFecha de Entrada: "+this.entryDate
-                +"\nFecha de Salida: "+((this.exitDate != null)?this.exitDate:"(Aún en la reserva)");
+    public String toString()
+    {
+        String fatherToString = super.toString();
+        return "\nCódigo de la Visita: " + this.codeVisit
+                + this.visitor.toString()
+                + "\nFecha de Entrada: " + this.entryDate
+                + "\nFecha de Salida: " + ((this.exitDate != null) ? this.exitDate : "(Aún en la reserva)");
     }
-    
+
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) 
+    public boolean equals(Object obj)
+    {
+        if (this == obj)
+        {
             return true;
-        
-        if (obj instanceof Visit) {
+        }
+
+        if (obj instanceof Visit)
+        {
             Visit v = (Visit) obj;
             return v.getCodeVisit().equals(this.getCodeVisit());
         }
-       
-       if (obj instanceof String) {
+
+        if (obj instanceof String)
+        {
             String id = (String) obj;
             return id.equals(this.getCodeVisit());
         }
-       
+
         return false;
     }
-    
+
 }
