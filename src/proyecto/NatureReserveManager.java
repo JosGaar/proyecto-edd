@@ -333,24 +333,17 @@ public class NatureReserveManager {
     public String generateDailyVisitorReport(LocalDate date) {
         LinkedList<Visit> dailyVisits = this.visitsPerDay(date);
         LinkedList<Visit> activeVisits = this.getActiveVisits();
+        LinkedList<Visit> visitsToAppend = this.getAllVisitsReport(dailyVisits, activeVisits);
         StringBuilder report = new StringBuilder();
         
-        report.append("\n=== Informe de visitantes para el ").append(date).append(": ===\n");
-        if (dailyVisits.isEmpty()) {
-            report.append("- No hay visitantes para la fecha. ").append(date).append(".");
-        }
-        
-        if (activeVisits.isEmpty()) {
-            report.append("\n- No se encontraron visitantes con una visita activa. \n");
-        }
-        
-        if(dailyVisits.isEmpty() && activeVisits.isEmpty()){
+        report.append("\n=== Informe de visitantes para el ").append(date).append(": ===\n\n");
+        if (visitsToAppend.isEmpty()) {
+            report.append("- No hay visitantes para la fecha <").append(date).append(">.\n");
             return report.toString();
         }
         
-        LinkedList<Visit> visitsToAppend = this.getAllVisitsReport(dailyVisits, activeVisits);
         appendVisitorList(report, visitsToAppend);
-        appendStatistics(report, dailyVisits);
+        appendStatistics(report, visitsToAppend);
         
         return report.toString();
     }
@@ -371,13 +364,30 @@ public class NatureReserveManager {
     }
     
     private void appendVisitorList(StringBuilder report, LinkedList<Visit> visitsToAppend) {
-        report.append(visitsToAppend.getElementsToString());
+        Criteria<Visit> activity = visitor -> visitor.getVisitor().getStatus().equals(VisitStatus.Active);
+        LinkedList<Visit> activeVisits = visitsToAppend.getElements(activity);
+        
+        for(Visit visit : visitsToAppend){
+            if(!visit.getVisitor().getStatus().equals(VisitStatus.Active)){
+                report.append(visit.toString()).append("\n");
+            }
+        }
+        
+        if (activeVisits.isEmpty()) {
+            report.append("\n- Para la fecha ingresada no existe vistantes activos. \n");
+            return;
+        }
+        
+        report.append("=== Visitantes activos durante la fecha ===");
+        for(Visit visit : activeVisits){
+            report.append(visit.toString()).append("\n");
+        }
     }
     
     private void appendStatistics(StringBuilder report, LinkedList<Visit> dailyVisits) {
         report.append("\n\n=== Estadísticas: ===\n");
         int totalVisitingTime = getTotalVisitingTime(dailyVisits);
-        int numberOfVisitors = dailyVisits.size();
+        int numberOfVisitors = getAvarageVisitors(dailyVisits);
         double averageVisitingTime = calculateAverageVisitingTime(totalVisitingTime, numberOfVisitors);
         
         report.append("- Número de visitantes en el día: ").append(numberOfVisitors).append("\n");
@@ -391,6 +401,16 @@ public class NatureReserveManager {
                         .append(visitor.fullname()).append("\n");
             }
         }
+    }
+    
+    private int getAvarageVisitors(LinkedList<Visit> dailyVisits) {
+        int count = 0;
+        for (Visit visit : dailyVisits) {
+            if (visit.getExitDate() != null) {
+                count++;
+            }
+        }
+        return count;
     }
     
     private int getTotalVisitingTime(LinkedList<Visit> dailyVisits) {
